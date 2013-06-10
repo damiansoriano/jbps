@@ -9,6 +9,7 @@ import com.hp.hpl.jena.ontology.ObjectProperty;
 import com.hp.hpl.jena.ontology.OntClass;
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.ontology.OntModelSpec;
+import com.hp.hpl.jena.rdf.model.InfModel;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.ResIterator;
@@ -16,10 +17,10 @@ import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.Statement;
 import com.hp.hpl.jena.rdf.model.StmtIterator;
 import com.hp.hpl.jena.reasoner.Reasoner;
-import com.hp.hpl.jena.reasoner.ReasonerRegistry;
 import com.hp.hpl.jena.reasoner.ValidityReport;
 import com.hp.hpl.jena.reasoner.ValidityReport.Report;
-import com.hp.hpl.jena.reasoner.rulesys.OWLFBRuleReasoner;
+import com.hp.hpl.jena.reasoner.rulesys.GenericRuleReasoner;
+import com.hp.hpl.jena.reasoner.rulesys.Rule;
 import com.hp.hpl.jena.util.FileManager;
 import com.hp.hpl.jena.vocabulary.VCARD;
 
@@ -29,6 +30,30 @@ public class App {
 	private final static String FILE_SRC = "/home/damian/Estudios/Polimi/Courses/Semester 4/Thesis/Colombetti/Protege/inc.owl";
 	
 	public static void main( String[] args ) {
+		String terranURI = "http://somewhere/Terran";
+		String alienURI = "http://somewhere/Alien";
+		String terralienURI = "http://somewhere/Terraline";
+		String terralien_01URI = "http://somewhere/terraline 01";
+		
+		OntModel ontologyModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM_RULE_INF);
+		
+		OntClass terranClass = ontologyModel.createClass(terranURI);
+		OntClass alienClass = ontologyModel.createClass(alienURI);
+		OntClass terralienClass = ontologyModel.createClass(terralienURI);
+		
+		Individual terralien = terranClass.createIndividual(terralien_01URI);
+		terralien.addOntClass(alienClass);
+		
+		String rules = "[rule1: (?a rdf:type http://somewhere/Terran) (?a rdf:type http://somewhere/Alien) -> (?a rdf:type http://somewhere/Terraline)]";
+		GenericRuleReasoner genericRuleReasoner = new GenericRuleReasoner(Rule.parseRules(rules));
+		
+		InfModel inf = ModelFactory.createInfModel(genericRuleReasoner, ontologyModel);
+
+		Model union = inf.union(ontologyModel);
+		union.write(System.out);
+	}
+	
+	public static void main4( String[] args ) {
 		Model model = FileManager.get().loadModel(FILE_SRC);
 		
 		OntModel ontologyModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM_RULE_INF);

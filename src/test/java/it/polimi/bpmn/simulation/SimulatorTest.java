@@ -27,8 +27,8 @@ import com.hp.hpl.jena.util.FileManager;
 
 public class SimulatorTest {
 	
-	private final static String bpmnOntologyPath = "/home/damian/Estudios/Polimi/Courses/Semester 4/Thesis/Colombetti/Protege/PurchaseRequest.owl";
-	private final static String modelOntologyPath = "/home/damian/Estudios/Polimi/Courses/Semester 4/Thesis/Colombetti/Protege/PurchaseRequestModel.owl";
+	private final static String bpmnOntologyPath = "./src/test/resources/it/polimi/bpmn/simulation/SimplePurchaseRequest.owl";
+	private final static String modelOntologyPath = "./src/test/resources/it/polimi/bpmn/simulation/SimplePurchaseRequestModel.owl";
 	
 	private final static String purchaseRequestURI = "http://www.semanticweb.org/ontologies/2013/5/PurchaseRequestModel.owl#PurchaseRequest";
 	

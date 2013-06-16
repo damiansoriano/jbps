@@ -1,6 +1,6 @@
 package it.polimi.bpmn.simulation;
 
-import static it.polimi.utils.OntologyUtils.getIndividuales;
+import static it.polimi.utils.OntologyUtils.getIndividuals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -28,7 +28,7 @@ import com.hp.hpl.jena.util.FileManager;
 
 public class SimulatorTest {
 	
-	private final static String bpmnOntologyPath = "./src/test/resources/it/polimi/bpmn/simulation/SimplePurchaseRequest.owl";
+	private final static String bpmnOntologyPath = "./src/test/resources/it/polimi/bpmn/simulation/SimplePurchaseRequestBPMN.owl";
 	private final static String modelOntologyPath = "./src/test/resources/it/polimi/bpmn/simulation/SimplePurchaseRequestModel.owl";
 	
 	private final static String purchaseRequestURI = "http://www.semanticweb.org/ontologies/2013/5/PurchaseRequestModel.owl#PurchaseRequest";
@@ -39,6 +39,9 @@ public class SimulatorTest {
 	private final static String purchaseRequest01URI = "http://www.semanticweb.org/ontologies/2013/5/PurchaseRequestModel.owl#purchaseRequest01";
 	private final static String individualPersonURI = "http://www.semanticweb.org/ontologies/2013/5/PurchaseRequestModel.owl#damian";
 	private final static String employeeURI = "http://www.semanticweb.org/ontologies/2013/5/PurchaseRequestModel.owl#employee";
+	
+	private final static String startPurchaseOrderURI = "http://www.semanticweb.org/ontologies/2013/5/PurchaseRequest.owl#startPurchaseOrder";
+	private final static String authorizePurchaseOrderURI = "http://www.semanticweb.org/ontologies/2013/5/PurchaseRequest.owl#authorizePurchaseOrder";
 	
 	private OntModel getOntologyFromFile(String filePath) {
 		Model model = FileManager.get().loadModel(filePath);
@@ -61,13 +64,13 @@ public class SimulatorTest {
 		OntModel modelOntology = getOntologyFromFile(modelOntologyPath);
 		List<Action> actions = getActionsFromFile("./src/test/resources/it/polimi/bpmn/simulation/inputDataExample.json");
 		
-		List<Individual> prePurchaseRequestIndividuales = getIndividuales(modelOntology, purchaseRequestURI);
+		List<Individual> prePurchaseRequestIndividuales = getIndividuals(modelOntology, purchaseRequestURI);
 		assertTrue(prePurchaseRequestIndividuales.isEmpty());
 		
 		Simulator simulator = new Simulator(bpmnOntology, modelOntology);
 		simulator.execute(actions);
 		
-		List<Individual> postPurchaseRequestIndividuales = getIndividuales(modelOntology, purchaseRequestURI);
+		List<Individual> postPurchaseRequestIndividuales = getIndividuals(modelOntology, purchaseRequestURI);
 		assertEquals(2, postPurchaseRequestIndividuales.size());
 		
 		Individual namedPurchaseRequest = null;
@@ -99,6 +102,26 @@ public class SimulatorTest {
 		ValidityReport validityReport = modelOntology.validate();
 		assertTrue(validityReport.isValid());
 		assertTrue(validityReport.isClean());
+	}
+	
+	@Test
+	public void correctlyGetStartEventAndNextEvent() throws IOException {
+		OntModel bpmnOntology = getOntologyFromFile(bpmnOntologyPath);
+		OntModel modelOntology = getOntologyFromFile(modelOntologyPath);
+		
+		Simulator simulator = new Simulator(bpmnOntology, modelOntology);
+		
+		List<SimulationState> startEvents = simulator.getStartEvents();
+		
+		assertEquals(1, startEvents.size());
+		
+		SimulationState startState = startEvents.get(0);
+		assertEquals(startPurchaseOrderURI, startState.getCurrentStateURI());
+		List<SimulationState> nextStates = simulator.getNextEvents(startState);
+		
+		assertEquals(1, nextStates.size());//authorizePurchaseOrderURI
+		SimulationState authorizePurchaseOrderState = nextStates.get(0);
+		assertEquals(authorizePurchaseOrderURI, authorizePurchaseOrderState.getCurrentStateURI());
 	}
 
 }

@@ -12,7 +12,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
 public class OntologyUtils {
 	
-	public static List<Individual> getIndividuales(OntModel ontologyModel, String classURI) {
+	public static List<Individual> getIndividuals(OntModel ontologyModel, String classURI) {
 		List<Individual> userTasks = newLinkedList();
 		OntClass userTaskClass = ontologyModel.createClass(classURI);
 		

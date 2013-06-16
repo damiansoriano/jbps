@@ -60,12 +60,22 @@
     
 
 
-    <!-- http://www.semanticweb.org/ontologies/2013/5/PurchaseRequest.owl#requestAuthorization -->
+    <!-- http://www.semanticweb.org/ontologies/2013/5/PurchaseRequest.owl#sfRequestAuthorization -->
 
-    <owl:NamedIndividual rdf:about="&PurchaseRequest;requestAuthorization">
+    <owl:NamedIndividual rdf:about="&PurchaseRequest;sfRequestAuthorization">
         <rdf:type rdf:resource="&BPMN_Ontology;sequence_flow"/>
         <BPMN_Ontology:has_sequence_flow_target_ref rdf:resource="&PurchaseRequest;authorizePurchaseOrder"/>
         <BPMN_Ontology:has_sequence_flow_source_ref rdf:resource="&PurchaseRequest;createPurchaseOrder"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/2013/5/PurchaseRequest.owl#sfStartPurchaseOrder -->
+
+    <owl:NamedIndividual rdf:about="&PurchaseRequest;sfStartPurchaseOrder">
+        <rdf:type rdf:resource="&BPMN_Ontology;sequence_flow"/>
+        <BPMN_Ontology:has_sequence_flow_target_ref rdf:resource="&PurchaseRequest;createPurchaseOrder"/>
+        <BPMN_Ontology:has_sequence_flow_source_ref rdf:resource="&PurchaseRequest;startPurchaseOrder"/>
     </owl:NamedIndividual>
     
 

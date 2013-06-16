@@ -1,8 +1,11 @@
 package it.polimi.bpmn.simulation;
 
+import static com.google.common.collect.Lists.newLinkedList;
 import static it.polimi.utils.ObjectUtils.isNull;
+import static it.polimi.utils.OntologyUtils.getIndividuals;
 import it.polimi.actions.Action;
 import it.polimi.actions.PropertyAssignment;
+import it.polimi.constants.BPMNConstants;
 
 import java.util.List;
 
@@ -48,5 +51,33 @@ public class Simulator {
 		else { value = modelOntologyModel.createLiteral(propertyValue); }
 		
 		individual.setPropertyValue(property, value);
-	}	
+	}
+	
+	public SimulationState startBPMN() {
+		SimulationState state = new SimulationState();
+		
+		return state;
+	}
+	
+	public Individual getCurrentBPMNCurrentState(SimulationState state) {
+		return bpmnOntologyModel.getIndividual(state.getCurrentStateURI());
+	}
+	
+	public List<SimulationState> getStartEvents() {
+		List<SimulationState> startEvents = newLinkedList();
+		
+		for(Individual individual : getIndividuals(bpmnOntologyModel, BPMNConstants.EVENT_START_URI)) {
+			SimulationState state = new SimulationState();
+			state.setCurrentStateURI(individual.getURI());
+			startEvents.add(state);
+		}
+		
+		return startEvents;
+	}
+	
+	public List<SimulationState> getNextEvents(SimulationState state) {
+		List<SimulationState> startEvents = newLinkedList();
+		
+		return startEvents;
+	}
 }

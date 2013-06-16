@@ -23,6 +23,7 @@ import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.reasoner.ValidityReport;
 import com.hp.hpl.jena.util.FileManager;
 
 public class SimulatorTest {
@@ -94,6 +95,10 @@ public class SimulatorTest {
 		
 		Resource nullEmployee = anonymousPurchaseRequest.getPropertyResourceValue(purchaseRequestResponsible);
 		assertNull(nullEmployee);
+		
+		ValidityReport validityReport = modelOntology.validate();
+		assertTrue(validityReport.isValid());
+		assertTrue(validityReport.isClean());
 	}
 
 }

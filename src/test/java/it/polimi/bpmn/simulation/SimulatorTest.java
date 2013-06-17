@@ -111,13 +111,13 @@ public class SimulatorTest {
 		
 		Simulator simulator = new Simulator(bpmnOntology, modelOntology);
 		
-		List<SimulationState> startEvents = simulator.getStartEvents();
+		List<SimulationState> startEvents = simulator.getStartStates();
 		
 		assertEquals(1, startEvents.size());
 		
 		SimulationState startState = startEvents.get(0);
 		assertEquals(startPurchaseOrderURI, startState.getStateURI());
-		List<SimulationState> nextStates = simulator.getNextEvents(startState);
+		List<SimulationState> nextStates = simulator.getNextStates(startState);
 		
 		assertEquals(1, nextStates.size());
 		SimulationState authorizePurchaseOrderState = nextStates.get(0);

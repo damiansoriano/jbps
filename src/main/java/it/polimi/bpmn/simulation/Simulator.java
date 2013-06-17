@@ -55,17 +55,11 @@ public class Simulator {
 		individual.setPropertyValue(property, value);
 	}
 	
-	public SimulationState startBPMN() {
-		SimulationState state = new SimulationState();
-		
-		return state;
+	public SimulationState startSimulation() {
+		return getStartStates().get(0);
 	}
 	
-	public Individual getCurrentBPMNCurrentState(SimulationState state) {
-		return bpmnOntologyModel.getIndividual(state.getStateURI());
-	}
-	
-	public List<SimulationState> getStartEvents() {
+	public List<SimulationState> getStartStates() {
 		List<SimulationState> startEvents = newLinkedList();
 		
 		for(Individual individual : getIndividuals(bpmnOntologyModel, BPMNConstants.EVENT_START_URI)) {
@@ -75,7 +69,7 @@ public class Simulator {
 		return startEvents;
 	}
 	
-	public List<SimulationState> getNextEvents(SimulationState state) {
+	public List<SimulationState> getNextStates(SimulationState state) {
 		List<SimulationState> nextStates = newLinkedList();
 		
 		Individual stateIndividual = bpmnOntologyModel.getIndividual(state.getStateURI());

@@ -41,7 +41,7 @@ public class SimulatorTest {
 	private final static String employeeURI = "http://www.semanticweb.org/ontologies/2013/5/PurchaseRequestModel.owl#employee";
 	
 	private final static String startPurchaseOrderURI = "http://www.semanticweb.org/ontologies/2013/5/PurchaseRequest.owl#startPurchaseOrder";
-	private final static String authorizePurchaseOrderURI = "http://www.semanticweb.org/ontologies/2013/5/PurchaseRequest.owl#authorizePurchaseOrder";
+	private final static String createPurchaseOrderURI = "http://www.semanticweb.org/ontologies/2013/5/PurchaseRequest.owl#createPurchaseOrder";
 	
 	private OntModel getOntologyFromFile(String filePath) {
 		Model model = FileManager.get().loadModel(filePath);
@@ -116,12 +116,12 @@ public class SimulatorTest {
 		assertEquals(1, startEvents.size());
 		
 		SimulationState startState = startEvents.get(0);
-		assertEquals(startPurchaseOrderURI, startState.getCurrentStateURI());
+		assertEquals(startPurchaseOrderURI, startState.getStateURI());
 		List<SimulationState> nextStates = simulator.getNextEvents(startState);
 		
-		assertEquals(1, nextStates.size());//authorizePurchaseOrderURI
+		assertEquals(1, nextStates.size());
 		SimulationState authorizePurchaseOrderState = nextStates.get(0);
-		assertEquals(authorizePurchaseOrderURI, authorizePurchaseOrderState.getCurrentStateURI());
+		assertEquals(createPurchaseOrderURI, authorizePurchaseOrderState.getStateURI());
 	}
 
 }

@@ -6,6 +6,12 @@ import lombok.Setter;
 public class SimulationState {
 	
 	@Getter @Setter
-	protected String currentStateURI;
+	protected String stateURI;
+	
+	public SimulationState() { }
+	
+	public SimulationState(String stateURI) {
+		this.stateURI = stateURI;
+	}
 
 }

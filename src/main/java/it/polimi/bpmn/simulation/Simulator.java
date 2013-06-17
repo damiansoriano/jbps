@@ -3,6 +3,8 @@ package it.polimi.bpmn.simulation;
 import static com.google.common.collect.Lists.newLinkedList;
 import static it.polimi.utils.ObjectUtils.isNull;
 import static it.polimi.utils.OntologyUtils.getIndividuals;
+import static it.polimi.utils.OntologyUtils.getIndividualsInDomain;
+import static it.polimi.utils.OntologyUtils.getIndividualsInRange;
 import it.polimi.actions.Action;
 import it.polimi.actions.PropertyAssignment;
 import it.polimi.constants.BPMNConstants;
@@ -60,24 +62,33 @@ public class Simulator {
 	}
 	
 	public Individual getCurrentBPMNCurrentState(SimulationState state) {
-		return bpmnOntologyModel.getIndividual(state.getCurrentStateURI());
+		return bpmnOntologyModel.getIndividual(state.getStateURI());
 	}
 	
 	public List<SimulationState> getStartEvents() {
 		List<SimulationState> startEvents = newLinkedList();
 		
 		for(Individual individual : getIndividuals(bpmnOntologyModel, BPMNConstants.EVENT_START_URI)) {
-			SimulationState state = new SimulationState();
-			state.setCurrentStateURI(individual.getURI());
-			startEvents.add(state);
+			startEvents.add(new SimulationState(individual.getURI()));
 		}
 		
 		return startEvents;
 	}
 	
 	public List<SimulationState> getNextEvents(SimulationState state) {
-		List<SimulationState> startEvents = newLinkedList();
+		List<SimulationState> nextStates = newLinkedList();
 		
-		return startEvents;
+		Individual stateIndividual = bpmnOntologyModel.getIndividual(state.getStateURI());
+		Property sequenceFlowSource = bpmnOntologyModel.getProperty(BPMNConstants.SEQUENCE_FLOW_SOURCE_URI);
+		Property sequenceFlowTarget = bpmnOntologyModel.getProperty(BPMNConstants.SEQUENCE_FLOW_TARGET_URI);
+		
+		for (Individual seqenceFlow: getIndividualsInDomain(bpmnOntologyModel, sequenceFlowSource, stateIndividual)){
+			for(Individual nextStateIndividual : getIndividualsInRange(bpmnOntologyModel, seqenceFlow, sequenceFlowTarget)) {
+				nextStates.add(new SimulationState(nextStateIndividual.getURI()));
+			}
+		}
+		
+		
+		return nextStates;
 	}
 }

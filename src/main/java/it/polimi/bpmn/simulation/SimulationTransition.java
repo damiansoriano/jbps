@@ -3,20 +3,20 @@ package it.polimi.bpmn.simulation;
 import lombok.Getter;
 import lombok.Setter;
 
-public class SimulationState {
+public class SimulationTransition {
 	
 	@Getter @Setter
-	protected String stateURI;
+	protected String transitionURI;
 	
-	public SimulationState() { }
+	public SimulationTransition() { }
 	
-	public SimulationState(String stateURI) {
-		this.stateURI = stateURI;
+	public SimulationTransition(String transitionURI) {
+		this.transitionURI = transitionURI;
 	}
-
+	
 	@Override
 	public String toString() {
-		return stateURI;
+		return transitionURI;
 	}
 
 	@Override
@@ -24,7 +24,7 @@ public class SimulationState {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result
-				+ ((stateURI == null) ? 0 : stateURI.hashCode());
+				+ ((transitionURI == null) ? 0 : transitionURI.hashCode());
 		return result;
 	}
 
@@ -36,15 +36,12 @@ public class SimulationState {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		SimulationState other = (SimulationState) obj;
-		if (stateURI == null) {
-			if (other.stateURI != null)
+		SimulationTransition other = (SimulationTransition) obj;
+		if (transitionURI == null) {
+			if (other.transitionURI != null)
 				return false;
-		} else if (!stateURI.equals(other.stateURI))
+		} else if (!transitionURI.equals(other.transitionURI))
 			return false;
 		return true;
 	}
-	
-	
-	
 }

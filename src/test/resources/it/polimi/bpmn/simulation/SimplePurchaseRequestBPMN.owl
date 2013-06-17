@@ -60,6 +60,24 @@
     
 
 
+    <!-- http://www.semanticweb.org/ontologies/2013/5/PurchaseRequest.owl#endPurchaseOrder -->
+
+    <owl:NamedIndividual rdf:about="&PurchaseRequest;endPurchaseOrder">
+        <rdf:type rdf:resource="&BPMN_Ontology;end_event"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/2013/5/PurchaseRequest.owl#sfAuthorizePurchaseOrder -->
+
+    <owl:NamedIndividual rdf:about="&PurchaseRequest;sfAuthorizePurchaseOrder">
+        <rdf:type rdf:resource="&BPMN_Ontology;sequence_flow"/>
+        <BPMN_Ontology:has_sequence_flow_source_ref rdf:resource="&PurchaseRequest;authorizePurchaseOrder"/>
+        <BPMN_Ontology:has_sequence_flow_target_ref rdf:resource="&PurchaseRequest;endPurchaseOrder"/>
+    </owl:NamedIndividual>
+    
+
+
     <!-- http://www.semanticweb.org/ontologies/2013/5/PurchaseRequest.owl#sfRequestAuthorization -->
 
     <owl:NamedIndividual rdf:about="&PurchaseRequest;sfRequestAuthorization">

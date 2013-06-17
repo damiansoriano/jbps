@@ -7,10 +7,12 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import it.polimi.actions.Action;
 import it.polimi.io.Json2ModelAction;
+import it.polimi.jbps.exception.BPMNInvalidTransition;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Test;
 
@@ -42,6 +44,12 @@ public class SimulatorTest {
 	
 	private final static String startPurchaseOrderURI = "http://www.semanticweb.org/ontologies/2013/5/PurchaseRequest.owl#startPurchaseOrder";
 	private final static String createPurchaseOrderURI = "http://www.semanticweb.org/ontologies/2013/5/PurchaseRequest.owl#createPurchaseOrder";
+	private final static String authorizePurchaseOrderURI = "http://www.semanticweb.org/ontologies/2013/5/PurchaseRequest.owl#authorizePurchaseOrder";
+	private final static String endPurchaseOrderURI = "http://www.semanticweb.org/ontologies/2013/5/PurchaseRequest.owl#endPurchaseOrder";
+	
+	private final static String sfStartPurchaseOrderURI = "http://www.semanticweb.org/ontologies/2013/5/PurchaseRequest.owl#sfStartPurchaseOrder";
+	private final static String sfRequestAuthorizationURI = "http://www.semanticweb.org/ontologies/2013/5/PurchaseRequest.owl#sfRequestAuthorization";
+	private final static String sfAuthorizePurchaseOrderURI = "http://www.semanticweb.org/ontologies/2013/5/PurchaseRequest.owl#sfAuthorizePurchaseOrder";
 	
 	private OntModel getOntologyFromFile(String filePath) {
 		Model model = FileManager.get().loadModel(filePath);
@@ -105,7 +113,7 @@ public class SimulatorTest {
 	}
 	
 	@Test
-	public void correctlyGetStartEventAndNextEvent() throws IOException {
+	public void correctlyNavigateStates() throws IOException, BPMNInvalidTransition {
 		OntModel bpmnOntology = getOntologyFromFile(bpmnOntologyPath);
 		OntModel modelOntology = getOntologyFromFile(modelOntologyPath);
 		
@@ -115,13 +123,30 @@ public class SimulatorTest {
 		
 		assertEquals(1, startEvents.size());
 		
-		SimulationState startState = startEvents.get(0);
-		assertEquals(startPurchaseOrderURI, startState.getStateURI());
-		List<SimulationState> nextStates = simulator.getNextStates(startState);
+		SimulationState state = startEvents.get(0);
+		assertEquals(startPurchaseOrderURI, state.getStateURI());
+		
+		SimulationTransition sfStartPurchaseOrder = new SimulationTransition(sfStartPurchaseOrderURI);
+		
+		Map<SimulationTransition, SimulationState> nextStates = simulator.getNextStates(state);
 		
 		assertEquals(1, nextStates.size());
-		SimulationState authorizePurchaseOrderState = nextStates.get(0);
-		assertEquals(createPurchaseOrderURI, authorizePurchaseOrderState.getStateURI());
+		assertTrue(nextStates.containsKey(sfStartPurchaseOrder));
+		
+		state = simulator.move(state, sfStartPurchaseOrder);
+		assertEquals(createPurchaseOrderURI, state.getStateURI());
+		
+		SimulationTransition sfRequestAuthorization = new SimulationTransition(sfRequestAuthorizationURI);
+		
+		state = simulator.move(state, sfRequestAuthorization);
+		assertEquals(authorizePurchaseOrderURI, state.getStateURI());
+		
+		SimulationTransition sfAuthorizePurchaseOrder = new SimulationTransition(sfAuthorizePurchaseOrderURI);
+		
+		state = simulator.move(state, sfAuthorizePurchaseOrder);
+		assertEquals(endPurchaseOrderURI, state.getStateURI());
+		
+		assertTrue(simulator.isEndState(state));
 	}
 
 }

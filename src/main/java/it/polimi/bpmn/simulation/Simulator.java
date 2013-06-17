@@ -1,6 +1,7 @@
 package it.polimi.bpmn.simulation;
 
 import static com.google.common.collect.Lists.newLinkedList;
+import static com.google.common.collect.Maps.newHashMap;
 import static it.polimi.utils.ObjectUtils.isNull;
 import static it.polimi.utils.OntologyUtils.getIndividuals;
 import static it.polimi.utils.OntologyUtils.getIndividualsInDomain;
@@ -8,8 +9,10 @@ import static it.polimi.utils.OntologyUtils.getIndividualsInRange;
 import it.polimi.actions.Action;
 import it.polimi.actions.PropertyAssignment;
 import it.polimi.constants.BPMNConstants;
+import it.polimi.jbps.exception.BPMNInvalidTransition;
 
 import java.util.List;
+import java.util.Map;
 
 import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntClass;
@@ -69,8 +72,8 @@ public class Simulator {
 		return startEvents;
 	}
 	
-	public List<SimulationState> getNextStates(SimulationState state) {
-		List<SimulationState> nextStates = newLinkedList();
+	public Map<SimulationTransition, SimulationState> getNextStates(SimulationState state) {
+		Map<SimulationTransition, SimulationState> nextStates = newHashMap();
 		
 		Individual stateIndividual = bpmnOntologyModel.getIndividual(state.getStateURI());
 		Property sequenceFlowSource = bpmnOntologyModel.getProperty(BPMNConstants.SEQUENCE_FLOW_SOURCE_URI);
@@ -78,11 +81,27 @@ public class Simulator {
 		
 		for (Individual seqenceFlow: getIndividualsInDomain(bpmnOntologyModel, sequenceFlowSource, stateIndividual)){
 			for(Individual nextStateIndividual : getIndividualsInRange(bpmnOntologyModel, seqenceFlow, sequenceFlowTarget)) {
-				nextStates.add(new SimulationState(nextStateIndividual.getURI()));
+				nextStates.put(new SimulationTransition(seqenceFlow.getURI()), new SimulationState(nextStateIndividual.getURI()));
 			}
 		}
 		
-		
 		return nextStates;
 	}
+	
+	public SimulationState move(SimulationState state, SimulationTransition transition) throws BPMNInvalidTransition {
+		Map<SimulationTransition, SimulationState> nextStates = getNextStates(state);
+		if (nextStates.containsKey(transition)) {
+			return nextStates.get(transition);
+		} else {
+			throw new BPMNInvalidTransition(String.format("Is not possible to take transition %s from state %s", state, transition));
+		}
+	}
+
+	public boolean isEndState(SimulationState state) {
+		List<Individual> endStates = getIndividuals(bpmnOntologyModel, BPMNConstants.EVENT_END_URI);
+		Individual endState = bpmnOntologyModel.getIndividual(state.getStateURI());
+		return endStates.contains(endState);
+	}
+	
+	
 }

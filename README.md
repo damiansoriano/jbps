@@ -1,2 +1,2 @@
-jonf
+Java Business Process Simulator (jbps)
 ====

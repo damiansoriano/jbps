@@ -5,7 +5,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import it.polimi.PropertyType;
 import it.polimi.actions.Action;
+import it.polimi.actions.PropertyAssignment;
 import it.polimi.io.Json2ModelAction;
 import it.polimi.jbps.exception.BPMNInvalidTransition;
 
@@ -75,7 +77,7 @@ public class SimulatorTest {
 		List<Individual> prePurchaseRequestIndividuales = getIndividuals(modelOntology, purchaseRequestURI);
 		assertTrue(prePurchaseRequestIndividuales.isEmpty());
 		
-		Simulator simulator = new Simulator(bpmnOntology, modelOntology);
+		Simulator simulator = new Simulator(bpmnOntology, modelOntology, null);
 		simulator.execute(actions);
 		
 		List<Individual> postPurchaseRequestIndividuales = getIndividuals(modelOntology, purchaseRequestURI);
@@ -117,7 +119,7 @@ public class SimulatorTest {
 		OntModel bpmnOntology = getOntologyFromFile(bpmnOntologyPath);
 		OntModel modelOntology = getOntologyFromFile(modelOntologyPath);
 		
-		Simulator simulator = new Simulator(bpmnOntology, modelOntology);
+		Simulator simulator = new Simulator(bpmnOntology, modelOntology, null);
 		
 		List<SimulationState> startEvents = simulator.getStartStates();
 		
@@ -147,6 +149,19 @@ public class SimulatorTest {
 		assertEquals(endPurchaseOrderURI, state.getStateURI());
 		
 		assertTrue(simulator.isEndState(state));
+	}
+	
+	@Test
+	public void correctlyGetPossiblePropertyAssignments() throws IOException, BPMNInvalidTransition {
+		OntModel bpmnOntology = getOntologyFromFile(bpmnOntologyPath);
+		OntModel modelOntology = getOntologyFromFile(modelOntologyPath);
+		
+		Simulator simulator = new Simulator(bpmnOntology, modelOntology, null);
+		
+		PropertyAssignment propertyAssignment = new PropertyAssignment();
+		propertyAssignment.setPropertyType(PropertyType.OBJECT_PROPERTY);
+		propertyAssignment.setPropertyURI(purchaseRequestClientURI);
+		List<Individual> possibleAssignments = simulator.getPossibleAssignments(propertyAssignment);
 	}
 
 }

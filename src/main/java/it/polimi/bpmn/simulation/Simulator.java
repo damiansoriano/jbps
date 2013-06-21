@@ -9,6 +9,7 @@ import static it.polimi.utils.OntologyUtils.getIndividualsInRange;
 import it.polimi.actions.Action;
 import it.polimi.actions.PropertyAssignment;
 import it.polimi.constants.BPMNConstants;
+import it.polimi.form.Form;
 import it.polimi.jbps.exception.BPMNInvalidTransition;
 
 import java.util.List;
@@ -17,17 +18,26 @@ import java.util.Map;
 import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntClass;
 import com.hp.hpl.jena.ontology.OntModel;
+import com.hp.hpl.jena.ontology.OntProperty;
+import com.hp.hpl.jena.ontology.OntResource;
 import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.RDFNode;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
 public class Simulator {
 	
-	protected final OntModel bpmnOntologyModel;
-	protected final OntModel modelOntologyModel;
+	private final OntModel bpmnOntologyModel;
+	private final OntModel modelOntologyModel;
+	private final Form form;
 	
-	public Simulator(OntModel bpmnOntologyModel, OntModel modelOntologyModel) {
+	public Simulator(OntModel bpmnOntologyModel, OntModel modelOntologyModel, Form form) {
 		this.bpmnOntologyModel = bpmnOntologyModel;
 		this.modelOntologyModel = modelOntologyModel;
+		this.form = form;
+	}
+	
+	public List<Action> getActions(SimulationState state) {
+		return form.getActions(state.getStateURI());
 	}
 	
 	public void execute(List<Action> actions) {
@@ -56,6 +66,28 @@ public class Simulator {
 		else { value = modelOntologyModel.createLiteral(propertyValue); }
 		
 		individual.setPropertyValue(property, value);
+	}
+	
+	public List<Individual> getPossibleAssignments(PropertyAssignment propertyAssignment) {
+		List<Individual> possibleAssignments = newLinkedList();
+		
+		Property property = modelOntologyModel.getProperty(propertyAssignment.getPropertyURI());
+		OntProperty ontologyProperty = property.as(OntProperty.class);
+		
+		List<OntResource> ranges = newLinkedList();
+		ExtendedIterator<? extends OntResource> listRange = ontologyProperty.listRange();
+		while(listRange.hasNext()) { ranges.add(listRange.next()); }
+		
+		for(Individual individual : getIndividuals(modelOntologyModel, ontologyProperty.getRange().getURI())) {
+			for (OntResource resource : ranges) {
+				if (resource.isClass()) {
+					OntClass asClass = resource.asClass();
+					individual.getOntClass()
+				}
+			}
+		}
+		
+		return possibleAssignments;
 	}
 	
 	public SimulationState startSimulation() {
@@ -102,6 +134,5 @@ public class Simulator {
 		Individual endState = bpmnOntologyModel.getIndividual(state.getStateURI());
 		return endStates.contains(endState);
 	}
-	
 	
 }

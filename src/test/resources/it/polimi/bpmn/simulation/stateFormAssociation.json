@@ -1,0 +1,17 @@
+{
+    "insert": [
+        {
+            "classURI": "http://www.semanticweb.org/ontologies/2013/5/PurchaseRequestModel.owl#PurchaseRequest",
+            "propertyValues": [
+                {
+                    "propertyType": "objectProperty",
+                    "propertyURI": "http://www.semanticweb.org/ontologies/2013/5/PurchaseRequestModel.owl#purchaseRequestClient"
+                },
+                {
+                    "propertyType": "objectProperty",
+                    "propertyURI": "http://www.semanticweb.org/ontologies/2013/5/PurchaseRequestModel.owl#purchaseRequestResponsible"
+                }
+            ]
+        }
+    ]
+}

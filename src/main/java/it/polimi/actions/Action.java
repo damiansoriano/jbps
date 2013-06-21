@@ -10,6 +10,9 @@ import lombok.Setter;
 public class Action {
 	
 	@Getter @Setter
+	private ActionType actionType;
+	
+	@Getter @Setter
 	private String classURI;
 	
 	@Getter @Setter

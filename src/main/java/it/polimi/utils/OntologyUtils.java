@@ -19,10 +19,14 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 public class OntologyUtils {
 	
 	public static List<Individual> getIndividuals(OntModel ontologyModel, String classURI) {
+		return getIndividuals(ontologyModel, classURI, true);
+	}
+	
+	public static List<Individual> getIndividuals(OntModel ontologyModel, String classURI, boolean direct) {
 		List<Individual> userTasks = newLinkedList();
 		OntClass userTaskClass = ontologyModel.createClass(classURI);
 		
-		ExtendedIterator<? extends OntResource> userTaskInstances = userTaskClass.listInstances(true);
+		ExtendedIterator<? extends OntResource> userTaskInstances = userTaskClass.listInstances(direct);
 		while(userTaskInstances.hasNext()) {
 			OntResource userTask = userTaskInstances.next();
 			if (userTask.isIndividual()) { userTasks.add(userTask.asIndividual()); }

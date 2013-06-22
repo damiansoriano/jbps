@@ -1,5 +1,6 @@
 package it.polimi.bpmn.simulation;
 
+import static com.google.common.collect.Lists.newLinkedList;
 import static it.polimi.utils.OntologyUtils.getIndividuals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -162,6 +163,22 @@ public class SimulatorTest {
 		propertyAssignment.setPropertyType(PropertyType.OBJECT_PROPERTY);
 		propertyAssignment.setPropertyURI(purchaseRequestClientURI);
 		List<Individual> possibleAssignments = simulator.getPossibleAssignments(propertyAssignment);
+		
+		List<String> possibleAssignmentsURI = newLinkedList();
+		for (Individual individual : possibleAssignments) { possibleAssignmentsURI.add(individual.getURI()); }
+		
+		assertEquals(2, possibleAssignments.size());
+		
+		List<String> validAssignmentsURI = newLinkedList();
+		validAssignmentsURI.add("http://www.semanticweb.org/ontologies/2013/5/PurchaseRequestModel.owl#damian");
+		validAssignmentsURI.add("http://www.semanticweb.org/ontologies/2013/5/PurchaseRequestModel.owl#employee");
+		
+		String errorMessage = "Individual %s is not present in list %s";
+		for (String validAssignmentURI : validAssignmentsURI) {
+			assertTrue(
+					String.format(errorMessage, validAssignmentURI, possibleAssignmentsURI),
+					possibleAssignmentsURI.contains(validAssignmentURI));
+		}
 	}
 
 }

@@ -2,6 +2,7 @@ package it.polimi.bpmn.simulation;
 
 import static com.google.common.collect.Lists.newLinkedList;
 import static com.google.common.collect.Maps.newHashMap;
+import static it.polimi.utils.ObjectUtils.not;
 import static it.polimi.utils.ObjectUtils.isNull;
 import static it.polimi.utils.OntologyUtils.getIndividuals;
 import static it.polimi.utils.OntologyUtils.getIndividualsInDomain;
@@ -78,13 +79,19 @@ public class Simulator {
 		ExtendedIterator<? extends OntResource> listRange = ontologyProperty.listRange();
 		while(listRange.hasNext()) { ranges.add(listRange.next()); }
 		
-		for(Individual individual : getIndividuals(modelOntologyModel, ontologyProperty.getRange().getURI())) {
+		for(Individual individual : getIndividuals(modelOntologyModel, ontologyProperty.getRange().getURI(), false)) {
+			boolean includeIndividual = true;
 			for (OntResource resource : ranges) {
 				if (resource.isClass()) {
 					OntClass asClass = resource.asClass();
-					individual.getOntClass()
+					if(not(individual.hasOntClass(asClass, false))) {
+						includeIndividual = false;
+						break;
+					}
+					
 				}
 			}
+			if (includeIndividual) { possibleAssignments.add(individual); }
 		}
 		
 		return possibleAssignments;

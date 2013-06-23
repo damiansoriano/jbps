@@ -25,4 +25,16 @@ public class Action {
 		actions = newLinkedList();
 		individualURI = null;
 	}
+	
+	@Override
+	public Object clone()  {
+		Action action = new Action();
+		
+		action.actionType = this.actionType;
+		action.classURI = this.classURI;
+		action.individualURI = this.individualURI;
+		action.actions = this.actions;
+		
+		return action;
+	}
 }

@@ -1,19 +1,24 @@
-package it.polimi.utils;
+package it.polimi.jbps.utils;
 
 import static com.google.common.collect.Lists.newLinkedList;
-import static it.polimi.utils.ObjectUtils.isNotNull;
+import static it.polimi.jbps.utils.ObjectUtils.isNotNull;
+
 import java.util.List;
 
 import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntClass;
 import com.hp.hpl.jena.ontology.OntModel;
+import com.hp.hpl.jena.ontology.OntModelSpec;
 import com.hp.hpl.jena.ontology.OntResource;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.NodeIterator;
 import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.Statement;
 import com.hp.hpl.jena.rdf.model.StmtIterator;
+import com.hp.hpl.jena.util.FileManager;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
 public class OntologyUtils {
@@ -61,6 +66,14 @@ public class OntologyUtils {
 		}
 		
 		return range;
+	}
+	
+	public static OntModel getOntologyFromFile(String filePath) {
+		Model model = FileManager.get().loadModel(filePath);
+		
+		OntModel ontologyModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM_RULE_INF);
+		ontologyModel.add(model);
+		return ontologyModel;
 	}
 	
 }

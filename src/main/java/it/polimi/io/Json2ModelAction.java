@@ -1,10 +1,11 @@
 package it.polimi.io;
 
 import static com.google.common.collect.Lists.newLinkedList;
-import static it.polimi.utils.ConstantsUtils.parsePropertyType;
-import static it.polimi.utils.ObjectUtils.isNull;
-import static it.polimi.utils.ObjectUtils.isNotNull;
+import static it.polimi.jbps.utils.ConstantsUtils.parsePropertyType;
+import static it.polimi.jbps.utils.ObjectUtils.isNotNull;
+import static it.polimi.jbps.utils.ObjectUtils.isNull;
 import it.polimi.actions.Action;
+import it.polimi.actions.ActionType;
 import it.polimi.actions.PropertyAssignment;
 
 import java.io.IOException;
@@ -41,6 +42,7 @@ public class Json2ModelAction {
 			if (isNull(insert)) { continue; }
 			
 			Action action = new Action();
+			action.setActionType(ActionType.INSERT);
 			
 			String classURI = insert.get(CLASS_URI).textValue();
 			action.setClassURI(classURI);
@@ -64,13 +66,14 @@ public class Json2ModelAction {
 	public PropertyAssignment parsePropertyAssignment(JsonNode jsonNode) {
 		PropertyAssignment propertyAssignment = new PropertyAssignment();
 		
-		String propertyType = jsonNode.get(PROPERTY_TYPE).textValue();
-		String propertyURI = jsonNode.get(PROPERTY_URI).textValue();
-		String propertyValue = jsonNode.get(PROPERTY_VALUE).textValue();
+		propertyAssignment.setPropertyURI(jsonNode.get(PROPERTY_URI).textValue());
 		
+		String propertyType = jsonNode.get(PROPERTY_TYPE).textValue();
 		propertyAssignment.setPropertyType(parsePropertyType(propertyType));
-		propertyAssignment.setPropertyURI(propertyURI);
-		propertyAssignment.setPropertyValue(propertyValue);
+		
+		if (isNotNull(jsonNode.get(PROPERTY_VALUE))) {
+			propertyAssignment.setPropertyValue(jsonNode.get(PROPERTY_VALUE).textValue());
+		}
 		
 		return propertyAssignment;
 	}

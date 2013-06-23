@@ -1,7 +1,7 @@
 package it.polimi.form;
 
 import static com.google.common.collect.Lists.newLinkedList;
-import static it.polimi.utils.ObjectUtils.isNotNull;
+import static it.polimi.jbps.utils.ObjectUtils.isNotNull;
 import it.polimi.actions.Action;
 
 import java.util.List;

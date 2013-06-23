@@ -2,11 +2,11 @@ package it.polimi.bpmn.simulation;
 
 import static com.google.common.collect.Lists.newLinkedList;
 import static com.google.common.collect.Maps.newHashMap;
-import static it.polimi.utils.ObjectUtils.not;
-import static it.polimi.utils.ObjectUtils.isNull;
-import static it.polimi.utils.OntologyUtils.getIndividuals;
-import static it.polimi.utils.OntologyUtils.getIndividualsInDomain;
-import static it.polimi.utils.OntologyUtils.getIndividualsInRange;
+import static it.polimi.jbps.utils.ObjectUtils.isNull;
+import static it.polimi.jbps.utils.ObjectUtils.not;
+import static it.polimi.jbps.utils.OntologyUtils.getIndividuals;
+import static it.polimi.jbps.utils.OntologyUtils.getIndividualsInDomain;
+import static it.polimi.jbps.utils.OntologyUtils.getIndividualsInRange;
 import it.polimi.actions.Action;
 import it.polimi.actions.PropertyAssignment;
 import it.polimi.constants.BPMNConstants;
@@ -98,7 +98,9 @@ public class Simulator {
 	}
 	
 	public SimulationState startSimulation() {
-		return getStartStates().get(0);
+		SimulationState startState = getStartStates().get(0);
+		Map<SimulationTransition, SimulationState> nextStates = getNextStates(startState);
+		return nextStates.get(nextStates.keySet().iterator().next());
 	}
 	
 	public List<SimulationState> getStartStates() {

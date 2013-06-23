@@ -1,4 +1,4 @@
-package it.polimi.utils;
+package it.polimi.jbps.utils;
 
 import static com.google.common.collect.Maps.newHashMap;
 import static it.polimi.PropertyType.DATA_PROPERTY;

@@ -22,5 +22,18 @@ public class PropertyAssignment {
 	public boolean isDataProperty() {
 		return propertyType.equals(PropertyType.DATA_PROPERTY);
 	}
+
+	@Override
+	public Object clone()  {
+		PropertyAssignment propertyAssignment = new PropertyAssignment();
+		
+		propertyAssignment.propertyURI = this.propertyURI;
+		propertyAssignment.propertyValue = this.propertyValue;
+		propertyAssignment.propertyType = this.propertyType;
+		
+		return propertyAssignment;
+	}
+	
+	
 	
 }

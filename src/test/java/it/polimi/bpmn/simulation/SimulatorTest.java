@@ -1,7 +1,8 @@
 package it.polimi.bpmn.simulation;
 
 import static com.google.common.collect.Lists.newLinkedList;
-import static it.polimi.utils.OntologyUtils.getIndividuals;
+import static it.polimi.jbps.utils.OntologyUtils.getIndividuals;
+import static it.polimi.jbps.utils.OntologyUtils.getOntologyFromFile;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -23,13 +24,9 @@ import com.google.common.base.Charsets;
 import com.google.common.io.Files;
 import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntModel;
-import com.hp.hpl.jena.ontology.OntModelSpec;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.reasoner.ValidityReport;
-import com.hp.hpl.jena.util.FileManager;
 
 public class SimulatorTest {
 	
@@ -53,14 +50,6 @@ public class SimulatorTest {
 	private final static String sfStartPurchaseOrderURI = "http://www.semanticweb.org/ontologies/2013/5/PurchaseRequest.owl#sfStartPurchaseOrder";
 	private final static String sfRequestAuthorizationURI = "http://www.semanticweb.org/ontologies/2013/5/PurchaseRequest.owl#sfRequestAuthorization";
 	private final static String sfAuthorizePurchaseOrderURI = "http://www.semanticweb.org/ontologies/2013/5/PurchaseRequest.owl#sfAuthorizePurchaseOrder";
-	
-	private OntModel getOntologyFromFile(String filePath) {
-		Model model = FileManager.get().loadModel(filePath);
-		
-		OntModel ontologyModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM_RULE_INF);
-		ontologyModel.add(model);
-		return ontologyModel;
-	}
 	
 	private List<Action> getActionsFromFile(String filePath) throws IOException {
 		Json2ModelAction json2Model = new Json2ModelAction();

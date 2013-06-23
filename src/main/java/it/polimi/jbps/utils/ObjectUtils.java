@@ -1,4 +1,4 @@
-package it.polimi.utils;
+package it.polimi.jbps.utils;
 
 public class ObjectUtils {
 	

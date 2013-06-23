@@ -12,9 +12,13 @@ import it.polimi.actions.PropertyAssignment;
 import it.polimi.constants.BPMNConstants;
 import it.polimi.form.Form;
 import it.polimi.jbps.exception.BPMNInvalidTransition;
+import it.polimi.jbps.exception.InvalidPropertyAssignment;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import lombok.Getter;
 
 import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntClass;
@@ -23,11 +27,14 @@ import com.hp.hpl.jena.ontology.OntProperty;
 import com.hp.hpl.jena.ontology.OntResource;
 import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.RDFNode;
+import com.hp.hpl.jena.reasoner.ValidityReport;
+import com.hp.hpl.jena.reasoner.ValidityReport.Report;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
 public class Simulator {
-	
+	@Getter
 	private final OntModel bpmnOntologyModel;
+	@Getter
 	private final OntModel modelOntologyModel;
 	private final Form form;
 	
@@ -41,11 +48,11 @@ public class Simulator {
 		return form.getActions(state.getStateURI());
 	}
 	
-	public void execute(List<Action> actions) {
+	public void execute(List<Action> actions) throws InvalidPropertyAssignment {
 		for (Action action : actions) { execute(action); }
 	}
 	
-	public void execute(Action action) {
+	public void execute(Action action) throws InvalidPropertyAssignment {
 		OntClass ontClass = modelOntologyModel.createClass(action.getClassURI());
 		
 		Individual individual;
@@ -55,6 +62,27 @@ public class Simulator {
 		for(PropertyAssignment propertyAssignment : action.getActions()) {
 			makePropertyAssignment(individual, propertyAssignment);
 		}
+		modelOntologyModel.prepare();
+		ValidityReport validityReport = modelOntologyModel.validate();
+		if (not(validityReport.isValid())) {
+			String errorMessage = "";
+			Iterator<Report> reports = validityReport.getReports();
+			while(reports.hasNext()) {
+				Report report = reports.next();
+				errorMessage += report.getDescription() + "\n";
+			}
+			throw new InvalidPropertyAssignment(errorMessage);
+		}
+		if (not(validityReport.isClean())) {
+			String errorMessage = "";
+			Iterator<Report> reports = validityReport.getReports();
+			while(reports.hasNext()) {
+				Report report = reports.next();
+				errorMessage += report.getDescription() + "\n";
+			}
+			throw new InvalidPropertyAssignment(errorMessage);
+		}
+		
 	}
 	
 	protected void makePropertyAssignment(Individual individual, PropertyAssignment propertyAssignment) {

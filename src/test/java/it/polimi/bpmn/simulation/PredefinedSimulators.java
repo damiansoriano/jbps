@@ -2,7 +2,6 @@ package it.polimi.bpmn.simulation;
 
 import static com.google.common.collect.Maps.newHashMap;
 import static it.polimi.jbps.utils.OntologyUtils.getOntologyFromFile;
-
 import it.polimi.actions.Action;
 import it.polimi.form.Form;
 import it.polimi.form.FormsConfiguration;
@@ -15,6 +14,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.google.common.base.Charsets;
@@ -30,6 +30,7 @@ public class PredefinedSimulators {
 	private final static String createPurchaseOrderURI = "http://www.semanticweb.org/ontologies/2013/5/PurchaseRequest.owl#createPurchaseOrder";
 	
 	@Test
+	@Ignore
 	public void test() throws IOException, BPMNInvalidTransition {
 		Json2ModelAction json2ModelAction = new Json2ModelAction();
 		

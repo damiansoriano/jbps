@@ -71,8 +71,7 @@ public class OntologyUtils {
 	public static OntModel getOntologyFromFile(String filePath) {
 		Model model = FileManager.get().loadModel(filePath);
 		
-		OntModel ontologyModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM_RULE_INF);
-		ontologyModel.add(model);
+		OntModel ontologyModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM_TRANS_INF, model);
 		return ontologyModel;
 	}
 	

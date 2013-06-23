@@ -1,0 +1,20 @@
+{
+    "insert": [
+        {
+            "classURI": "http://www.semanticweb.org/ontologies/2013/5/PurchaseRequestModel.owl#PurchaseRequest",
+            "individualURI": "http://www.semanticweb.org/ontologies/2013/5/PurchaseRequestModel.owl#purchaseRequest01",
+            "propertyValues": [
+                {
+                    "propertyType": "objectProperty",
+                    "propertyURI": "http://www.semanticweb.org/ontologies/2013/5/PurchaseRequestModel.owl#purchaseRequestClient",
+                    "propertyValue": "http://www.semanticweb.org/ontologies/2013/5/PurchaseRequestModel.owl#damian"
+                },
+                {
+                    "propertyType": "objectProperty",
+                    "propertyURI": "http://www.semanticweb.org/ontologies/2013/5/PurchaseRequestModel.owl#purchaseRequestResponsible",
+                    "propertyValue": "http://www.semanticweb.org/ontologies/2013/5/PurchaseRequestModel.owl#damian"
+                }
+            ]
+        }
+    ]
+}

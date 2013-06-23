@@ -12,6 +12,7 @@ import it.polimi.actions.Action;
 import it.polimi.actions.PropertyAssignment;
 import it.polimi.io.Json2ModelAction;
 import it.polimi.jbps.exception.BPMNInvalidTransition;
+import it.polimi.jbps.exception.InvalidPropertyAssignment;
 
 import java.io.File;
 import java.io.IOException;
@@ -59,7 +60,7 @@ public class SimulatorTest {
 	}
 	
 	@Test
-	public void correctlyInsertIndividual() throws IOException {
+	public void correctlyInsertIndividual() throws IOException, InvalidPropertyAssignment {
 		OntModel bpmnOntology = getOntologyFromFile(bpmnOntologyPath);
 		OntModel modelOntology = getOntologyFromFile(modelOntologyPath);
 		List<Action> actions = getActionsFromFile("./src/test/resources/it/polimi/bpmn/simulation/inputDataExample.json");
@@ -168,6 +169,22 @@ public class SimulatorTest {
 					String.format(errorMessage, validAssignmentURI, possibleAssignmentsURI),
 					possibleAssignmentsURI.contains(validAssignmentURI));
 		}
+	}
+	
+	@Test(expected=InvalidPropertyAssignment.class)
+	public void throwException() throws IOException, BPMNInvalidTransition, InvalidPropertyAssignment {
+		OntModel bpmnOntology = getOntologyFromFile(bpmnOntologyPath);
+		OntModel modelOntology = getOntologyFromFile(modelOntologyPath);
+		List<Action> actions = getActionsFromFile("./src/test/resources/it/polimi/bpmn/simulation/inputDataExampleWithError.json");
+		
+		List<Individual> prePurchaseRequestIndividuales = getIndividuals(modelOntology, purchaseRequestURI);
+		assertTrue(prePurchaseRequestIndividuales.isEmpty());
+		
+		Simulator simulator = new Simulator(bpmnOntology, modelOntology, null);
+		simulator.execute(actions);
+		ValidityReport validate = simulator.getModelOntologyModel().validate();
+		System.out.println(validate.isValid());
+		System.out.println(validate.isClean());
 	}
 
 }

@@ -9,6 +9,7 @@ import it.polimi.bpmn.simulation.SimulationState;
 import it.polimi.bpmn.simulation.SimulationTransition;
 import it.polimi.bpmn.simulation.Simulator;
 import it.polimi.jbps.exception.BPMNInvalidTransition;
+import it.polimi.jbps.exception.InvalidPropertyAssignment;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -67,7 +68,13 @@ public class ConsoleEngine {
 				
 				Action actionToApply = (Action) action.clone();
 				actionToApply.setActions(propertiesAssignmentToApply);
-				simulator.execute(actionToApply);
+				try {
+					simulator.execute(actionToApply);
+				} catch (InvalidPropertyAssignment e) {
+					System.out.println("Error occure while setting properties");
+					e.printStackTrace();
+					return;
+				}
 			}
 			
 			Map<SimulationTransition, SimulationState> nextStates = simulator.getNextStates(currentState);

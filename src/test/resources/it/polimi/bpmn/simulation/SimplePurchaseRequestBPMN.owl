@@ -20,7 +20,7 @@
      xmlns:BPMN_Ontology="http://dkm.fbk.eu/index.php/BPMN_Ontology#"
      xmlns:PurchaseRequest="http://www.semanticweb.org/ontologies/2013/5/PurchaseRequest.owl#">
     <owl:Ontology rdf:about="http://www.semanticweb.org/ontologies/2013/5/PurchaseRequest.owl">
-        <owl:imports rdf:resource="http://dkm.fbk.eu/index.php/BPMN_Ontology"/>
+        <!--<owl:imports rdf:resource="http://dkm.fbk.eu/index.php/BPMN_Ontology"/>-->
     </owl:Ontology>
     
 

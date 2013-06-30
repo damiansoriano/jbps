@@ -19,10 +19,10 @@ public class Action {
 	private String individualURI;
 	
 	@Getter @Setter
-	private List<PropertyAssignment> actions;
+	private List<PropertyAssignment> propertyAssignments;
 	
 	public Action() {
-		actions = newLinkedList();
+		propertyAssignments = newLinkedList();
 		individualURI = null;
 	}
 	
@@ -33,7 +33,7 @@ public class Action {
 		action.actionType = this.actionType;
 		action.classURI = this.classURI;
 		action.individualURI = this.individualURI;
-		action.actions = this.actions;
+		action.propertyAssignments = this.propertyAssignments;
 		
 		return action;
 	}

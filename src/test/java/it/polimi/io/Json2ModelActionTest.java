@@ -32,7 +32,7 @@ public class Json2ModelActionTest {
 		assertEquals("http://www.semanticweb.org/ontologies/2013/5/PurchaseRequestModel.owl#purchaseRequest01", action01.getIndividualURI());
 		assertEquals(ActionType.INSERT, action01.getActionType());
 		
-		List<PropertyAssignment> propertyAssignments01 = action01.getActions();
+		List<PropertyAssignment> propertyAssignments01 = action01.getPropertyAssignments();
 		assertEquals(2, propertyAssignments01.size());
 		
 		PropertyAssignment propertyAssignment01 = propertyAssignments01.get(0);
@@ -51,7 +51,7 @@ public class Json2ModelActionTest {
 		assertNull(action02.getIndividualURI());
 		assertEquals(ActionType.INSERT, action02.getActionType());
 		
-		List<PropertyAssignment> propertyAssignments02 = action02.getActions();
+		List<PropertyAssignment> propertyAssignments02 = action02.getPropertyAssignments();
 		assertEquals(1, propertyAssignments02.size());
 		
 		PropertyAssignment propertyAssignment03 = propertyAssignments02.get(0);
@@ -75,7 +75,7 @@ public class Json2ModelActionTest {
 		assertNull(action.getIndividualURI());
 		assertEquals(ActionType.INSERT, action.getActionType());
 		
-		List<PropertyAssignment> propertyAssignments01 = action.getActions();
+		List<PropertyAssignment> propertyAssignments01 = action.getPropertyAssignments();
 		assertEquals(2, propertyAssignments01.size());
 		
 		PropertyAssignment propertyAssignment01 = propertyAssignments01.get(0);

@@ -54,7 +54,7 @@ public class Json2ModelAction {
 			Iterator<JsonNode> propertyValuesIterator = insert.get(PROPERTY_VALUES).elements();
 			while(propertyValuesIterator.hasNext()) {
 				JsonNode propertyValue = propertyValuesIterator.next();
-				action.getActions().add(parsePropertyAssignment(propertyValue));
+				action.getPropertyAssignments().add(parsePropertyAssignment(propertyValue));
 			}
 			
 			actions.add(action);

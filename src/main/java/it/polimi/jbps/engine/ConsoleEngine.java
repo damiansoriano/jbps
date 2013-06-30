@@ -40,7 +40,7 @@ public class ConsoleEngine {
 				ActionType actionType = action.getActionType();
 				System.out.println(String.format("Action: %s", actionType));
 				
-				List<PropertyAssignment> propertiesAssignment = action.getActions();
+				List<PropertyAssignment> propertiesAssignment = action.getPropertyAssignments();
 				
 				List<PropertyAssignment> propertiesAssignmentToApply = newLinkedList();
 				for (PropertyAssignment propertyAssignment : propertiesAssignment) {
@@ -67,7 +67,7 @@ public class ConsoleEngine {
 				
 				
 				Action actionToApply = (Action) action.clone();
-				actionToApply.setActions(propertiesAssignmentToApply);
+				actionToApply.setPropertyAssignments(propertiesAssignmentToApply);
 				try {
 					simulator.execute(actionToApply);
 				} catch (InvalidPropertyAssignment e) {

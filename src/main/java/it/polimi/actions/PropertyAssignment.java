@@ -1,5 +1,9 @@
 package it.polimi.actions;
 
+import java.util.List;
+
+import com.hp.hpl.jena.ontology.Individual;
+
 import it.polimi.PropertyType;
 import lombok.Getter;
 import lombok.Setter;
@@ -7,13 +11,16 @@ import lombok.Setter;
 public class PropertyAssignment {
 	
 	@Getter @Setter
-	private String propertyURI;
+	protected String propertyURI;
 	
 	@Getter @Setter
-	private String propertyValue;
+	protected String propertyValue;
 	
 	@Getter @Setter
-	private PropertyType propertyType;
+	protected PropertyType propertyType;
+	
+	@Getter @Setter
+	private List<Individual> possibleAssignments;
 	
 	public boolean isObjectProperty() {
 		return propertyType.equals(PropertyType.OBJECT_PROPERTY);
@@ -30,6 +37,7 @@ public class PropertyAssignment {
 		propertyAssignment.propertyURI = this.propertyURI;
 		propertyAssignment.propertyValue = this.propertyValue;
 		propertyAssignment.propertyType = this.propertyType;
+		propertyAssignment.possibleAssignments = this.possibleAssignments;
 		
 		return propertyAssignment;
 	}

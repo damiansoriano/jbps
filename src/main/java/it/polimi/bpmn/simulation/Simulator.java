@@ -59,7 +59,7 @@ public class Simulator {
 		if(isNull(action.getIndividualURI())) { individual = ontClass.createIndividual(); }
 		else { individual = ontClass.createIndividual(action.getIndividualURI()); }
 		
-		for(PropertyAssignment propertyAssignment : action.getActions()) {
+		for(PropertyAssignment propertyAssignment : action.getPropertyAssignments()) {
 			makePropertyAssignment(individual, propertyAssignment);
 		}
 		modelOntologyModel.prepare();
@@ -125,6 +125,20 @@ public class Simulator {
 		return possibleAssignments;
 	}
 	
+	public void setPossibleAssignments(Action action) {
+		List<PropertyAssignment> propertiesAssignment = action.getPropertyAssignments();
+		for (PropertyAssignment propertyAssignment: propertiesAssignment) {
+			List<Individual> possibleAssignments = this.getPossibleAssignments(propertyAssignment);
+			propertyAssignment.setPossibleAssignments(possibleAssignments);
+		}
+	}
+	
+	public void setPossibleAssignments(List<Action> actions) {
+		for (Action action: actions) {
+			setPossibleAssignments(action);
+		}
+	}
+	
 	public SimulationState startSimulation() {
 		SimulationState startState = getStartStates().get(0);
 		Map<SimulationTransition, SimulationState> nextStates = getNextStates(startState);
@@ -172,4 +186,29 @@ public class Simulator {
 		return endStates.contains(endState);
 	}
 	
+	public void applyActions(SimulationState state, Map<String, String> propertyAssignmentMap) throws InvalidPropertyAssignment {
+		List<Action> actions = getActions(state);
+		for(Action action : actions) {
+			for(PropertyAssignment propertyAssignment : action.getPropertyAssignments()) {
+				if (propertyAssignmentMap.containsKey(propertyAssignment.getPropertyURI())) {
+					String assignmentValue = propertyAssignmentMap.get(propertyAssignment.getPropertyURI());
+					propertyAssignment.setPropertyValue(assignmentValue);
+				}
+			}
+		}
+		execute(actions);
+	}
+	
+	public SimulationState move(SimulationState state, String transitionURI) throws BPMNInvalidTransition {
+		Map<SimulationTransition, SimulationState> nextStates = getNextStates(state);
+		
+		for(SimulationTransition simulationTransition : nextStates.keySet()) {
+			if(simulationTransition.getTransitionURI().equals(transitionURI)) {
+				return move(state, simulationTransition);
+			}
+		}
+		
+		throw new BPMNInvalidTransition(String.format("Transition %s cannot be taken from current state %s",
+				transitionURI, state.getStateURI()));
+	}
 }

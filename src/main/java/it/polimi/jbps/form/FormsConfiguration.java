@@ -1,6 +1,6 @@
-package it.polimi.form;
+package it.polimi.jbps.form;
 
-import it.polimi.actions.Action;
+import it.polimi.jbps.actions.Action;
 
 import java.util.List;
 import java.util.Map;

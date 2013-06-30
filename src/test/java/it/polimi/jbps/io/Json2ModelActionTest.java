@@ -1,10 +1,11 @@
-package it.polimi.io;
+package it.polimi.jbps.io;
 
-import static it.polimi.PropertyType.OBJECT_PROPERTY;
+import static it.polimi.jbps.PropertyType.OBJECT_PROPERTY;
 import static org.junit.Assert.*;
-import it.polimi.actions.Action;
-import it.polimi.actions.ActionType;
-import it.polimi.actions.PropertyAssignment;
+import it.polimi.jbps.actions.Action;
+import it.polimi.jbps.actions.ActionType;
+import it.polimi.jbps.actions.PropertyAssignment;
+import it.polimi.jbps.io.Json2ModelAction;
 
 import java.io.File;
 import java.io.IOException;

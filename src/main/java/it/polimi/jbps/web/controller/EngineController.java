@@ -3,10 +3,10 @@ package it.polimi.jbps.web.controller;
 import static com.google.common.collect.Maps.newHashMap;
 import static it.polimi.jbps.utils.ObjectUtils.isNull;
 import static it.polimi.jbps.utils.ObjectUtils.not;
-import it.polimi.actions.Action;
-import it.polimi.bpmn.simulation.SimulationState;
-import it.polimi.bpmn.simulation.SimulationTransition;
-import it.polimi.bpmn.simulation.Simulator;
+import it.polimi.jbps.actions.Action;
+import it.polimi.jbps.bpmn.simulation.SimulationState;
+import it.polimi.jbps.bpmn.simulation.SimulationTransition;
+import it.polimi.jbps.bpmn.simulation.SimulatorImpToDelete;
 import it.polimi.jbps.exception.BPMNInvalidTransition;
 import it.polimi.jbps.exception.InvalidPropertyAssignment;
 
@@ -27,10 +27,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @Log4j
 public class EngineController {
 	
-	private final Simulator simulator;
+	private final SimulatorImpToDelete simulator;
 	private SimulationState currentState;
 	
-	public EngineController(Simulator simulator) {
+	public EngineController(SimulatorImpToDelete simulator) {
 		this.simulator = simulator;
 	}
 	

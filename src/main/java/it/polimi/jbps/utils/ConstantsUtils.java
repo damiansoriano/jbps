@@ -1,9 +1,9 @@
 package it.polimi.jbps.utils;
 
 import static com.google.common.collect.Maps.newHashMap;
-import static it.polimi.PropertyType.DATA_PROPERTY;
-import static it.polimi.PropertyType.OBJECT_PROPERTY;
-import it.polimi.PropertyType;
+import static it.polimi.jbps.PropertyType.DATA_PROPERTY;
+import static it.polimi.jbps.PropertyType.OBJECT_PROPERTY;
+import it.polimi.jbps.PropertyType;
 
 import java.util.Map;
 

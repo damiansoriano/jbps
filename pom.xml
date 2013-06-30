@@ -15,6 +15,21 @@
 		<org.springframework-version>3.0.6.RELEASE</org.springframework-version>
 		<servlet-api.version>3.0-alpha-1</servlet-api.version>
 	</properties>
+	
+	<repositories>
+        <repository>
+            <id>on.cs.unibas.ch</id>
+            <name>DBIS Maven Releases Repository</name>
+            <url>http://on.cs.unibas.ch/maven/repository</url>
+            <layout>default</layout>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+        </repository>
+    </repositories>
 
 	<dependencies>
 
@@ -84,7 +99,25 @@
 			<groupId>javax.servlet</groupId>
 			<artifactId>servlet-api</artifactId>
 			<version>${servlet-api.version}</version>
-		</dependency> 
+		</dependency>
+		
+		<dependency>
+            <groupId>com.owldl</groupId>
+            <artifactId>pellet</artifactId>
+            <version>2.2.2</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>net.sourceforge.owlapi</groupId>
+                    <artifactId>owlapi</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        
+        <dependency>
+            <groupId>net.sourceforge.owlapi</groupId>
+            <artifactId>owlapi-contract</artifactId>
+            <version>3.4.3</version>
+        </dependency>
         
 	</dependencies>
 	

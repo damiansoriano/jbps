@@ -1,4 +1,4 @@
-package it.polimi.bpmn.simulation;
+package it.polimi.jbps.bpmn.simulation;
 
 import static com.google.common.collect.Lists.newLinkedList;
 import static it.polimi.jbps.utils.OntologyUtils.getIndividuals;
@@ -7,12 +7,15 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import it.polimi.PropertyType;
-import it.polimi.actions.Action;
-import it.polimi.actions.PropertyAssignment;
-import it.polimi.io.Json2ModelAction;
+import it.polimi.jbps.PropertyType;
+import it.polimi.jbps.actions.Action;
+import it.polimi.jbps.actions.PropertyAssignment;
+import it.polimi.jbps.bpmn.simulation.SimulationState;
+import it.polimi.jbps.bpmn.simulation.SimulationTransition;
+import it.polimi.jbps.bpmn.simulation.SimulatorImpToDelete;
 import it.polimi.jbps.exception.BPMNInvalidTransition;
 import it.polimi.jbps.exception.InvalidPropertyAssignment;
+import it.polimi.jbps.io.Json2ModelAction;
 
 import java.io.File;
 import java.io.IOException;
@@ -29,7 +32,7 @@ import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.reasoner.ValidityReport;
 
-public class SimulatorTest {
+public abstract class EngineTest {
 	
 	private final static String bpmnOntologyPath = "./src/test/resources/it/polimi/bpmn/simulation/SimplePurchaseRequestBPMN.owl";
 	private final static String modelOntologyPath = "./src/test/resources/it/polimi/bpmn/simulation/SimplePurchaseRequestModel.owl";
@@ -68,7 +71,7 @@ public class SimulatorTest {
 		List<Individual> prePurchaseRequestIndividuales = getIndividuals(modelOntology, purchaseRequestURI);
 		assertTrue(prePurchaseRequestIndividuales.isEmpty());
 		
-		Simulator simulator = new Simulator(bpmnOntology, modelOntology, null);
+		SimulatorImpToDelete simulator = new SimulatorImpToDelete(bpmnOntology, modelOntology, null);
 		simulator.execute(actions);
 		
 		List<Individual> postPurchaseRequestIndividuales = getIndividuals(modelOntology, purchaseRequestURI);
@@ -110,7 +113,7 @@ public class SimulatorTest {
 		OntModel bpmnOntology = getOntologyFromFile(bpmnOntologyPath);
 		OntModel modelOntology = getOntologyFromFile(modelOntologyPath);
 		
-		Simulator simulator = new Simulator(bpmnOntology, modelOntology, null);
+		SimulatorImpToDelete simulator = new SimulatorImpToDelete(bpmnOntology, modelOntology, null);
 		
 		List<SimulationState> startEvents = simulator.getStartStates();
 		
@@ -147,7 +150,7 @@ public class SimulatorTest {
 		OntModel bpmnOntology = getOntologyFromFile(bpmnOntologyPath);
 		OntModel modelOntology = getOntologyFromFile(modelOntologyPath);
 		
-		Simulator simulator = new Simulator(bpmnOntology, modelOntology, null);
+		SimulatorImpToDelete simulator = new SimulatorImpToDelete(bpmnOntology, modelOntology, null);
 		
 		PropertyAssignment propertyAssignment = new PropertyAssignment();
 		propertyAssignment.setPropertyType(PropertyType.OBJECT_PROPERTY);
@@ -180,11 +183,8 @@ public class SimulatorTest {
 		List<Individual> prePurchaseRequestIndividuales = getIndividuals(modelOntology, purchaseRequestURI);
 		assertTrue(prePurchaseRequestIndividuales.isEmpty());
 		
-		Simulator simulator = new Simulator(bpmnOntology, modelOntology, null);
+		SimulatorImpToDelete simulator = new SimulatorImpToDelete(bpmnOntology, modelOntology, null);
 		simulator.execute(actions);
-		ValidityReport validate = simulator.getModelOntologyModel().validate();
-		System.out.println(validate.isValid());
-		System.out.println(validate.isClean());
 	}
 
 }

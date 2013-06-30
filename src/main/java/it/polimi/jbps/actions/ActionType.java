@@ -1,4 +1,4 @@
-package it.polimi.actions;
+package it.polimi.jbps.actions;
 
 public enum ActionType {
 	INSERT,

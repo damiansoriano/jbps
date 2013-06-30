@@ -1,4 +1,4 @@
-package it.polimi.bpmn.simulation;
+package it.polimi.jbps.bpmn.simulation;
 
 import lombok.Getter;
 import lombok.Setter;

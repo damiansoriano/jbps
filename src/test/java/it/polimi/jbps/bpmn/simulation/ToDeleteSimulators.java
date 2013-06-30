@@ -1,4 +1,4 @@
-package it.polimi.bpmn.simulation;
+package it.polimi.jbps.bpmn.simulation;
 
 import static it.polimi.jbps.utils.OntologyUtils.getOntologyFromFile;
 import static org.junit.Assert.*;
@@ -10,6 +10,7 @@ import java.io.IOException;
 
 import org.junit.Ignore;
 import org.junit.Test;
+import org.mindswap.pellet.jena.PelletReasonerFactory;
 
 import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntModel;
@@ -61,7 +62,7 @@ public class ToDeleteSimulators {
 	
 	@Test	
 	public void test() {
-		OntModel modelOntology = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM_RDFS_INF);
+		OntModel modelOntology = ModelFactory.createOntologyModel(PelletReasonerFactory.THE_SPEC);
 		
 		Resource newDomainClass = modelOntology.getResource("newDomainClass");
 		Individual x = modelOntology.createIndividual(newDomainClass);

@@ -2,12 +2,12 @@ package it.polimi.jbps.engine;
 
 import static com.google.common.collect.Lists.newLinkedList;
 import static it.polimi.jbps.utils.ObjectUtils.not;
-import it.polimi.actions.Action;
-import it.polimi.actions.ActionType;
-import it.polimi.actions.PropertyAssignment;
-import it.polimi.bpmn.simulation.SimulationState;
-import it.polimi.bpmn.simulation.SimulationTransition;
-import it.polimi.bpmn.simulation.Simulator;
+import it.polimi.jbps.actions.Action;
+import it.polimi.jbps.actions.ActionType;
+import it.polimi.jbps.actions.PropertyAssignment;
+import it.polimi.jbps.bpmn.simulation.SimulationState;
+import it.polimi.jbps.bpmn.simulation.SimulationTransition;
+import it.polimi.jbps.bpmn.simulation.SimulatorImpToDelete;
 import it.polimi.jbps.exception.BPMNInvalidTransition;
 import it.polimi.jbps.exception.InvalidPropertyAssignment;
 
@@ -21,10 +21,10 @@ import com.hp.hpl.jena.ontology.Individual;
 
 public class ConsoleEngine {
 	
-	private final Simulator simulator;
+	private final SimulatorImpToDelete simulator;
 	private SimulationState currentState;
 	
-	public ConsoleEngine(Simulator simulator) {
+	public ConsoleEngine(SimulatorImpToDelete simulator) {
 		this.simulator = simulator;
 	}
 	

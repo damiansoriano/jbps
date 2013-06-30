@@ -1,12 +1,12 @@
-package it.polimi.io;
+package it.polimi.jbps.io;
 
 import static com.google.common.collect.Lists.newLinkedList;
 import static it.polimi.jbps.utils.ConstantsUtils.parsePropertyType;
 import static it.polimi.jbps.utils.ObjectUtils.isNotNull;
 import static it.polimi.jbps.utils.ObjectUtils.isNull;
-import it.polimi.actions.Action;
-import it.polimi.actions.ActionType;
-import it.polimi.actions.PropertyAssignment;
+import it.polimi.jbps.actions.Action;
+import it.polimi.jbps.actions.ActionType;
+import it.polimi.jbps.actions.PropertyAssignment;
 
 import java.io.IOException;
 import java.util.Iterator;

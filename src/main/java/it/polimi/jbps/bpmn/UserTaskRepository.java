@@ -1,4 +1,4 @@
-package it.polimi.bpmn;
+package it.polimi.jbps.bpmn;
 
 import static com.google.common.collect.Lists.newLinkedList;
 import java.util.List;

@@ -1,10 +1,10 @@
-package it.polimi.actions;
+package it.polimi.jbps.actions;
 
 import java.util.List;
 
 import com.hp.hpl.jena.ontology.Individual;
 
-import it.polimi.PropertyType;
+import it.polimi.jbps.PropertyType;
 import lombok.Getter;
 import lombok.Setter;
 

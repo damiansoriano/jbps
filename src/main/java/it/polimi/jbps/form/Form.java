@@ -1,8 +1,8 @@
-package it.polimi.form;
+package it.polimi.jbps.form;
 
 import static com.google.common.collect.Lists.newLinkedList;
 import static it.polimi.jbps.utils.ObjectUtils.isNotNull;
-import it.polimi.actions.Action;
+import it.polimi.jbps.actions.Action;
 
 import java.util.List;
 

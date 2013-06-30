@@ -1,4 +1,4 @@
-package it.polimi.actions;
+package it.polimi.jbps.actions;
 
 import static com.google.common.collect.Lists.newLinkedList;
 

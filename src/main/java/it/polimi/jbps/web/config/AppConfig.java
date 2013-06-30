@@ -8,11 +8,11 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-import it.polimi.actions.Action;
-import it.polimi.bpmn.simulation.Simulator;
-import it.polimi.form.Form;
-import it.polimi.form.FormsConfiguration;
-import it.polimi.io.Json2ModelAction;
+import it.polimi.jbps.actions.Action;
+import it.polimi.jbps.bpmn.simulation.SimulatorImpToDelete;
+import it.polimi.jbps.form.Form;
+import it.polimi.jbps.form.FormsConfiguration;
+import it.polimi.jbps.io.Json2ModelAction;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -49,7 +49,7 @@ public class AppConfig {
     }
     
     @Bean
-    public Simulator simulator() throws IOException {
+    public SimulatorImpToDelete simulator() throws IOException {
     	OntModel bpmnOntology = getOntologyFromFile(bpmnOntologyPath);
 		OntModel modelOntology = getOntologyFromFile(modelOntologyPath);
 		File formAssociationFile = new File(formAssociationPath);
@@ -63,6 +63,6 @@ public class AppConfig {
 		FormsConfiguration formConfiguration = new FormsConfiguration();
 		formConfiguration.setConfiguration(configurationMap);
 		Form form = new Form(formConfiguration);
-		return new Simulator(bpmnOntology, modelOntology, form);
+		return new SimulatorImpToDelete(bpmnOntology, modelOntology, form);
     }
 }

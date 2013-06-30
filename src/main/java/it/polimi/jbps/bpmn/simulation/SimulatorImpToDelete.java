@@ -1,4 +1,4 @@
-package it.polimi.bpmn.simulation;
+package it.polimi.jbps.bpmn.simulation;
 
 import static com.google.common.collect.Lists.newLinkedList;
 import static com.google.common.collect.Maps.newHashMap;
@@ -7,12 +7,12 @@ import static it.polimi.jbps.utils.ObjectUtils.not;
 import static it.polimi.jbps.utils.OntologyUtils.getIndividuals;
 import static it.polimi.jbps.utils.OntologyUtils.getIndividualsInDomain;
 import static it.polimi.jbps.utils.OntologyUtils.getIndividualsInRange;
-import it.polimi.actions.Action;
-import it.polimi.actions.PropertyAssignment;
-import it.polimi.constants.BPMNConstants;
-import it.polimi.form.Form;
+import it.polimi.jbps.actions.Action;
+import it.polimi.jbps.actions.PropertyAssignment;
+import it.polimi.jbps.constants.BPMNConstants;
 import it.polimi.jbps.exception.BPMNInvalidTransition;
 import it.polimi.jbps.exception.InvalidPropertyAssignment;
+import it.polimi.jbps.form.Form;
 
 import java.util.Iterator;
 import java.util.List;
@@ -31,14 +31,14 @@ import com.hp.hpl.jena.reasoner.ValidityReport;
 import com.hp.hpl.jena.reasoner.ValidityReport.Report;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
-public class Simulator {
+public class SimulatorImpToDelete {
 	@Getter
 	private final OntModel bpmnOntologyModel;
 	@Getter
 	private final OntModel modelOntologyModel;
 	private final Form form;
 	
-	public Simulator(OntModel bpmnOntologyModel, OntModel modelOntologyModel, Form form) {
+	public SimulatorImpToDelete(OntModel bpmnOntologyModel, OntModel modelOntologyModel, Form form) {
 		this.bpmnOntologyModel = bpmnOntologyModel;
 		this.modelOntologyModel = modelOntologyModel;
 		this.form = form;

@@ -1,4 +1,4 @@
-package it.polimi.constants;
+package it.polimi.jbps.constants;
 
 public class BPMNConstants {
 	

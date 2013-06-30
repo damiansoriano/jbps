@@ -1,8 +1,8 @@
 package it.polimi.jbps.web.controller;
 
 import static com.google.common.collect.Maps.newHashMap;
-import static it.polimi.jbps.utils.ObjectUtils.not;
 import static it.polimi.jbps.utils.ObjectUtils.isNull;
+import static it.polimi.jbps.utils.ObjectUtils.not;
 import it.polimi.actions.Action;
 import it.polimi.bpmn.simulation.SimulationState;
 import it.polimi.bpmn.simulation.SimulationTransition;
@@ -20,7 +20,6 @@ import lombok.extern.log4j.Log4j;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -89,6 +88,7 @@ public class EngineController {
 		
 		Map<String, String> assignments = newHashMap();
 		
+		@SuppressWarnings("unchecked")
 		Enumeration<String> parameterNames = request.getParameterNames();
 		while(parameterNames.hasMoreElements()) {
 			String key = parameterNames.nextElement();

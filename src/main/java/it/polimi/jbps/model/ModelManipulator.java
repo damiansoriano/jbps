@@ -1,4 +1,4 @@
-package it.polimi.jbps.model.simulation;
+package it.polimi.jbps.model;
 
 import java.util.List;
 

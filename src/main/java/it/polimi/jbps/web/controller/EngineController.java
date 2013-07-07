@@ -6,7 +6,7 @@ import static it.polimi.jbps.utils.ObjectUtils.not;
 import it.polimi.jbps.actions.Action;
 import it.polimi.jbps.bpmn.simulation.SimulationState;
 import it.polimi.jbps.bpmn.simulation.SimulationTransition;
-import it.polimi.jbps.bpmn.simulation.SimulatorImpToDelete;
+import it.polimi.jbps.engine.Engine;
 import it.polimi.jbps.exception.BPMNInvalidTransition;
 import it.polimi.jbps.exception.InvalidPropertyAssignment;
 
@@ -27,11 +27,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @Log4j
 public class EngineController {
 	
-	private final SimulatorImpToDelete simulator;
+	private final Engine engine;
 	private SimulationState currentState;
 	
-	public EngineController(SimulatorImpToDelete simulator) {
-		this.simulator = simulator;
+	public EngineController(Engine engine) {
+		this.engine = engine;
 	}
 	
 	@RequestMapping(value = "/")
@@ -43,9 +43,7 @@ public class EngineController {
 	@RequestMapping(value = "/startSimulation")
     public String startSimulation(HttpServletRequest request, ModelMap model) {
 		log.info(request);
-		System.out.println("############################## startSimulation");
-		System.out.println("currentState: " + currentState);
-		currentState = simulator.startSimulation();
+		currentState = engine.startSimulation();
 		return "redirect:/currentState";
 	}
 	
@@ -57,18 +55,17 @@ public class EngineController {
 			return "redirect:/startSimulation";
 		}
 		
-		if(simulator.isEndState(currentState)) {
+		if(engine.isEndState(currentState)) {
 			return "successfullyFinished";
 		}
 		
 		model.addAttribute("currentStateURI", currentState.getStateURI());
 		
-		List<Action> actions = simulator.getActions(currentState);
-		simulator.setPossibleAssignments(actions);
+		List<Action> actions = engine.getActionsWithPossibleAssignments(currentState);
 		
 		model.addAttribute("actions", actions);
 		
-		Map<SimulationTransition, SimulationState> nextStates = simulator.getNextStates(currentState);
+		Map<SimulationTransition, SimulationState> nextStates = engine.getPossibleTransitions(currentState);
 		if (nextStates.keySet().isEmpty()) {
 			log.info("No transition was found in this state and this is not a terminal state. The BPMN Ontology may be badly defined.");
 			log.info("Exiting simulation");
@@ -104,8 +101,7 @@ public class EngineController {
 		String transition = transitions[0];
 		log.info("transition: " + transition);
 		
-		simulator.applyActions(currentState, assignments);
-		currentState = simulator.move(currentState, transition);
+		currentState = engine.makeTransition(currentState, assignments, transition);
 		
 		return "redirect:/currentState";
 	}

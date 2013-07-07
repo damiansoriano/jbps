@@ -15,11 +15,11 @@ import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.rdf.model.Property;
 
-public class SimulatorImp implements Simulator {
+public class OntologySimulator implements Simulator {
 	
 	private final OntModel bpmnOntologyModel;
 	
-	public SimulatorImp(OntModel bpmnOntologyModel) {
+	public OntologySimulator(OntModel bpmnOntologyModel) {
 		this.bpmnOntologyModel = bpmnOntologyModel;
 	}
 

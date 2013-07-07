@@ -1,7 +1,7 @@
 package it.polimi.jbps.bpmn.simulation;
 
 import static it.polimi.jbps.utils.OntologyUtils.getOntologyFromFile;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import it.polimi.jbps.exception.BPMNInvalidTransition;
 
 import java.io.File;
@@ -13,13 +13,16 @@ import org.junit.Test;
 import org.mindswap.pellet.jena.PelletReasonerFactory;
 
 import com.hp.hpl.jena.ontology.Individual;
+import com.hp.hpl.jena.ontology.OntClass;
 import com.hp.hpl.jena.ontology.OntModel;
-import com.hp.hpl.jena.ontology.OntModelSpec;
 import com.hp.hpl.jena.ontology.OntProperty;
+import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.rdf.model.Statement;
 import com.hp.hpl.jena.reasoner.ValidityReport;
+import com.hp.hpl.jena.tdb.TDBFactory;
 import com.hp.hpl.jena.vocabulary.OWL2;
 
 public class ToDeleteSimulators {
@@ -60,21 +63,51 @@ public class ToDeleteSimulators {
 		System.out.println(validate.isClean());
 	}
 	
-	@Test	
+	@Test
+	@Ignore
 	public void test() {
+		String location = "/home/damian/Desktop/tdb-assembler.ttl";
+		
+//		Model model = TDBFactory.assembleModel(assemblerFile);
+		Model model = TDBFactory.createModel(location);
+		
 		OntModel modelOntology = ModelFactory.createOntologyModel(PelletReasonerFactory.THE_SPEC);
+//		OntModel modelOntology = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM_RULE_INF);
 		
-		Resource newDomainClass = modelOntology.getResource("newDomainClass");
-		Individual x = modelOntology.createIndividual(newDomainClass);
-		Resource newRangeClass = modelOntology.getResource("newRangeClass");
-		Individual y = modelOntology.createIndividual(newRangeClass);
-		Property p = modelOntology.getProperty("p");
-		Property q = modelOntology.getProperty("q");
+		OntClass newDomainClass = modelOntology.createClass("http://www.polimi.it/newDomainClass");
+//		OntClass newDomainClass2 = modelOntology.createClass("http://www.polimi.it/newDomainClass2");
 		
-		modelOntology.createStatement(p, OWL2.propertyDisjointWith, q);
+//		newDomainClass.addDisjointWith(newDomainClass2);
+		
+		Individual x = newDomainClass.createIndividual("http://www.polimi.it/x");
+//		OntClass newRangeClass = modelOntology.createClass("http://www.polimi.it/newRangeClass");
+		
+		Individual y = newDomainClass.createIndividual("http://www.polimi.it/y");
+		
+		Property p = modelOntology.getProperty("http://www.polimi.it/p");
+		Property q = modelOntology.getProperty("http://www.polimi.it/q");
+		
+		
+		Statement disjointProperties = modelOntology.createStatement(p, OWL2.propertyDisjointWith, q);
+		modelOntology.add(disjointProperties);
+		
+		
+//		x.addOntClass(newDomainClass2);
+		
+		modelOntology.write(System.out);
+		
+		Model begin = model.begin();
+		
+		
 		
 		x.addProperty(p, y);
 		x.addProperty(q, y);
+		
+		model.write(System.out);
+		
+		begin.commit();
+		
+		model.write(System.out);
 		
 		ValidityReport validate = modelOntology.validate();
 		assertEquals(false, validate.isValid());

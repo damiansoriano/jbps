@@ -13,6 +13,7 @@ public interface ModelManipulator {
 	
 	List<Action> getActions(SimulationState state);
 	
+	void execute(Action action) throws InvalidPropertyAssignment;
 	void execute(List<Action> actions) throws InvalidPropertyAssignment;
 	
 	List<Individual> getPossibleAssignments(PropertyAssignment propertyAssignment);

@@ -1,0 +1,12 @@
+body {
+	background: #f0f0f0;
+}
+
+body > div {
+	background: white;
+	width: 960px;
+	margin: 0 auto;
+	padding: 15px;
+	border-left: 1px solid #e0e0e0;
+	border-right: 1px solid #e0e0e0;
+} 

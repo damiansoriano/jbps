@@ -6,23 +6,11 @@
             "propertyValues": [
                 {
                     "propertyType": "objectProperty",
-                    "propertyURI": "http://www.semanticweb.org/ontologies/2013/5/PurchaseRequestModel.owl#purchaseRequestClient",
-                    "propertyValue": "http://www.semanticweb.org/ontologies/2013/5/PurchaseRequestModel.owl#damian"
+                    "propertyURI": "http://www.semanticweb.org/ontologies/2013/5/PurchaseRequestModel.owl#purchaseRequestClient"
                 },
                 {
                     "propertyType": "objectProperty",
-                    "propertyURI": "http://www.semanticweb.org/ontologies/2013/5/PurchaseRequestModel.owl#purchaseRequestResponsible",
-                    "propertyValue": "http://www.semanticweb.org/ontologies/2013/5/PurchaseRequestModel.owl#employee"
-                }
-            ]
-        },
-        {
-            "classURI": "http://www.semanticweb.org/ontologies/2013/5/PurchaseRequestModel.owl#PurchaseRequest",
-            "propertyValues": [
-                {
-                    "propertyType": "objectProperty",
-                    "propertyURI": "http://www.semanticweb.org/ontologies/2013/5/PurchaseRequestModel.owl#purchaseRequestClient",
-                    "propertyValue": "http://www.semanticweb.org/ontologies/2013/5/PurchaseRequestModel.owl#damian"
+                    "propertyURI": "http://www.semanticweb.org/ontologies/2013/5/PurchaseRequestModel.owl#purchaseRequestResponsible"
                 }
             ]
         }

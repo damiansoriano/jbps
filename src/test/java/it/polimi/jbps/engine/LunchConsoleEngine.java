@@ -1,14 +1,16 @@
-package it.polimi.jbps.bpmn.simulation;
+package it.polimi.jbps.engine;
 
 import static com.google.common.collect.Maps.newHashMap;
 import static it.polimi.jbps.utils.OntologyUtils.getOntologyFromFile;
 import it.polimi.jbps.actions.Action;
-import it.polimi.jbps.bpmn.simulation.SimulatorImpToDelete;
-import it.polimi.jbps.engine.ConsoleEngine;
+import it.polimi.jbps.bpmn.simulation.OntologySimulator;
+import it.polimi.jbps.bpmn.simulation.Simulator;
 import it.polimi.jbps.exception.BPMNInvalidTransition;
 import it.polimi.jbps.form.Form;
 import it.polimi.jbps.form.FormsConfiguration;
 import it.polimi.jbps.io.Json2ModelAction;
+import it.polimi.jbps.model.ModelManipulator;
+import it.polimi.jbps.model.OntologyModelManipulator;
 
 import java.io.File;
 import java.io.IOException;
@@ -22,7 +24,7 @@ import com.google.common.base.Charsets;
 import com.google.common.io.Files;
 import com.hp.hpl.jena.ontology.OntModel;
 
-public class PredefinedSimulators {
+public class LunchConsoleEngine {
 	
 	private final static String bpmnOntologyPath = "./src/test/resources/it/polimi/bpmn/simulation/SimplePurchaseRequestBPMN.owl";
 	private final static String modelOntologyPath = "./src/test/resources/it/polimi/bpmn/simulation/SimplePurchaseRequestModel.owl";
@@ -48,9 +50,10 @@ public class PredefinedSimulators {
 		FormsConfiguration formConfiguration = new FormsConfiguration();
 		formConfiguration.setConfiguration(configurationMap);
 		Form form = new Form(formConfiguration);
-		SimulatorImpToDelete simulator = new SimulatorImpToDelete(bpmnOntology, modelOntology, form);
+		Simulator simulator = new OntologySimulator(bpmnOntology);
+		ModelManipulator manipulator = new OntologyModelManipulator(modelOntology, form);
 		
-		ConsoleEngine engine = new ConsoleEngine(simulator);
+		ConsoleEngine engine = new ConsoleEngine(simulator, manipulator);
 		engine.run();
 	}
 

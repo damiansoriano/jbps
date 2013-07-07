@@ -13,4 +13,8 @@ public class ObjectUtils {
 	public static boolean isNotNull(Object obj) {
 		return (obj != null);
 	}
+	
+	public static boolean isNullOrEmpty(String str) {
+		return isNull(str) || str.isEmpty();
+	}
 }

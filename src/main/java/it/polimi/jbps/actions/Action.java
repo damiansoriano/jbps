@@ -23,7 +23,7 @@ public class Action {
 	
 	public Action() {
 		propertyAssignments = newLinkedList();
-		individualURI = null;
+		individualURI = "";
 	}
 	
 	@Override

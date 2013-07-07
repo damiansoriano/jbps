@@ -90,6 +90,7 @@
 
     <owl:NamedIndividual rdf:about="&PurchaseRequestModel;damian">
         <rdf:type rdf:resource="&PurchaseRequestModel;Person"/>
+        <rdfs:label>Damian Soriano</rdfs:label>
     </owl:NamedIndividual>
     
 
@@ -98,6 +99,7 @@
 
     <owl:NamedIndividual rdf:about="&PurchaseRequestModel;employee">
         <rdf:type rdf:resource="&PurchaseRequestModel;Person"/>
+        <rdfs:label>Employee</rdfs:label>
     </owl:NamedIndividual>
 </rdf:RDF>
 

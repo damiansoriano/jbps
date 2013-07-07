@@ -7,9 +7,10 @@ import it.polimi.jbps.actions.ActionType;
 import it.polimi.jbps.actions.PropertyAssignment;
 import it.polimi.jbps.bpmn.simulation.SimulationState;
 import it.polimi.jbps.bpmn.simulation.SimulationTransition;
-import it.polimi.jbps.bpmn.simulation.SimulatorImpToDelete;
+import it.polimi.jbps.bpmn.simulation.Simulator;
 import it.polimi.jbps.exception.BPMNInvalidTransition;
 import it.polimi.jbps.exception.InvalidPropertyAssignment;
+import it.polimi.jbps.model.ModelManipulator;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -21,11 +22,14 @@ import com.hp.hpl.jena.ontology.Individual;
 
 public class ConsoleEngine {
 	
-	private final SimulatorImpToDelete simulator;
+	private final Simulator simulator;
+	private final ModelManipulator manipulator;
+	
 	private SimulationState currentState;
 	
-	public ConsoleEngine(SimulatorImpToDelete simulator) {
+	public ConsoleEngine(Simulator simulator, ModelManipulator manipulator) {
 		this.simulator = simulator;
+		this.manipulator = manipulator;
 	}
 	
 	public void run() throws IOException, BPMNInvalidTransition {
@@ -34,7 +38,7 @@ public class ConsoleEngine {
 		while(not(simulator.isEndState(currentState))) {
 			System.out.println(String.format("In state %s", currentState));
 			System.out.println();
-			List<Action> actions = simulator.getActions(currentState);
+			List<Action> actions = manipulator.getActions(currentState);
 			
 			for (Action action : actions) {
 				ActionType actionType = action.getActionType();
@@ -47,7 +51,7 @@ public class ConsoleEngine {
 					System.out.println();
 					System.out.println(String.format("Setting property %s",propertyAssignment.getPropertyURI()));
 					
-					List<Individual> possibleAssignments = simulator.getPossibleAssignments(propertyAssignment);
+					List<Individual> possibleAssignments = manipulator.getPossibleAssignments(propertyAssignment);
 					
 					System.out.println("Select one from possible assignments:");
 					for(Individual possibleAssignment : possibleAssignments) {
@@ -69,7 +73,7 @@ public class ConsoleEngine {
 				Action actionToApply = (Action) action.clone();
 				actionToApply.setPropertyAssignments(propertiesAssignmentToApply);
 				try {
-					simulator.execute(actionToApply);
+					manipulator.execute(actionToApply);
 				} catch (InvalidPropertyAssignment e) {
 					System.out.println("Error occure while setting properties");
 					e.printStackTrace();

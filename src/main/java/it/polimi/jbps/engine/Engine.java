@@ -1,11 +1,13 @@
 package it.polimi.jbps.engine;
 
-import java.util.List;
-import java.util.Map;
-
 import it.polimi.jbps.actions.Action;
 import it.polimi.jbps.bpmn.simulation.SimulationState;
 import it.polimi.jbps.bpmn.simulation.SimulationTransition;
+import it.polimi.jbps.exception.BPMNInvalidTransition;
+import it.polimi.jbps.exception.InvalidPropertyAssignment;
+
+import java.util.List;
+import java.util.Map;
 
 public interface Engine {
 
@@ -15,7 +17,8 @@ public interface Engine {
 	
 	Map<SimulationTransition, SimulationState> getPossibleTransitions(SimulationState state);
 	
-	SimulationState makeTransition(SimulationState state, Map<String, String> assignments, String transitionURI);
+	SimulationState makeTransition(SimulationState state, Map<String, String> assignments, String transitionURI)
+			throws InvalidPropertyAssignment, BPMNInvalidTransition;
 	
 	boolean isEndState(SimulationState state);
 }

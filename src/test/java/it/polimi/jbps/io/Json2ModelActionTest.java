@@ -20,7 +20,7 @@ public class Json2ModelActionTest {
 
 	@Test
 	public void correctlyGenerateInputDataExample() throws IOException {
-		File inputFile = new File("./src/test/resources/it/polimi/bpmn/simulation/inputDataExample.json");
+		File inputFile = new File("./src/test/resources/it/polimi/bpmn/simulation/inputDataExampleWith2Actions.json");
 		String inputJson = Files.toString(inputFile, Charsets.UTF_8);
 		
 		Json2ModelAction json2ModelAction = new Json2ModelAction();
@@ -49,7 +49,7 @@ public class Json2ModelActionTest {
 		Action action02 = actions.get(1);
 		
 		assertEquals("http://www.semanticweb.org/ontologies/2013/5/PurchaseRequestModel.owl#PurchaseRequest", action02.getClassURI());
-		assertNull(action02.getIndividualURI());
+		assertEquals("", action02.getIndividualURI());
 		assertEquals(ActionType.INSERT, action02.getActionType());
 		
 		List<PropertyAssignment> propertyAssignments02 = action02.getPropertyAssignments();
@@ -73,7 +73,7 @@ public class Json2ModelActionTest {
 		Action action = actions.get(0);
 		
 		assertEquals("http://www.semanticweb.org/ontologies/2013/5/PurchaseRequestModel.owl#PurchaseRequest", action.getClassURI());
-		assertNull(action.getIndividualURI());
+		assertEquals("", action.getIndividualURI());
 		assertEquals(ActionType.INSERT, action.getActionType());
 		
 		List<PropertyAssignment> propertyAssignments01 = action.getPropertyAssignments();

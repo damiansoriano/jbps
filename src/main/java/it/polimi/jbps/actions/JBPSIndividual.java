@@ -11,6 +11,10 @@ public class JBPSIndividual {
 		this.individual = individual;
 	}
 	
+	public String getURI() {
+		return individual.getURI();
+	}
+	
 	@Override
 	public String toString() {
 		String label = individual.getLabel(null);

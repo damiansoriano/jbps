@@ -20,7 +20,7 @@ public class PropertyAssignment {
 	protected PropertyType propertyType;
 	
 	@Getter @Setter
-	private List<Individual> possibleAssignments;
+	private List<JBPSIndividual> possibleAssignments;
 	
 	public boolean isObjectProperty() {
 		return propertyType.equals(PropertyType.OBJECT_PROPERTY);

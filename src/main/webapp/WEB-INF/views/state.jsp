@@ -31,7 +31,7 @@
 			       <option value=""></option>
 			       <c:forEach items="${propertyAssignment.possibleAssignments}" var="possibleAssignment">
 			           <option value="<c:out value="${possibleAssignment.getURI()}"/>">
-			               <c:out value="${possibleAssignment.getLabel(null)}"/>
+			               <c:out value="${possibleAssignment.toString()}"/>
 		               </option>
 			       </c:forEach>
 			       </select>

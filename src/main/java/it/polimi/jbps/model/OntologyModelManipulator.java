@@ -21,6 +21,7 @@ import com.hp.hpl.jena.ontology.OntClass;
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.ontology.OntProperty;
 import com.hp.hpl.jena.ontology.OntResource;
+import com.hp.hpl.jena.rdf.model.Literal;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.RDFNode;
@@ -60,12 +61,18 @@ public class OntologyModelManipulator implements ModelManipulator {
 		
 		Individual individual;
 		String uriName;
+		String labelStr;
 		if(isNullOrEmpty(action.getIndividualURI())) {
-			uriName = String.format("%s/%s", baseURIForNameing, UUID.randomUUID().toString());
+			labelStr = UUID.randomUUID().toString();
+			uriName = String.format("%s/%s", baseURIForNameing, labelStr);
 		} else {
+			labelStr = action.getIndividualURI();
 			uriName = action.getIndividualURI();
 		}
 		individual = ontClass.createIndividual(uriName);
+		
+		Literal label = ontologyModel.createLiteral(labelStr);
+		individual.addLabel(label);
 		
 		for(PropertyAssignment propertyAssignment : action.getPropertyAssignments()) {
 			makePropertyAssignment(individual, propertyAssignment);

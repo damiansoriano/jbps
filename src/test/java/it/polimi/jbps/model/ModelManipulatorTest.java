@@ -211,5 +211,4 @@ public abstract class ModelManipulatorTest {
 		assertNotNull(purchaseRequestClient);
 		assertNotNull(purchaseRequestResponsible);
 	}
-
 }

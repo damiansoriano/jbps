@@ -11,7 +11,6 @@ import it.polimi.jbps.exception.BPMNInvalidTransition;
 
 import java.util.Map;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.hp.hpl.jena.ontology.OntModel;
@@ -60,7 +59,6 @@ public abstract class SimulatorTest {
 	}
 	
 	@Test
-	@Ignore
 	public void getTransitionFromURIWhenNotExists() {
 		OntModel bpmnOntology = getOntologyFromFile(bpmnOntologyPath);
 		Simulator simulator = getSimulator(bpmnOntology);

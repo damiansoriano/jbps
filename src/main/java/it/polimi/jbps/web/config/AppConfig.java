@@ -33,14 +33,14 @@ public class AppConfig {
 	private final static String createPurchaseOrderURI = "http://www.semanticweb.org/ontologies/2013/5/PurchaseRequest.owl#createPurchaseOrder";
 	
 	private final Map<String, String> bpmnOntologyPaths;
-	private final Map<String, String> modelOntologyPaths;
+	private final String modelOntologyPath;
 	private final Map<String, String> formAssociationPaths;
 	private final Map<String, String> lanesDescriptions;
 	
-	public AppConfig(Map<String, String> bpmnOntologyPaths, Map<String, String> modelOntologyPaths,
+	public AppConfig(Map<String, String> bpmnOntologyPaths, String modelOntologyPath,
 			Map<String, String> formAssociationPaths, Map<String, String> lanesDescriptions) {
 		this.bpmnOntologyPaths = bpmnOntologyPaths;
-		this.modelOntologyPaths = modelOntologyPaths;
+		this.modelOntologyPath = modelOntologyPath;
 		this.formAssociationPaths = formAssociationPaths;
 		this.lanesDescriptions = lanesDescriptions;
 	}
@@ -59,16 +59,20 @@ public class AppConfig {
     }
     
     @Bean
+    public OntModel modelOntology() {
+    	return getOntologyFromFile(modelOntologyPath);
+    }
+    
+    @Bean
     public Map<String, Engine> engines() throws IOException {
     	Map<String, Engine> engines = newHashMap();
     	
     	for (String lane : bpmnOntologyPaths.keySet()) {
     		String laneBPMNPath = bpmnOntologyPaths.get(lane);
-    		String laneModelPath = modelOntologyPaths.get(lane);
     		String laneFormPath = formAssociationPaths.get(lane);
     		
     		OntModel bpmnOntology = getOntologyFromFile(laneBPMNPath);
-    		OntModel modelOntology = getOntologyFromFile(laneModelPath);
+    		OntModel modelOntology = modelOntology();
     		File formAssociationFile = new File(laneFormPath);
     		String formAssociationJson = Files.toString(formAssociationFile, Charsets.UTF_8);
     		

@@ -86,6 +86,9 @@ public class OntologySimulator implements Simulator {
 	@Override
 	public SimulationTransition getTransitionFromURI(String transitionURI) {
 		Individual individual = bpmnOntologyModel.getIndividual(transitionURI);
+		if (isNull(individual)) {
+			return null;
+		}
 		return new SimulationTransition(new JBPSIndividual(individual));
 	}
 

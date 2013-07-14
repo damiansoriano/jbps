@@ -3,12 +3,12 @@
 <body>
     <%@include file="parts/headerHome.jsp" %>
     <div>
-        <div id="welcomeMessage">
+        <div class="pageMessage">
             Welcome to the Java Business Process Simulator, choose one of the following
             applications in order execute.
         </div>
         
-        <div id="homeLanes">
+        <div class="pageListing">
 	        <ul>
 	        <c:forEach items="${lanes}" var="lane">
 		        <li>

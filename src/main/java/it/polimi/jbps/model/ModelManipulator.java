@@ -1,13 +1,13 @@
 package it.polimi.jbps.model;
 
-import java.util.List;
-
-import com.hp.hpl.jena.ontology.Individual;
-
 import it.polimi.jbps.actions.Action;
 import it.polimi.jbps.actions.PropertyAssignment;
 import it.polimi.jbps.entities.SimulationState;
 import it.polimi.jbps.exception.InvalidPropertyAssignment;
+
+import java.util.List;
+
+import com.hp.hpl.jena.ontology.Individual;
 
 public interface ModelManipulator {
 	

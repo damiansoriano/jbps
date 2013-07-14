@@ -1,8 +1,8 @@
 package it.polimi.jbps.model;
 
+import static it.polimi.jbps.utils.OntologyUtils.getOntologyFromFile;
 import static com.google.common.collect.Lists.newLinkedList;
 import static com.google.common.collect.Maps.newHashMap;
-import static it.polimi.jbps.utils.OntologyUtils.getOntologyFromFile;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -12,6 +12,7 @@ import it.polimi.jbps.actions.Action;
 import it.polimi.jbps.actions.ActionType;
 import it.polimi.jbps.actions.PropertyAssignment;
 import it.polimi.jbps.bpmn.simulation.Simulator;
+import it.polimi.jbps.entities.JBPSIndividual;
 import it.polimi.jbps.entities.SimulationState;
 import it.polimi.jbps.exception.InvalidPropertyAssignment;
 import it.polimi.jbps.form.Form;
@@ -180,7 +181,7 @@ public abstract class ModelManipulatorTest {
 	}
 	
 	@Test
-	public void executeAction() throws IOException {
+	public void executeAction() throws IOException, InvalidPropertyAssignment {
 		OntModel bpmnOntology = getOntologyFromFile(bpmnOntologyPath);
 		OntModel modelOntology = getOntologyFromFile(modelOntologyPath);
 		
@@ -210,5 +211,104 @@ public abstract class ModelManipulatorTest {
 		
 		assertNotNull(purchaseRequestClient);
 		assertNotNull(purchaseRequestResponsible);
+		
+		purchaseRequestClient.setPropertyValue(damianURI);
+		purchaseRequestResponsible.setPropertyValue(employeeURI);
+		
+		List<Action> actionsToExecute = newLinkedList();
+		actionsToExecute.add(action);
+		manipulator.execute(actionsToExecute);
 	}
+	
+	@Test(expected=InvalidPropertyAssignment.class)
+	public void executeActionThatViolatesRestrictionThrowException() throws IOException, InvalidPropertyAssignment {
+		OntModel bpmnOntology = getOntologyFromFile(bpmnOntologyPath);
+		OntModel modelOntology = getOntologyFromFile(modelOntologyPath);
+		
+		Map<String, String> map = newHashMap();
+		map.put(createPurchaseOrderURI, inputDataExample);
+		Form form = new Form(FormsConfiguration.createFromFiles(map, modelOntology));
+		
+		ModelManipulator manipulator = getModelManipulator(modelOntology, form);
+		Simulator simulator = getSimulator(bpmnOntology);
+		
+		SimulationState createPurchaseOrder = simulator.getStateFromURI(createPurchaseOrderURI);
+		
+		List<Action> actions = manipulator.getActions(createPurchaseOrder);
+		Action action = actions.get(0);
+		List<PropertyAssignment> propertyAssignments = action.getPropertyAssignments();
+		
+		PropertyAssignment purchaseRequestClient = null;
+		PropertyAssignment purchaseRequestResponsible = null;
+		
+		for (PropertyAssignment propertyAssignment : propertyAssignments) {
+			if (propertyAssignment.getPropertyURI().equals(purchaseRequestClientURI)) {
+				purchaseRequestClient = propertyAssignment;
+			} else if (propertyAssignment.getPropertyURI().equals(purchaseRequestResponsibleURI)) {
+				purchaseRequestResponsible = propertyAssignment;
+			}
+		}
+		
+		assertNotNull(purchaseRequestClient);
+		assertNotNull(purchaseRequestResponsible);
+		
+		purchaseRequestClient.setPropertyValue(damianURI);
+		purchaseRequestResponsible.setPropertyValue(damianURI);
+		
+		List<Action> actionsToExecute = newLinkedList();
+		actionsToExecute.add(action);
+		manipulator.execute(actionsToExecute);
+	}
+	
+	@Test
+	public void executeActionThatViolatesRestrictionRollBack() throws IOException {
+		OntModel bpmnOntology = getOntologyFromFile(bpmnOntologyPath);
+		OntModel modelOntology = getOntologyFromFile(modelOntologyPath);
+		
+		Map<String, String> map = newHashMap();
+		map.put(createPurchaseOrderURI, inputDataExample);
+		Form form = new Form(FormsConfiguration.createFromFiles(map, modelOntology));
+		
+		ModelManipulator manipulator = getModelManipulator(modelOntology, form);
+		Simulator simulator = getSimulator(bpmnOntology);
+		ModelFacade modelFacade = new OntologyModelFacade(modelOntology);
+		
+		List<JBPSIndividual> allIndividuals = modelFacade.getAllIndividuals();
+		assertEquals(2, allIndividuals.size());
+		
+		SimulationState createPurchaseOrder = simulator.getStateFromURI(createPurchaseOrderURI);
+		
+		List<Action> actions = manipulator.getActions(createPurchaseOrder);
+		Action action = actions.get(0);
+		List<PropertyAssignment> propertyAssignments = action.getPropertyAssignments();
+		
+		PropertyAssignment purchaseRequestClient = null;
+		PropertyAssignment purchaseRequestResponsible = null;
+		
+		for (PropertyAssignment propertyAssignment : propertyAssignments) {
+			if (propertyAssignment.getPropertyURI().equals(purchaseRequestClientURI)) {
+				purchaseRequestClient = propertyAssignment;
+			} else if (propertyAssignment.getPropertyURI().equals(purchaseRequestResponsibleURI)) {
+				purchaseRequestResponsible = propertyAssignment;
+			}
+		}
+		
+		assertNotNull(purchaseRequestClient);
+		assertNotNull(purchaseRequestResponsible);
+		
+		purchaseRequestClient.setPropertyValue(damianURI);
+		purchaseRequestResponsible.setPropertyValue(damianURI);
+		
+		List<Action> actionsToExecute = newLinkedList();
+		actionsToExecute.add(action);
+		try {
+			manipulator.execute(actionsToExecute);
+			assertTrue(false);
+		} catch (InvalidPropertyAssignment ex) { }
+		
+		allIndividuals = modelFacade.getAllIndividuals();
+		assertEquals(2, allIndividuals.size());
+	}
+	
+	
 }

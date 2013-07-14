@@ -12,12 +12,16 @@ import it.polimi.jbps.form.Form;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.UUID;
+
+import org.mindswap.pellet.jena.PelletReasonerFactory;
 
 import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntClass;
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.ontology.OntProperty;
 import com.hp.hpl.jena.ontology.OntResource;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.reasoner.ValidityReport;
@@ -28,10 +32,12 @@ public class OntologyModelManipulator implements ModelManipulator {
 	
 	protected final OntModel ontologyModel;
 	protected final Form form;
+	protected final String baseURIForNameing;
 	
-	public OntologyModelManipulator(OntModel ontologyModel, Form form) {
+	public OntologyModelManipulator(OntModel ontologyModel, Form form, String baseURIForNameing) {
 		this.ontologyModel = ontologyModel;
 		this.form = form;
+		this.baseURIForNameing = baseURIForNameing;
 	}
 	
 	@Override
@@ -41,28 +47,37 @@ public class OntologyModelManipulator implements ModelManipulator {
 
 	@Override
 	public void execute(List<Action> actions) throws InvalidPropertyAssignment {
-		for (Action action : actions) { execute(action); }
+		OntModel freshModel = ModelFactory.createOntologyModel(PelletReasonerFactory.THE_SPEC);
+		freshModel.add(ontologyModel);
+		
+		for (Action action : actions) { execute(action, freshModel); }
+		
+		ontologyModel.add(freshModel);
 	}
 	
-	@Override
-	public void execute(Action action) throws InvalidPropertyAssignment {
-		OntClass ontClass = ontologyModel.getOntClass(action.getClassURI());
+	protected void execute(Action action, OntModel freshModel) throws InvalidPropertyAssignment {
+		OntClass ontClass = freshModel.getOntClass(action.getClassURI());
 		
 		Individual individual;
-		if(isNullOrEmpty(action.getIndividualURI())) { individual = ontClass.createIndividual(); }
-		else { individual = ontClass.createIndividual(action.getIndividualURI()); }
+		String uriName;
+		if(isNullOrEmpty(action.getIndividualURI())) {
+			uriName = String.format("%s/%s", baseURIForNameing, UUID.randomUUID().toString());
+		} else {
+			uriName = action.getIndividualURI();
+		}
+		individual = ontClass.createIndividual(uriName);
 		
 		for(PropertyAssignment propertyAssignment : action.getPropertyAssignments()) {
 			makePropertyAssignment(individual, propertyAssignment);
 		}
-		ontologyModel.prepare();
-		ValidityReport validityReport = ontologyModel.validate();
+		freshModel.prepare();
+		ValidityReport validityReport = freshModel.validate();
 		if (not(validityReport.isValid())) {
 			String errorMessage = "";
 			Iterator<Report> reports = validityReport.getReports();
 			while(reports.hasNext()) {
 				Report report = reports.next();
-				errorMessage += report.getDescription() + "\n";
+				errorMessage += report.toString() + "\n";
 			}
 			throw new InvalidPropertyAssignment(errorMessage);
 		}
@@ -71,10 +86,10 @@ public class OntologyModelManipulator implements ModelManipulator {
 			Iterator<Report> reports = validityReport.getReports();
 			while(reports.hasNext()) {
 				Report report = reports.next();
-				errorMessage += report.getDescription() + "\n";
+				errorMessage += report.toString() + "\n";
 			}
 			throw new InvalidPropertyAssignment(errorMessage);
-		}	
+		}
 	}
 	
 	protected void makePropertyAssignment(Individual individual, PropertyAssignment propertyAssignment) {

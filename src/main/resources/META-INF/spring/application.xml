@@ -41,6 +41,7 @@
                <entry key="saleOrder" value="Sale Order" />
             </map>
         </constructor-arg>
+        <constructor-arg index="4" value="http://www.semanticweb.org/ontologies/2013/5/PurchaseRequestModel.owl" />
     </bean>
     
     <bean class="it.polimi.jbps.web.controller.EngineController">
@@ -49,6 +50,10 @@
     </bean>
     
     <bean class="it.polimi.jbps.web.controller.ModelController">
+        <constructor-arg index="0" ref="modelOntology"/>
+    </bean>
+    
+    <bean class="it.polimi.jbps.web.controller.OntologiesController">
         <constructor-arg index="0" ref="modelOntology"/>
     </bean>
 </beans>

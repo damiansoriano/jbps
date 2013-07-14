@@ -4,5 +4,6 @@
         <span class="navMenu"><a href="/">Home</a></span>
         <span class="navMenu"><a href="startSimulation">Restart Simulation</a></span>
         <span class="navMenu"><a href="/instances">Explore Instances</a></span>
+        <span class="navMenu"><a href="/dumpModelOntology">Model Ontology</a></span>
     </div>
 </div>

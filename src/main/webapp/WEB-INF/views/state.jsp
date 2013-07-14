@@ -11,12 +11,21 @@
 	   <form action="makeTransition" method="post">
            <c:forEach items="${actions}" var="action">
                <div class="actionTypeDescription">
-                   Action Type: <c:out value="${action.actionType}"/><br/>
+                   Action Type: <c:out value="${action.actionType}"/>
                </div>
                
                <div class="classDescription">
-                   Class: <c:out value="${action.getJbpsClass().toString()}"/><br/>
+                   Class: <c:out value="${action.getJbpsClass().toString()}"/>
                </div>
+               
+               <c:if test="${errorMessage != null}">
+               <div class="errorMessage">
+                   An Error has ocurr while executing the actions,
+                   try a different assignment of the properties.<br/>
+                   Error Message:
+                   <c:out value="${errorMessage}"/>
+               </div>
+               </c:if>
                
                <table class="table propertyAssignmentsTable">
                    
@@ -31,7 +40,7 @@
                             <select class="propertyAssignmentSelect" name="${propertyAssignment.getPropertyURI()}">
 	                            <option value=""></option>
 	                            <c:forEach items="${propertyAssignment.possibleAssignments}" var="possibleAssignment">
-	                                <option value="<c:out value="${possibleAssignment.toString()}"/>">
+	                                <option value="<c:out value="${possibleAssignment.getURI()}"/>">
 	                                    <c:out value="${possibleAssignment.toString()}"/>
 	                                </option>
 	                            </c:forEach>

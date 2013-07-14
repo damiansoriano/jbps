@@ -5,10 +5,11 @@ import static it.polimi.jbps.utils.ObjectUtils.isNotNull;
 
 import java.util.List;
 
+import org.mindswap.pellet.jena.PelletReasonerFactory;
+
 import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntClass;
 import com.hp.hpl.jena.ontology.OntModel;
-import com.hp.hpl.jena.ontology.OntModelSpec;
 import com.hp.hpl.jena.ontology.OntResource;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
@@ -70,9 +71,7 @@ public class OntologyUtils {
 	
 	public static OntModel getOntologyFromFile(String filePath) {
 		Model model = FileManager.get().loadModel(filePath);
-		
-		OntModel ontologyModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM_RULE_INF, model);
+		OntModel ontologyModel = ModelFactory.createOntologyModel(PelletReasonerFactory.THE_SPEC, model);
 		return ontologyModel;
 	}
-	
 }

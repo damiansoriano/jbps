@@ -24,6 +24,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @Log4j
@@ -73,7 +74,8 @@ public class EngineController {
 	}
 	
 	@RequestMapping(value = "/{lane}/currentState")
-    public String simulationState(@PathVariable String lane, HttpServletRequest request, ModelMap model) {
+    public String simulationState(@PathVariable String lane, @RequestParam(required=false) String errorMessage,
+    		HttpServletRequest request, ModelMap model) {
 		log.info(request);
 		
 		if (not(engines.containsKey(lane))) {
@@ -106,12 +108,16 @@ public class EngineController {
 		
 		model.addAttribute("transitions", nextStates);
 		
+		if (errorMessage != null) {
+			model.addAttribute("errorMessage", errorMessage);
+		}
+		
 		return "state";
     }
 	
 	@RequestMapping(value = "/{lane}/makeTransition", method = RequestMethod.POST)
     public String makeTransition(@PathVariable String lane, HttpServletRequest request, ModelMap model)
-    		throws InvalidPropertyAssignment, BPMNInvalidTransition {
+    		throws BPMNInvalidTransition {
 		log.info(request);
 		
 		if (not(engines.containsKey(lane))) {
@@ -141,7 +147,13 @@ public class EngineController {
 		String[] transitions = request.getParameterValues("transition");
 		String transition = transitions[0];
 		
-		currentState = engine.makeTransition(currentState, assignments, transition);
+		try {
+			currentState = engine.makeTransition(currentState, assignments, transition);
+		} catch (InvalidPropertyAssignment e) {
+			log.error(e.getMessage());
+			model.addAttribute("errorMessage", e.getMessage());
+			return String.format("redirect:/%s/currentState", lane);
+		}
 		
 		enginesCurrentStates.put(lane, currentState);
 		

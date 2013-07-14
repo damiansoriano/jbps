@@ -64,6 +64,29 @@ public class ToDeleteSimulators {
 	}
 	
 	@Test
+//	@Ignore
+	public void testNotValid() {
+		OntModel modelOntology = getOntologyFromFile(modelOntologyPath);
+		
+		OntClass newDomainClass = modelOntology.createClass("http://www.polimi.it/newDomainClass");
+		
+		Individual x = newDomainClass.createIndividual("http://www.polimi.it/x");
+		Individual y = newDomainClass.createIndividual("http://www.polimi.it/y");
+		
+		Property p = modelOntology.getProperty("http://www.polimi.it/p");
+		Property q = modelOntology.getProperty("http://www.polimi.it/q");
+		
+		Statement disjointProperties = modelOntology.createStatement(p, OWL2.propertyDisjointWith, q);
+		modelOntology.add(disjointProperties);
+		
+		x.addProperty(p, y);
+		x.addProperty(q, y);
+		
+		ValidityReport validate = modelOntology.validate();
+		assertEquals(false, validate.isValid());
+	}
+	
+	@Test
 	@Ignore
 	public void test() {
 		String location = "/home/damian/Desktop/tdb-assembler.ttl";

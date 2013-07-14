@@ -32,6 +32,8 @@ public class LunchConsoleEngine {
 	
 	private final static String createPurchaseOrderURI = "http://www.semanticweb.org/ontologies/2013/5/PurchaseRequest.owl#createPurchaseOrder";
 	
+	protected final String baseURI = "http://www.semanticweb.org/ontologies/2013/5/PurchaseRequestModel.owl";
+	
 	@Test
 	@Ignore
 	public void test() throws IOException, BPMNInvalidTransition {
@@ -51,7 +53,7 @@ public class LunchConsoleEngine {
 		formConfiguration.setConfiguration(configurationMap);
 		Form form = new Form(formConfiguration);
 		Simulator simulator = new OntologySimulator(bpmnOntology);
-		ModelManipulator manipulator = new OntologyModelManipulator(modelOntology, form);
+		ModelManipulator manipulator = new OntologyModelManipulator(modelOntology, form, baseURI);
 		
 		ConsoleEngine engine = new ConsoleEngine(simulator, manipulator);
 		engine.run();

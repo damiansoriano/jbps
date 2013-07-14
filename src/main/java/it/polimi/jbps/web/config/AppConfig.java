@@ -36,13 +36,16 @@ public class AppConfig {
 	private final String modelOntologyPath;
 	private final Map<String, String> formAssociationPaths;
 	private final Map<String, String> lanesDescriptions;
+	private final String baseURI;
 	
 	public AppConfig(Map<String, String> bpmnOntologyPaths, String modelOntologyPath,
-			Map<String, String> formAssociationPaths, Map<String, String> lanesDescriptions) {
+			Map<String, String> formAssociationPaths, Map<String, String> lanesDescriptions,
+			String baseURI) {
 		this.bpmnOntologyPaths = bpmnOntologyPaths;
 		this.modelOntologyPath = modelOntologyPath;
 		this.formAssociationPaths = formAssociationPaths;
 		this.lanesDescriptions = lanesDescriptions;
+		this.baseURI = baseURI;
 	}
 	
     @Bean
@@ -87,7 +90,7 @@ public class AppConfig {
     		
     		SimpleEngine simpleEngine = new SimpleEngine(
     				new OntologySimulator(bpmnOntology),
-    				new OntologyModelManipulator(modelOntology, form));
+    				new OntologyModelManipulator(modelOntology, form, baseURI));
     		
     		engines.put(lane, simpleEngine);
     	}

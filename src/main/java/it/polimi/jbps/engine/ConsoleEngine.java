@@ -72,8 +72,11 @@ public class ConsoleEngine {
 				
 				Action actionToApply = (Action) action.clone();
 				actionToApply.setPropertyAssignments(propertiesAssignmentToApply);
+				
+				List<Action> actionsToApply = newLinkedList();
+				actionsToApply.add(actionToApply);
 				try {
-					manipulator.execute(actionToApply);
+					manipulator.execute(actionsToApply);
 				} catch (InvalidPropertyAssignment e) {
 					System.out.println("Error occure while setting properties");
 					e.printStackTrace();

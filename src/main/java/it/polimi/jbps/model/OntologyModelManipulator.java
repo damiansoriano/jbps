@@ -6,7 +6,7 @@ import static it.polimi.jbps.utils.ObjectUtils.not;
 import static it.polimi.jbps.utils.OntologyUtils.getIndividuals;
 import it.polimi.jbps.actions.Action;
 import it.polimi.jbps.actions.PropertyAssignment;
-import it.polimi.jbps.bpmn.simulation.SimulationState;
+import it.polimi.jbps.entities.SimulationState;
 import it.polimi.jbps.exception.InvalidPropertyAssignment;
 import it.polimi.jbps.form.Form;
 

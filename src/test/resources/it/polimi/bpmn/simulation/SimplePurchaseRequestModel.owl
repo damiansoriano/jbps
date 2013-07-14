@@ -36,6 +36,7 @@
 
     <owl:ObjectProperty rdf:about="&PurchaseRequestModel;purchaseRequestClient">
         <rdf:type rdf:resource="&owl;FunctionalProperty"/>
+        <rdfs:label rdf:datatype="&xsd;string">Purchase Request Client</rdfs:label>
         <rdfs:range rdf:resource="&PurchaseRequestModel;Person"/>
         <rdfs:domain rdf:resource="&PurchaseRequestModel;PurchaseRequest"/>
         <owl:propertyDisjointWith rdf:resource="&PurchaseRequestModel;purchaseRequestResponsible"/>
@@ -46,6 +47,7 @@
     <!-- http://www.semanticweb.org/ontologies/2013/5/PurchaseRequestModel.owl#purchaseRequestResponsible -->
 
     <owl:ObjectProperty rdf:about="&PurchaseRequestModel;purchaseRequestResponsible">
+        <rdfs:label rdf:datatype="&xsd;string">Purchase Request Responsible</rdfs:label>
         <rdfs:range rdf:resource="&PurchaseRequestModel;Person"/>
         <rdfs:domain rdf:resource="&PurchaseRequestModel;PurchaseRequest"/>
     </owl:ObjectProperty>
@@ -65,13 +67,17 @@
 
     <!-- http://www.semanticweb.org/ontologies/2013/5/PurchaseRequestModel.owl#Person -->
 
-    <owl:Class rdf:about="&PurchaseRequestModel;Person"/>
+    <owl:Class rdf:about="&PurchaseRequestModel;Person">
+        <rdfs:label rdf:datatype="&xsd;string">Person</rdfs:label>
+    </owl:Class>
     
 
 
     <!-- http://www.semanticweb.org/ontologies/2013/5/PurchaseRequestModel.owl#PurchaseRequest -->
 
-    <owl:Class rdf:about="&PurchaseRequestModel;PurchaseRequest"/>
+    <owl:Class rdf:about="&PurchaseRequestModel;PurchaseRequest">
+        <rdfs:label rdf:datatype="&xsd;string">PurchaseRequest</rdfs:label>
+    </owl:Class>
     
 
 

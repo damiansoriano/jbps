@@ -1,17 +1,18 @@
 package it.polimi.jbps.actions;
 
+import it.polimi.jbps.PropertyType;
+import it.polimi.jbps.entities.JBPSIndividual;
+import it.polimi.jbps.entities.JBPSProperty;
+
 import java.util.List;
 
-import com.hp.hpl.jena.ontology.Individual;
-
-import it.polimi.jbps.PropertyType;
 import lombok.Getter;
 import lombok.Setter;
 
 public class PropertyAssignment {
 	
 	@Getter @Setter
-	protected String propertyURI;
+	protected JBPSProperty jbpsProperty;
 	
 	@Getter @Setter
 	protected String propertyValue;
@@ -29,12 +30,16 @@ public class PropertyAssignment {
 	public boolean isDataProperty() {
 		return propertyType.equals(PropertyType.DATA_PROPERTY);
 	}
+	
+	public String getPropertyURI() {
+		return jbpsProperty.getURI();
+	}
 
 	@Override
 	public Object clone()  {
 		PropertyAssignment propertyAssignment = new PropertyAssignment();
 		
-		propertyAssignment.propertyURI = this.propertyURI;
+		propertyAssignment.jbpsProperty = this.jbpsProperty;
 		propertyAssignment.propertyValue = this.propertyValue;
 		propertyAssignment.propertyType = this.propertyType;
 		propertyAssignment.possibleAssignments = this.possibleAssignments;

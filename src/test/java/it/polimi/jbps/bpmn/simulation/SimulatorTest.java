@@ -5,6 +5,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import it.polimi.jbps.entities.SimulationState;
+import it.polimi.jbps.entities.SimulationTransition;
 import it.polimi.jbps.exception.BPMNInvalidTransition;
 
 import java.util.Map;
@@ -40,7 +42,6 @@ public abstract class SimulatorTest {
 	}
 	
 	@Test
-	@Ignore
 	public void getStateFromURIWhenNotExists() {
 		OntModel bpmnOntology = getOntologyFromFile(bpmnOntologyPath);
 		Simulator simulator = getSimulator(bpmnOntology);
@@ -76,7 +77,7 @@ public abstract class SimulatorTest {
 		SimulationState createPurchaseOrder = simulator.getStateFromURI(createPurchaseOrderURI);
 		SimulationState startSimulation = simulator.startSimulation();
 		
-		assertEquals(createPurchaseOrder, startSimulation);
+		assertEquals(createPurchaseOrder.getStateURI(), startSimulation.getStateURI());
 	}
 	
 	@Test
@@ -100,7 +101,7 @@ public abstract class SimulatorTest {
 		SimulationState authorizePurchaseOrder = simulator.getStateFromURI(authorizePurchaseOrderURI);
 		
 		assertTrue(nextStates.containsKey(sfRequestAuthorization));
-		assertEquals(authorizePurchaseOrder, nextStates.get(sfRequestAuthorization));
+		assertEquals(authorizePurchaseOrder.getStateURI(), nextStates.get(sfRequestAuthorization).getStateURI());
 	}
 	
 	@Test
@@ -120,8 +121,8 @@ public abstract class SimulatorTest {
 		SimulationState endPurchaseOrder = simulator.getStateFromURI(endPurchaseOrderURI);
 		SimulationState changePurchaseOrder = simulator.getStateFromURI(changePurchaseOrderURI);
 		
-		assertEquals(endPurchaseOrder, nextStates.get(sfAuthorizePurchaseOrder));
-		assertEquals(changePurchaseOrder, nextStates.get(sfRejectPurchaseOrder));
+		assertEquals(endPurchaseOrder.getStateURI(), nextStates.get(sfAuthorizePurchaseOrder).getStateURI());
+		assertEquals(changePurchaseOrder.getStateURI(), nextStates.get(sfRejectPurchaseOrder).getStateURI());
 	}
 	
 	@Test
@@ -155,7 +156,7 @@ public abstract class SimulatorTest {
 		SimulationState state = simulator.move(createPurchaseOrder, sfRequestAuthorization);
 		
 		SimulationState authorizePurchaseOrder = simulator.getStateFromURI(authorizePurchaseOrderURI);
-		assertEquals(authorizePurchaseOrder, state);
+		assertEquals(authorizePurchaseOrder.getStateURI(), state.getStateURI());
 	}
 	
 	@Test(expected = BPMNInvalidTransition.class)

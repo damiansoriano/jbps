@@ -7,6 +7,8 @@ import static it.polimi.jbps.utils.ObjectUtils.isNull;
 import it.polimi.jbps.actions.Action;
 import it.polimi.jbps.actions.ActionType;
 import it.polimi.jbps.actions.PropertyAssignment;
+import it.polimi.jbps.entities.JBPSClass;
+import it.polimi.jbps.entities.JBPSProperty;
 
 import java.io.IOException;
 import java.util.Iterator;
@@ -16,6 +18,9 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.hp.hpl.jena.ontology.OntClass;
+import com.hp.hpl.jena.ontology.OntModel;
+import com.hp.hpl.jena.ontology.OntProperty;
 
 public class Json2ModelAction {
 	
@@ -27,7 +32,7 @@ public class Json2ModelAction {
 	protected final String PROPERTY_URI = "propertyURI";
 	protected final String PROPERTY_VALUE = "propertyValue";
 	
-	public List<Action> parseJson(String json) throws JsonParseException, JsonMappingException, IOException {
+	public List<Action> parseJson(String json, OntModel ontologyModel) throws JsonParseException, JsonMappingException, IOException {
 		List<Action> actions = newLinkedList();
 		
 		ObjectMapper mapper = new ObjectMapper();
@@ -45,7 +50,10 @@ public class Json2ModelAction {
 			action.setActionType(ActionType.INSERT);
 			
 			String classURI = insert.get(CLASS_URI).textValue();
-			action.setClassURI(classURI);
+			
+			OntClass ontClass = ontologyModel.getOntClass(classURI);
+			
+			action.setJbpsClass(new JBPSClass(ontClass));
 			
 			if(isNotNull(insert.get(INDIVIDUAL_URI))) {
 				action.setIndividualURI(insert.get(INDIVIDUAL_URI).textValue());
@@ -54,7 +62,7 @@ public class Json2ModelAction {
 			Iterator<JsonNode> propertyValuesIterator = insert.get(PROPERTY_VALUES).elements();
 			while(propertyValuesIterator.hasNext()) {
 				JsonNode propertyValue = propertyValuesIterator.next();
-				action.getPropertyAssignments().add(parsePropertyAssignment(propertyValue));
+				action.getPropertyAssignments().add(parsePropertyAssignment(propertyValue, ontologyModel));
 			}
 			
 			actions.add(action);
@@ -63,10 +71,12 @@ public class Json2ModelAction {
 		return actions;
 	}
 	
-	public PropertyAssignment parsePropertyAssignment(JsonNode jsonNode) {
+	public PropertyAssignment parsePropertyAssignment(JsonNode jsonNode, OntModel ontologyModel) {
 		PropertyAssignment propertyAssignment = new PropertyAssignment();
 		
-		propertyAssignment.setPropertyURI(jsonNode.get(PROPERTY_URI).textValue());
+		String propertyURI = jsonNode.get(PROPERTY_URI).textValue();
+		OntProperty property = ontologyModel.getOntProperty(propertyURI);
+		propertyAssignment.setJbpsProperty(new JBPSProperty(property));
 		
 		String propertyType = jsonNode.get(PROPERTY_TYPE).textValue();
 		propertyAssignment.setPropertyType(parsePropertyType(propertyType));

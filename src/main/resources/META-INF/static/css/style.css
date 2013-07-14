@@ -9,4 +9,48 @@ body > div {
 	padding: 15px;
 	border-left: 1px solid #e0e0e0;
 	border-right: 1px solid #e0e0e0;
-} 
+}
+
+#header{
+    width: 960px;
+    margin: 10px auto;
+    padding-bottom: 40px;
+}
+
+#headerNavigation {
+	float: right;
+}
+.navMenu {
+	margin-right: 20px;
+}
+
+.navMenu a {
+    color: black;
+    outline: none;
+    text-decoration:none;
+}
+
+.currentStateDescription {
+	margin-bottom: 20px;
+}
+
+.actionTypeDescription, .classDescription {
+	margin: 10px;
+}
+
+.propertyAssignmentsTable {
+	margin-top: 20px;
+}
+
+.propertyAssignmentSelect {
+	width: 500px;
+}
+
+#welcomeMessage {
+	font-size: 130%;
+}
+
+#homeLanes {
+	margin: 20px;
+	font-size: 110%;
+}

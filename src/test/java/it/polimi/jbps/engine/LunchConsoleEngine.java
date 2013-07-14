@@ -43,7 +43,7 @@ public class LunchConsoleEngine {
 		File formAssociationFile = new File(formAssociationPath);
 		String formAssociationJson = Files.toString(formAssociationFile, Charsets.UTF_8);
 		
-		List<Action> actions = json2ModelAction.parseJson(formAssociationJson);
+		List<Action> actions = json2ModelAction.parseJson(formAssociationJson, modelOntology);
 		
 		Map<String, List<Action>> configurationMap = newHashMap();
 		configurationMap.put(createPurchaseOrderURI, actions);

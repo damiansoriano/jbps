@@ -19,9 +19,65 @@
      xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
      xmlns:BPMN_Ontology="http://dkm.fbk.eu/index.php/BPMN_Ontology#"
      xmlns:PurchaseRequest="http://www.semanticweb.org/ontologies/2013/5/PurchaseRequest.owl#">
-    <owl:Ontology rdf:about="http://www.semanticweb.org/ontologies/2013/5/PurchaseRequest.owl">
-        <!--<owl:imports rdf:resource="http://dkm.fbk.eu/index.php/BPMN_Ontology"/>-->
-    </owl:Ontology>
+    <owl:Ontology rdf:about="http://www.semanticweb.org/ontologies/2013/5/PurchaseRequest.owl"/>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Annotation properties
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://dkm.fbk.eu/index.php/BPMN_Ontology#has_sequence_flow_source_ref -->
+
+    <owl:AnnotationProperty rdf:about="&BPMN_Ontology;has_sequence_flow_source_ref"/>
+    
+
+
+    <!-- http://dkm.fbk.eu/index.php/BPMN_Ontology#has_sequence_flow_target_ref -->
+
+    <owl:AnnotationProperty rdf:about="&BPMN_Ontology;has_sequence_flow_target_ref"/>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Classes
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://dkm.fbk.eu/index.php/BPMN_Ontology#end_event -->
+
+    <owl:Class rdf:about="&BPMN_Ontology;end_event"/>
+    
+
+
+    <!-- http://dkm.fbk.eu/index.php/BPMN_Ontology#sequence_flow -->
+
+    <owl:Class rdf:about="&BPMN_Ontology;sequence_flow"/>
+    
+
+
+    <!-- http://dkm.fbk.eu/index.php/BPMN_Ontology#start_event -->
+
+    <owl:Class rdf:about="&BPMN_Ontology;start_event"/>
+    
+
+
+    <!-- http://dkm.fbk.eu/index.php/BPMN_Ontology#user_task -->
+
+    <owl:Class rdf:about="&BPMN_Ontology;user_task"/>
     
 
 
@@ -40,6 +96,7 @@
 
     <owl:NamedIndividual rdf:about="&PurchaseRequest;authorizePurchaseOrder">
         <rdf:type rdf:resource="&BPMN_Ontology;user_task"/>
+        <rdfs:label rdf:datatype="&xsd;string">Authorize Purchase Order</rdfs:label>
     </owl:NamedIndividual>
     
 
@@ -48,6 +105,7 @@
 
     <owl:NamedIndividual rdf:about="&PurchaseRequest;changePurchaseOrder">
         <rdf:type rdf:resource="&BPMN_Ontology;user_task"/>
+        <rdfs:label rdf:datatype="&xsd;string">Change Purchase Order</rdfs:label>
     </owl:NamedIndividual>
     
 
@@ -56,6 +114,7 @@
 
     <owl:NamedIndividual rdf:about="&PurchaseRequest;createPurchaseOrder">
         <rdf:type rdf:resource="&BPMN_Ontology;user_task"/>
+        <rdfs:label rdf:datatype="&xsd;string">Create Purchase Order</rdfs:label>
     </owl:NamedIndividual>
     
 
@@ -64,6 +123,7 @@
 
     <owl:NamedIndividual rdf:about="&PurchaseRequest;endPurchaseOrder">
         <rdf:type rdf:resource="&BPMN_Ontology;end_event"/>
+        <rdfs:label rdf:datatype="&xsd;string">End Purchase Order</rdfs:label>
     </owl:NamedIndividual>
     
 
@@ -72,6 +132,7 @@
 
     <owl:NamedIndividual rdf:about="&PurchaseRequest;sfAuthorizePurchaseOrder">
         <rdf:type rdf:resource="&BPMN_Ontology;sequence_flow"/>
+        <rdfs:label rdf:datatype="&xsd;string">Authorize Purchase Order</rdfs:label>
         <BPMN_Ontology:has_sequence_flow_source_ref rdf:resource="&PurchaseRequest;authorizePurchaseOrder"/>
         <BPMN_Ontology:has_sequence_flow_target_ref rdf:resource="&PurchaseRequest;endPurchaseOrder"/>
     </owl:NamedIndividual>
@@ -82,6 +143,7 @@
 
     <owl:NamedIndividual rdf:about="&PurchaseRequest;sfRejectPurchaseOrder">
         <rdf:type rdf:resource="&BPMN_Ontology;sequence_flow"/>
+        <rdfs:label rdf:datatype="&xsd;string">Reject Purchase Order</rdfs:label>
         <BPMN_Ontology:has_sequence_flow_source_ref rdf:resource="&PurchaseRequest;authorizePurchaseOrder"/>
         <BPMN_Ontology:has_sequence_flow_target_ref rdf:resource="&PurchaseRequest;changePurchaseOrder"/>
     </owl:NamedIndividual>
@@ -92,6 +154,7 @@
 
     <owl:NamedIndividual rdf:about="&PurchaseRequest;sfRequestAuthorization">
         <rdf:type rdf:resource="&BPMN_Ontology;sequence_flow"/>
+        <rdfs:label rdf:datatype="&xsd;string">Request Authorization</rdfs:label>
         <BPMN_Ontology:has_sequence_flow_target_ref rdf:resource="&PurchaseRequest;authorizePurchaseOrder"/>
         <BPMN_Ontology:has_sequence_flow_source_ref rdf:resource="&PurchaseRequest;createPurchaseOrder"/>
     </owl:NamedIndividual>
@@ -102,6 +165,7 @@
 
     <owl:NamedIndividual rdf:about="&PurchaseRequest;sfRequestAuthorization2">
         <rdf:type rdf:resource="&BPMN_Ontology;sequence_flow"/>
+        <rdfs:label rdf:datatype="&xsd;string">Request Authorization</rdfs:label>
         <BPMN_Ontology:has_sequence_flow_target_ref rdf:resource="&PurchaseRequest;authorizePurchaseOrder"/>
         <BPMN_Ontology:has_sequence_flow_source_ref rdf:resource="&PurchaseRequest;changePurchaseOrder"/>
     </owl:NamedIndividual>
@@ -112,6 +176,7 @@
 
     <owl:NamedIndividual rdf:about="&PurchaseRequest;sfStartPurchaseOrder">
         <rdf:type rdf:resource="&BPMN_Ontology;sequence_flow"/>
+        <rdfs:label rdf:datatype="&xsd;string">Start Purchase Order</rdfs:label>
         <BPMN_Ontology:has_sequence_flow_target_ref rdf:resource="&PurchaseRequest;createPurchaseOrder"/>
         <BPMN_Ontology:has_sequence_flow_source_ref rdf:resource="&PurchaseRequest;startPurchaseOrder"/>
     </owl:NamedIndividual>
@@ -122,6 +187,7 @@
 
     <owl:NamedIndividual rdf:about="&PurchaseRequest;startPurchaseOrder">
         <rdf:type rdf:resource="&BPMN_Ontology;start_event"/>
+        <rdfs:label rdf:datatype="&xsd;string">Start Purchase Order</rdfs:label>
     </owl:NamedIndividual>
 </rdf:RDF>
 

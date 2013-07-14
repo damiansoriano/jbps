@@ -1,6 +1,7 @@
 package it.polimi.jbps.actions;
 
 import static com.google.common.collect.Lists.newLinkedList;
+import it.polimi.jbps.entities.JBPSClass;
 
 import java.util.List;
 
@@ -13,7 +14,7 @@ public class Action {
 	private ActionType actionType;
 	
 	@Getter @Setter
-	private String classURI;
+	private JBPSClass jbpsClass;
 	
 	@Getter @Setter
 	private String individualURI;
@@ -26,12 +27,16 @@ public class Action {
 		individualURI = "";
 	}
 	
+	public String getClassURI() {
+		return jbpsClass.getURI();
+	}
+	
 	@Override
 	public Object clone()  {
 		Action action = new Action();
 		
 		action.actionType = this.actionType;
-		action.classURI = this.classURI;
+		action.jbpsClass = this.jbpsClass;
 		action.individualURI = this.individualURI;
 		action.propertyAssignments = this.propertyAssignments;
 		

@@ -1,15 +1,16 @@
 package it.polimi.jbps.web.controller;
 
+import static com.google.common.collect.Lists.newLinkedList;
 import static com.google.common.collect.Maps.newHashMap;
-import static it.polimi.jbps.utils.ObjectUtils.isNull;
 import static it.polimi.jbps.utils.ObjectUtils.not;
 import it.polimi.jbps.actions.Action;
-import it.polimi.jbps.bpmn.simulation.SimulationState;
-import it.polimi.jbps.bpmn.simulation.SimulationTransition;
 import it.polimi.jbps.engine.Engine;
+import it.polimi.jbps.entities.SimulationState;
+import it.polimi.jbps.entities.SimulationTransition;
 import it.polimi.jbps.exception.BPMNInvalidTransition;
 import it.polimi.jbps.exception.InvalidPropertyAssignment;
 
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
@@ -20,6 +21,7 @@ import lombok.extern.log4j.Log4j;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -27,39 +29,69 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @Log4j
 public class EngineController {
 	
-	private final Engine engine;
-	private SimulationState currentState;
+	private final Map<String, Engine> engines;
+	private final Map<String, String> lanesDescriptions;
+	private Map<String, SimulationState> enginesCurrentStates;
 	
-	public EngineController(Engine engine) {
-		this.engine = engine;
+	public EngineController(Map<String, Engine> engines, Map<String, String> lanesDescriptions) {
+		this.engines = engines;
+		this.lanesDescriptions = lanesDescriptions;
+		enginesCurrentStates = newHashMap();
 	}
 	
 	@RequestMapping(value = "/")
-    public String home() {
-		System.out.println("home");
+    public String home(HttpServletRequest request, ModelMap model) {
+		log.info(request);
+		
+		List<String> lanes = newLinkedList(engines.keySet());
+		Collections.sort(lanes);
+		model.addAttribute("lanes", lanes);
+		
+		Map<String, String> newLanesDescriptions = newHashMap();
+		for (String lane : lanes) {
+			if (lanesDescriptions.containsKey(lane)) {
+				newLanesDescriptions.put(lane, lanesDescriptions.get(lane));
+			} else {
+				newLanesDescriptions.put(lane, lane);
+			}
+		}
+		
+		model.addAttribute("lanesDescriptions", newLanesDescriptions);
+		
 		return "home";
     }
 	
-	@RequestMapping(value = "/startSimulation")
-    public String startSimulation(HttpServletRequest request, ModelMap model) {
-		log.info(request);
-		currentState = engine.startSimulation();
-		return "redirect:/currentState";
-	}
-	
-	@RequestMapping(value = "/currentState")
-    public String simulationState(HttpServletRequest request, ModelMap model) {
+	@RequestMapping(value = "/{lane}/startSimulation")
+    public String startSimulation(@PathVariable String lane, HttpServletRequest request, ModelMap model) {
 		log.info(request);
 		
-		if (isNull(currentState)) {
-			return "redirect:/startSimulation";
+		Engine engine = engines.get(lane);
+		SimulationState currentState = engine.startSimulation();
+		enginesCurrentStates.put(lane, currentState);
+		
+		return String.format("redirect:/%s/currentState", lane);
+	}
+	
+	@RequestMapping(value = "/{lane}/currentState")
+    public String simulationState(@PathVariable String lane, HttpServletRequest request, ModelMap model) {
+		log.info(request);
+		
+		if (not(engines.containsKey(lane))) {
+			return String.format("redirect:/%s/noDefinedLane", lane);
 		}
+		
+		if (not(enginesCurrentStates.containsKey(lane))) {
+			return String.format("redirect:/%s/startSimulation", lane);
+		}
+		
+		Engine engine = engines.get(lane);
+		SimulationState currentState = enginesCurrentStates.get(lane);
 		
 		if(engine.isEndState(currentState)) {
 			return "successfullyFinished";
 		}
 		
-		model.addAttribute("currentStateURI", currentState.getStateURI());
+		model.addAttribute("currentState", currentState);
 		
 		List<Action> actions = engine.getActionsWithPossibleAssignments(currentState);
 		
@@ -77,11 +109,21 @@ public class EngineController {
 		return "state";
     }
 	
-	@RequestMapping(value = "/makeTransition", method = RequestMethod.POST)
-    public String makeTransition(HttpServletRequest request, ModelMap model) throws InvalidPropertyAssignment, BPMNInvalidTransition {
+	@RequestMapping(value = "/{lane}/makeTransition", method = RequestMethod.POST)
+    public String makeTransition(@PathVariable String lane, HttpServletRequest request, ModelMap model)
+    		throws InvalidPropertyAssignment, BPMNInvalidTransition {
 		log.info(request);
 		
-		log.info("currentState: " + currentState);
+		if (not(engines.containsKey(lane))) {
+			return String.format("redirect:/%s/noDefinedLane", lane);
+		}
+		
+		if (not(enginesCurrentStates.containsKey(lane))) {
+			return String.format("redirect:/%s/startSimulation", lane);
+		}
+		
+		Engine engine = engines.get(lane);
+		SimulationState currentState = enginesCurrentStates.get(lane);
 		
 		Map<String, String> assignments = newHashMap();
 		
@@ -95,14 +137,14 @@ public class EngineController {
 				assignments.put(key, parameterValues[0]);
 			}
 		}
-		log.info("assignments: " + assignments);
 		
 		String[] transitions = request.getParameterValues("transition");
 		String transition = transitions[0];
-		log.info("transition: " + transition);
 		
 		currentState = engine.makeTransition(currentState, assignments, transition);
 		
-		return "redirect:/currentState";
+		enginesCurrentStates.put(lane, currentState);
+		
+		return String.format("redirect:/%s/currentState", lane);
 	}
 }

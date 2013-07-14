@@ -6,7 +6,7 @@ import com.hp.hpl.jena.ontology.Individual;
 
 import it.polimi.jbps.actions.Action;
 import it.polimi.jbps.actions.PropertyAssignment;
-import it.polimi.jbps.bpmn.simulation.SimulationState;
+import it.polimi.jbps.entities.SimulationState;
 import it.polimi.jbps.exception.InvalidPropertyAssignment;
 
 public interface ModelManipulator {

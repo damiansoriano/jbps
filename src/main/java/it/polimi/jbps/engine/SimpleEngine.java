@@ -1,11 +1,11 @@
 package it.polimi.jbps.engine;
 
 import it.polimi.jbps.actions.Action;
-import it.polimi.jbps.actions.JBPSIndividual;
 import it.polimi.jbps.actions.PropertyAssignment;
-import it.polimi.jbps.bpmn.simulation.SimulationState;
-import it.polimi.jbps.bpmn.simulation.SimulationTransition;
 import it.polimi.jbps.bpmn.simulation.Simulator;
+import it.polimi.jbps.entities.JBPSIndividual;
+import it.polimi.jbps.entities.SimulationState;
+import it.polimi.jbps.entities.SimulationTransition;
 import it.polimi.jbps.exception.BPMNInvalidTransition;
 import it.polimi.jbps.exception.InvalidPropertyAssignment;
 import it.polimi.jbps.model.ModelManipulator;

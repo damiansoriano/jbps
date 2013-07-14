@@ -11,6 +11,7 @@ import java.util.Map;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Files;
+import com.hp.hpl.jena.ontology.OntModel;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -20,7 +21,7 @@ public class FormsConfiguration {
 	@Getter @Setter
 	private Map<String, List<Action>> configuration;
 	
-	public static FormsConfiguration createFromFiles(Map<String, String> stateFileMap) throws IOException {
+	public static FormsConfiguration createFromFiles(Map<String, String> stateFileMap, OntModel ontologyModel) throws IOException {
 		Json2ModelAction json2Model = new Json2ModelAction();
 		
 		Map<String, List<Action>> stateActionsMap = newHashMap();
@@ -28,7 +29,7 @@ public class FormsConfiguration {
 		for (String state : stateFileMap.keySet()) {
 			File file = new File(stateFileMap.get(state));
 			String json = Files.toString(file, Charsets.UTF_8);
-			List<Action> actions = json2Model.parseJson(json);
+			List<Action> actions = json2Model.parseJson(json, ontologyModel);
 			stateActionsMap.put(state, actions);
 		}
 		FormsConfiguration formsConfiguration = new FormsConfiguration();

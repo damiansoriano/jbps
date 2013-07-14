@@ -1,12 +1,24 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Insert title here</title>
-</head>
+<%@include file="parts/head.jsp" %>
+
 <body>
-HOLA!
+    <%@include file="parts/headerHome.jsp" %>
+    <div>
+        <div id="welcomeMessage">
+            Welcome to the Java Business Process Simulator, choose one of the following
+            applications in order execute.
+        </div>
+        
+        <div id="homeLanes">
+	        <ul>
+	        <c:forEach items="${lanes}" var="lane">
+		        <li>
+		            <a href="/${lane}/startSimulation">
+		                <c:out value="${lanesDescriptions.get(lane)}"/>
+		            </a>
+		        </li>
+	        </c:forEach>
+	        </ul>
+        </div>
+    </div>
 </body>
-</html>
+<%@include file="parts/bottom.jsp" %>

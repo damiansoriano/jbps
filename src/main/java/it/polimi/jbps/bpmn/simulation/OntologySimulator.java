@@ -1,11 +1,15 @@
 package it.polimi.jbps.bpmn.simulation;
 
+import static it.polimi.jbps.utils.ObjectUtils.isNull;
 import static com.google.common.collect.Lists.newLinkedList;
 import static com.google.common.collect.Maps.newHashMap;
 import static it.polimi.jbps.utils.OntologyUtils.getIndividuals;
 import static it.polimi.jbps.utils.OntologyUtils.getIndividualsInDomain;
 import static it.polimi.jbps.utils.OntologyUtils.getIndividualsInRange;
 import it.polimi.jbps.constants.BPMNConstants;
+import it.polimi.jbps.entities.JBPSIndividual;
+import it.polimi.jbps.entities.SimulationState;
+import it.polimi.jbps.entities.SimulationTransition;
 import it.polimi.jbps.exception.BPMNInvalidTransition;
 
 import java.util.List;
@@ -36,7 +40,7 @@ public class OntologySimulator implements Simulator {
 	private List<SimulationState> getStartStates() {
 		List<SimulationState> startEvents = newLinkedList();
 		for(Individual individual : getIndividuals(bpmnOntologyModel, BPMNConstants.EVENT_START_URI)) {
-			startEvents.add(new SimulationState(individual.getURI()));
+			startEvents.add(new SimulationState(new JBPSIndividual(individual)));
 		}
 		return startEvents;
 	}
@@ -45,13 +49,17 @@ public class OntologySimulator implements Simulator {
 	public Map<SimulationTransition, SimulationState> getNextStates(SimulationState state) {
 		Map<SimulationTransition, SimulationState> nextStates = newHashMap();
 		
-		Individual stateIndividual = bpmnOntologyModel.getIndividual(state.getStateURI());
+		Individual stateIndividual = state.getState().getIndividual();
 		Property sequenceFlowSource = bpmnOntologyModel.getProperty(BPMNConstants.SEQUENCE_FLOW_SOURCE_URI);
 		Property sequenceFlowTarget = bpmnOntologyModel.getProperty(BPMNConstants.SEQUENCE_FLOW_TARGET_URI);
 		
 		for (Individual seqenceFlow: getIndividualsInDomain(bpmnOntologyModel, sequenceFlowSource, stateIndividual)){
 			for(Individual nextStateIndividual : getIndividualsInRange(bpmnOntologyModel, seqenceFlow, sequenceFlowTarget)) {
-				nextStates.put(new SimulationTransition(seqenceFlow.getURI()), new SimulationState(nextStateIndividual.getURI()));
+				Individual transitionIndividual = bpmnOntologyModel.getIndividual(seqenceFlow.getURI());
+				
+				nextStates.put(
+						new SimulationTransition(new JBPSIndividual(transitionIndividual)),
+						new SimulationState(new JBPSIndividual(nextStateIndividual)));
 			}
 		}
 		
@@ -77,11 +85,16 @@ public class OntologySimulator implements Simulator {
 
 	@Override
 	public SimulationTransition getTransitionFromURI(String transitionURI) {
-		return new SimulationTransition(transitionURI);
+		Individual individual = bpmnOntologyModel.getIndividual(transitionURI);
+		return new SimulationTransition(new JBPSIndividual(individual));
 	}
 
 	@Override
 	public SimulationState getStateFromURI(String stateURI) {
-		return new SimulationState(stateURI);
+		Individual individual = bpmnOntologyModel.getIndividual(stateURI);
+		if (isNull(individual)) {
+			return null;
+		}
+		return new SimulationState(new JBPSIndividual(individual));
 	}
 }

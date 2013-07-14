@@ -11,8 +11,8 @@ import it.polimi.jbps.PropertyType;
 import it.polimi.jbps.actions.Action;
 import it.polimi.jbps.actions.ActionType;
 import it.polimi.jbps.actions.PropertyAssignment;
-import it.polimi.jbps.bpmn.simulation.SimulationState;
 import it.polimi.jbps.bpmn.simulation.Simulator;
+import it.polimi.jbps.entities.SimulationState;
 import it.polimi.jbps.exception.InvalidPropertyAssignment;
 import it.polimi.jbps.form.Form;
 import it.polimi.jbps.form.FormsConfiguration;
@@ -56,7 +56,7 @@ public abstract class ModelManipulatorTest {
 		
 		Map<String, String> map = newHashMap();
 		map.put(createPurchaseOrderURI, inputDataExample);
-		Form form = new Form(FormsConfiguration.createFromFiles(map));
+		Form form = new Form(FormsConfiguration.createFromFiles(map, modelOntology));
 		
 		ModelManipulator manipulator = getModelManipulator(modelOntology, form);
 		Simulator simulator = getSimulator(bpmnOntology);
@@ -70,6 +70,7 @@ public abstract class ModelManipulatorTest {
 		Action action = actions.get(0);
 		assertEquals(ActionType.INSERT, action.getActionType());
 		assertEquals(purchaseRequestClassURI, action.getClassURI());
+		assertEquals("PurchaseRequest", action.getJbpsClass().toString());
 		assertEquals(purchaseRequest01URI, action.getIndividualURI());
 		
 		List<PropertyAssignment> propertyAssignments = action.getPropertyAssignments();
@@ -103,7 +104,7 @@ public abstract class ModelManipulatorTest {
 		
 		Map<String, String> map = newHashMap();
 		map.put(createPurchaseOrderURI, inputDataExample);
-		Form form = new Form(FormsConfiguration.createFromFiles(map));
+		Form form = new Form(FormsConfiguration.createFromFiles(map, modelOntology));
 		
 		ModelManipulator manipulator = getModelManipulator(modelOntology, form);
 		Simulator simulator = getSimulator(bpmnOntology);
@@ -185,7 +186,7 @@ public abstract class ModelManipulatorTest {
 		
 		Map<String, String> map = newHashMap();
 		map.put(createPurchaseOrderURI, inputDataExample);
-		Form form = new Form(FormsConfiguration.createFromFiles(map));
+		Form form = new Form(FormsConfiguration.createFromFiles(map, modelOntology));
 		
 		ModelManipulator manipulator = getModelManipulator(modelOntology, form);
 		Simulator simulator = getSimulator(bpmnOntology);

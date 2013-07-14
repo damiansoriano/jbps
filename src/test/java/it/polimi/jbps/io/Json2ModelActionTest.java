@@ -1,6 +1,7 @@
 package it.polimi.jbps.io;
 
 import static it.polimi.jbps.PropertyType.OBJECT_PROPERTY;
+import static it.polimi.jbps.utils.OntologyUtils.getOntologyFromFile;
 import static org.junit.Assert.*;
 import it.polimi.jbps.actions.Action;
 import it.polimi.jbps.actions.ActionType;
@@ -15,16 +16,21 @@ import org.junit.Test;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Files;
+import com.hp.hpl.jena.ontology.OntModel;
 
 public class Json2ModelActionTest {
-
+	
+	private final static String modelOntologyPath = "./src/test/resources/it/polimi/bpmn/simulation/SimplePurchaseRequestModel.owl";
+	
 	@Test
 	public void correctlyGenerateInputDataExample() throws IOException {
 		File inputFile = new File("./src/test/resources/it/polimi/bpmn/simulation/inputDataExampleWith2Actions.json");
 		String inputJson = Files.toString(inputFile, Charsets.UTF_8);
 		
+		OntModel modelOntology = getOntologyFromFile(modelOntologyPath);
+		
 		Json2ModelAction json2ModelAction = new Json2ModelAction();
-		List<Action> actions = json2ModelAction.parseJson(inputJson);
+		List<Action> actions = json2ModelAction.parseJson(inputJson, modelOntology);
 		assertEquals(2, actions.size());
 		
 		Action action01 = actions.get(0);
@@ -66,8 +72,10 @@ public class Json2ModelActionTest {
 		File inputFile = new File("./src/test/resources/it/polimi/bpmn/simulation/stateFormAssociation.json");
 		String inputJson = Files.toString(inputFile, Charsets.UTF_8);
 		
+		OntModel modelOntology = getOntologyFromFile(modelOntologyPath);
+		
 		Json2ModelAction json2ModelAction = new Json2ModelAction();
-		List<Action> actions = json2ModelAction.parseJson(inputJson);
+		List<Action> actions = json2ModelAction.parseJson(inputJson, modelOntology);
 		assertEquals(1, actions.size());
 		
 		Action action = actions.get(0);

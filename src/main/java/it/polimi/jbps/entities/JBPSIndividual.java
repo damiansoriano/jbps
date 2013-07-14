@@ -1,10 +1,13 @@
-package it.polimi.jbps.actions;
+package it.polimi.jbps.entities;
 
 import static it.polimi.jbps.utils.ObjectUtils.isNullOrEmpty;
+import lombok.Getter;
+
 import com.hp.hpl.jena.ontology.Individual;
 
 public class JBPSIndividual {
 	
+	@Getter
 	private final Individual individual;
 	
 	public JBPSIndividual(Individual individual) {

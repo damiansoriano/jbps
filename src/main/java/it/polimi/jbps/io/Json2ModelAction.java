@@ -1,6 +1,7 @@
 package it.polimi.jbps.io;
 
 import static com.google.common.collect.Lists.newLinkedList;
+import static com.google.common.collect.Maps.newHashMap;
 import static it.polimi.jbps.utils.ConstantsUtils.parsePropertyType;
 import static it.polimi.jbps.utils.ObjectUtils.isNotNull;
 import static it.polimi.jbps.utils.ObjectUtils.isNull;
@@ -13,6 +14,7 @@ import it.polimi.jbps.entities.JBPSProperty;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -24,6 +26,14 @@ import com.hp.hpl.jena.ontology.OntProperty;
 
 public class Json2ModelAction {
 	
+	protected final ObjectMapper mapper;
+	
+	protected final String FORMS = "forms";
+	
+	protected final String FORM = "form";
+	protected final String STATE = "state";
+	protected final String ACTIONS = "actions";
+	
 	protected final String INSERT = "insert";
 	protected final String CLASS_URI = "classURI";
 	protected final String INDIVIDUAL_URI = "individualURI";
@@ -32,13 +42,31 @@ public class Json2ModelAction {
 	protected final String PROPERTY_URI = "propertyURI";
 	protected final String PROPERTY_VALUE = "propertyValue";
 	
-	public List<Action> parseJson(String json, OntModel ontologyModel) throws JsonParseException, JsonMappingException, IOException {
-		List<Action> actions = newLinkedList();
+	public Json2ModelAction() {
+		mapper = new ObjectMapper();
+	}
+	
+	public Map<String, List<Action>> parseFormsConfiguration(String json, OntModel ontologyModel) throws JsonParseException, JsonMappingException, IOException {
+		Map<String, List<Action>> formsConfiguration = newHashMap();
 		
-		ObjectMapper mapper = new ObjectMapper();
 		JsonNode rootNode = mapper.readValue(json, JsonNode.class);
 		
-		JsonNode inserts = rootNode.get(INSERT);
+		Iterator<JsonNode> formsIterator = rootNode.get(FORMS).elements();
+		
+		while(formsIterator.hasNext()) {
+			JsonNode formJson = formsIterator.next().get(FORM);
+			String state = formJson.get(STATE).textValue();
+			List<Action> parseJson = parseJson(formJson.get(ACTIONS), ontologyModel);
+			formsConfiguration.put(state, parseJson);
+		}
+		
+		return formsConfiguration;
+	}
+	
+	public List<Action> parseJson(JsonNode actionsNode, OntModel ontologyModel) throws JsonParseException, JsonMappingException, IOException {
+		List<Action> actions = newLinkedList();
+		
+		JsonNode inserts = actionsNode.get(INSERT);
 		if (isNull(inserts)) { return actions; }
 		
 		Iterator<JsonNode> insertIterator = inserts.elements();

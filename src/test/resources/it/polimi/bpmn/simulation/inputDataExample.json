@@ -1,18 +1,27 @@
 {
-    "insert": [
+    "forms": [
         {
-            "classURI": "http://www.semanticweb.org/ontologies/2013/5/PurchaseRequestModel.owl#PurchaseRequest",
-            "individualURI": "http://www.semanticweb.org/ontologies/2013/5/PurchaseRequestModel.owl#purchaseRequest01",
-            "propertyValues": [
-                {
-                    "propertyType": "objectProperty",
-                    "propertyURI": "http://www.semanticweb.org/ontologies/2013/5/PurchaseRequestModel.owl#purchaseRequestClient"
-                },
-                {
-                    "propertyType": "objectProperty",
-                    "propertyURI": "http://www.semanticweb.org/ontologies/2013/5/PurchaseRequestModel.owl#purchaseRequestResponsible"
+            "form": {
+                "state": "http://www.semanticweb.org/ontologies/2013/5/PurchaseRequest.owl#createPurchaseOrder",
+                "actions": {
+                    "insert": [
+                        {
+                            "classURI": "http://www.semanticweb.org/ontologies/2013/5/PurchaseRequestModel.owl#PurchaseRequest",
+                            "individualURI": "http://www.semanticweb.org/ontologies/2013/5/PurchaseRequestModel.owl#purchaseRequest01",
+                            "propertyValues": [
+                                {
+                                    "propertyType": "objectProperty",
+                                    "propertyURI": "http://www.semanticweb.org/ontologies/2013/5/PurchaseRequestModel.owl#purchaseRequestClient"
+                                },
+                                {
+                                    "propertyType": "objectProperty",
+                                    "propertyURI": "http://www.semanticweb.org/ontologies/2013/5/PurchaseRequestModel.owl#purchaseRequestResponsible"
+                                }
+                            ]
+                        }
+                    ]
                 }
-            ]
+            }
         }
     ]
 }

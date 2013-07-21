@@ -1,6 +1,5 @@
 package it.polimi.jbps.form;
 
-import static com.google.common.collect.Maps.newHashMap;
 import it.polimi.jbps.actions.Action;
 import it.polimi.jbps.io.Json2ModelAction;
 
@@ -9,31 +8,30 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
+import lombok.Getter;
+
 import com.google.common.base.Charsets;
 import com.google.common.io.Files;
 import com.hp.hpl.jena.ontology.OntModel;
 
-import lombok.Getter;
-import lombok.Setter;
-
 public class FormsConfiguration {
 	
-	@Getter @Setter
+	@Getter
 	private Map<String, List<Action>> configuration;
 	
-	public static FormsConfiguration createFromFiles(Map<String, String> stateFileMap, OntModel ontologyModel) throws IOException {
+	private FormsConfiguration() { }
+	
+	public static FormsConfiguration createFromFile(String filePath, OntModel ontologyModel) throws IOException {
+		File file = new File(filePath);
+		String json = Files.toString(file, Charsets.UTF_8);
+		
+		return createFromJson(json, ontologyModel);
+	}
+	
+	public static FormsConfiguration createFromJson(String jsonFormDefinition, OntModel ontologyModel) throws IOException {
 		Json2ModelAction json2Model = new Json2ModelAction();
-		
-		Map<String, List<Action>> stateActionsMap = newHashMap();
-		
-		for (String state : stateFileMap.keySet()) {
-			File file = new File(stateFileMap.get(state));
-			String json = Files.toString(file, Charsets.UTF_8);
-			List<Action> actions = json2Model.parseJson(json, ontologyModel);
-			stateActionsMap.put(state, actions);
-		}
 		FormsConfiguration formsConfiguration = new FormsConfiguration();
-		formsConfiguration.configuration = stateActionsMap;
+		formsConfiguration.configuration = json2Model.parseFormsConfiguration(jsonFormDefinition, ontologyModel);
 		return formsConfiguration;
 	}
 	

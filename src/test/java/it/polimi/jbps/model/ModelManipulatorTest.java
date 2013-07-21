@@ -1,8 +1,7 @@
 package it.polimi.jbps.model;
 
-import static it.polimi.jbps.utils.OntologyUtils.getOntologyFromFile;
 import static com.google.common.collect.Lists.newLinkedList;
-import static com.google.common.collect.Maps.newHashMap;
+import static it.polimi.jbps.utils.OntologyUtils.getOntologyFromFile;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -20,7 +19,6 @@ import it.polimi.jbps.form.FormsConfiguration;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 
 import org.junit.Test;
 
@@ -55,9 +53,7 @@ public abstract class ModelManipulatorTest {
 		OntModel bpmnOntology = getOntologyFromFile(bpmnOntologyPath);
 		OntModel modelOntology = getOntologyFromFile(modelOntologyPath);
 		
-		Map<String, String> map = newHashMap();
-		map.put(createPurchaseOrderURI, inputDataExample);
-		Form form = new Form(FormsConfiguration.createFromFiles(map, modelOntology));
+		Form form = new Form(FormsConfiguration.createFromFile(inputDataExample, modelOntology));
 		
 		ModelManipulator manipulator = getModelManipulator(modelOntology, form);
 		Simulator simulator = getSimulator(bpmnOntology);
@@ -102,10 +98,7 @@ public abstract class ModelManipulatorTest {
 		Individual prePurchaseRequest01 = modelOntology.getIndividual(purchaseRequest01URI);
 		assertNull(prePurchaseRequest01);
 		
-		
-		Map<String, String> map = newHashMap();
-		map.put(createPurchaseOrderURI, inputDataExample);
-		Form form = new Form(FormsConfiguration.createFromFiles(map, modelOntology));
+		Form form = new Form(FormsConfiguration.createFromFile(inputDataExample, modelOntology));
 		
 		ModelManipulator manipulator = getModelManipulator(modelOntology, form);
 		Simulator simulator = getSimulator(bpmnOntology);
@@ -185,9 +178,7 @@ public abstract class ModelManipulatorTest {
 		OntModel bpmnOntology = getOntologyFromFile(bpmnOntologyPath);
 		OntModel modelOntology = getOntologyFromFile(modelOntologyPath);
 		
-		Map<String, String> map = newHashMap();
-		map.put(createPurchaseOrderURI, inputDataExample);
-		Form form = new Form(FormsConfiguration.createFromFiles(map, modelOntology));
+		Form form = new Form(FormsConfiguration.createFromFile(inputDataExample, modelOntology));
 		
 		ModelManipulator manipulator = getModelManipulator(modelOntology, form);
 		Simulator simulator = getSimulator(bpmnOntology);
@@ -225,9 +216,7 @@ public abstract class ModelManipulatorTest {
 		OntModel bpmnOntology = getOntologyFromFile(bpmnOntologyPath);
 		OntModel modelOntology = getOntologyFromFile(modelOntologyPath);
 		
-		Map<String, String> map = newHashMap();
-		map.put(createPurchaseOrderURI, inputDataExample);
-		Form form = new Form(FormsConfiguration.createFromFiles(map, modelOntology));
+		Form form = new Form(FormsConfiguration.createFromFile(inputDataExample, modelOntology));
 		
 		ModelManipulator manipulator = getModelManipulator(modelOntology, form);
 		Simulator simulator = getSimulator(bpmnOntology);
@@ -265,9 +254,7 @@ public abstract class ModelManipulatorTest {
 		OntModel bpmnOntology = getOntologyFromFile(bpmnOntologyPath);
 		OntModel modelOntology = getOntologyFromFile(modelOntologyPath);
 		
-		Map<String, String> map = newHashMap();
-		map.put(createPurchaseOrderURI, inputDataExample);
-		Form form = new Form(FormsConfiguration.createFromFiles(map, modelOntology));
+		Form form = new Form(FormsConfiguration.createFromFile(inputDataExample, modelOntology));
 		
 		ModelManipulator manipulator = getModelManipulator(modelOntology, form);
 		Simulator simulator = getSimulator(bpmnOntology);

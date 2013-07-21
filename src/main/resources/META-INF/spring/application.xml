@@ -55,5 +55,6 @@
     
     <bean class="it.polimi.jbps.web.controller.OntologiesController">
         <constructor-arg index="0" ref="modelOntology"/>
+        <constructor-arg index="1" ref="bpmnOntologyByLane"/>
     </bean>
 </beans>

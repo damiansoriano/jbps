@@ -1,7 +1,7 @@
 <%@include file="parts/head.jsp" %>
 
 <body>
-    <%@include file="parts/header.jsp" %>
+    <%@include file="parts/headerNotInLane.jsp" %>
     
     <div>
         <div class="pageMessage">

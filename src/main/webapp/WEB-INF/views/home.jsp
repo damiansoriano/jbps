@@ -1,7 +1,7 @@
 <%@include file="parts/head.jsp" %>
 
 <body>
-    <%@include file="parts/headerHome.jsp" %>
+    <%@include file="parts/headerNotInLane.jsp" %>
     <div>
         <div class="pageMessage">
             Welcome to the Java Business Process Simulator, choose one of the following

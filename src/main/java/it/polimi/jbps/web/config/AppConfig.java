@@ -9,7 +9,6 @@ import it.polimi.jbps.form.Form;
 import it.polimi.jbps.form.FormsConfiguration;
 import it.polimi.jbps.model.OntologyModelManipulator;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 
@@ -19,8 +18,6 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
-import com.google.common.base.Charsets;
-import com.google.common.io.Files;
 import com.hp.hpl.jena.ontology.OntModel;
 
 @Configuration
@@ -79,10 +76,8 @@ public class AppConfig {
     		String laneFormPath = formAssociationPaths.get(lane);
     		
     		OntModel modelOntology = modelOntology();
-    		File formAssociationFile = new File(laneFormPath);
-    		String formAssociationJson = Files.toString(formAssociationFile, Charsets.UTF_8);
     		
-    		Form form = new Form(FormsConfiguration.createFromFile(formAssociationJson, modelOntology));
+    		Form form = new Form(FormsConfiguration.createFromFile(laneFormPath, modelOntology));
     		
     		SimpleEngine simpleEngine = new SimpleEngine(
     				new OntologySimulator(bpmnOntologyByLane.get(lane)),

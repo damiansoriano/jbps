@@ -16,5 +16,9 @@ public class Context {
 	public Context() {
 		variables = newHashMap();
 	}
+	
+	public void restart() {
+		variables = newHashMap();
+	}
 
 }

@@ -5,6 +5,7 @@ import static com.google.common.collect.Maps.newHashMap;
 import static it.polimi.jbps.utils.ObjectUtils.isNull;
 import it.polimi.jbps.entities.JBPSClass;
 import it.polimi.jbps.entities.JBPSIndividual;
+import it.polimi.jbps.entities.JBPSProperty;
 
 import java.util.List;
 import java.util.Map;
@@ -13,7 +14,13 @@ import com.google.common.base.Optional;
 import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntClass;
 import com.hp.hpl.jena.ontology.OntModel;
+import com.hp.hpl.jena.rdf.model.Property;
+import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.rdf.model.Selector;
+import com.hp.hpl.jena.rdf.model.SimpleSelector;
+import com.hp.hpl.jena.rdf.model.Statement;
+import com.hp.hpl.jena.rdf.model.StmtIterator;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
 public class OntologyModelFacade implements ModelFacade {
@@ -92,5 +99,31 @@ public class OntologyModelFacade implements ModelFacade {
 			boolean direct) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public JBPSIndividual getIndividual(String individualURI) {
+		return new JBPSIndividual(ontologyModel.getIndividual(individualURI));
+	}
+
+	@Override
+	public Map<Property, RDFNode> getProperties(JBPSIndividual individual) {
+		Map<Property, RDFNode> map = newHashMap();
+		Selector selector = new SimpleSelector(individual.getIndividual().asResource(), (Property)null, (RDFNode)null);
+		StmtIterator listStatements = ontologyModel.listStatements(selector);
+		
+		while(listStatements.hasNext()) {
+			Statement statement = listStatements.next();
+			Property property = statement.getPredicate();
+			RDFNode object = statement.getObject();
+			map.put(property, object);
+		}
+		
+		return map;
+	}
+
+	@Override
+	public JBPSProperty getProperty(String propertyURI) {
+		return new JBPSProperty(ontologyModel.getOntProperty(propertyURI));
 	}
 }

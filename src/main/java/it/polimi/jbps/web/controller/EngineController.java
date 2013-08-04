@@ -69,6 +69,8 @@ public class EngineController {
     public String startSimulation(@PathVariable String lane, HttpServletRequest request, ModelMap model) {
 		log.info(request);
 		
+		context.restart();
+		
 		Engine engine = engines.get(lane);
 		SimulationState currentState = engine.startSimulation();
 		enginesCurrentStates.put(lane, currentState);

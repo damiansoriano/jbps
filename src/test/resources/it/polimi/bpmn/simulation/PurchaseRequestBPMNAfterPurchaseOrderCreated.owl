@@ -1,0 +1,136 @@
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:PurchaseRequestModel="http://www.semanticweb.org/ontologies/2013/5/PurchaseRequestModel.owl#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" > 
+  <rdf:Description rdf:about="http://www.semanticweb.org/ontologies/2013/5/PurchaseRequestModel.owl/7dd42c33-a7ba-49d4-9ff6-067900528295">
+    <rdfs:label>7dd42c33-a7ba-49d4-9ff6-067900528295</rdfs:label>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+    <rdf:type rdf:resource="http://www.semanticweb.org/ontologies/2013/5/PurchaseRequestModel.owl#PurchaseRequest"/>
+    <owl:sameAs rdf:resource="http://www.semanticweb.org/ontologies/2013/5/PurchaseRequestModel.owl/7dd42c33-a7ba-49d4-9ff6-067900528295"/>
+    <PurchaseRequestModel:purchaseRequestClient rdf:resource="http://www.semanticweb.org/ontologies/2013/5/PurchaseRequestModel.owl#damian"/>
+    <PurchaseRequestModel:purchaseRequestResponsible rdf:resource="http://www.semanticweb.org/ontologies/2013/5/PurchaseRequestModel.owl#employee"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.semanticweb.org/ontologies/2013/5/PurchaseRequestModel.owl#damian">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+    <owl:sameAs rdf:resource="http://www.semanticweb.org/ontologies/2013/5/PurchaseRequestModel.owl#damian"/>
+    <owl:differentFrom rdf:resource="http://www.semanticweb.org/ontologies/2013/5/PurchaseRequestModel.owl#employee"/>
+    <rdfs:label>Damian Soriano</rdfs:label>
+    <rdf:type rdf:resource="http://www.semanticweb.org/ontologies/2013/5/PurchaseRequestModel.owl#Person"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.semanticweb.org/ontologies/2013/5/PurchaseRequestModel.owl">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Ontology"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.semanticweb.org/ontologies/2013/5/PurchaseRequestModel.owl#otherPerson">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+    <owl:sameAs rdf:resource="http://www.semanticweb.org/ontologies/2013/5/PurchaseRequestModel.owl#otherPerson"/>
+    <rdf:type rdf:resource="http://www.semanticweb.org/ontologies/2013/5/PurchaseRequestModel.owl#Person"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/2002/07/owl#bottomDataProperty">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <owl:equivalentProperty rdf:resource="http://www.w3.org/2002/07/owl#bottomDataProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://www.w3.org/2002/07/owl#bottomDataProperty"/>
+    <owl:propertyDisjointWith rdf:resource="http://www.w3.org/2002/07/owl#topDataProperty"/>
+    <owl:propertyDisjointWith rdf:resource="http://www.w3.org/2002/07/owl#bottomDataProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://www.w3.org/2002/07/owl#topDataProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.semanticweb.org/ontologies/2013/5/PurchaseRequestModel.owl#PurchaseRequest">
+    <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/ontologies/2013/5/PurchaseRequestModel.owl#PurchaseRequest"/>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+    <owl:equivalentClass rdf:resource="http://www.semanticweb.org/ontologies/2013/5/PurchaseRequestModel.owl#PurchaseRequest"/>
+    <owl:disjointWith rdf:resource="http://www.w3.org/2002/07/owl#Nothing"/>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">PurchaseRequest</rdfs:label>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/2002/07/owl#bottomObjectProperty">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#InverseFunctionalProperty"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#SymmetricProperty"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <owl:propertyDisjointWith rdf:resource="http://www.semanticweb.org/ontologies/2013/5/PurchaseRequestModel.owl#purchaseRequestClient"/>
+    <owl:propertyDisjointWith rdf:resource="http://www.semanticweb.org/ontologies/2013/5/PurchaseRequestModel.owl#purchaseRequestResponsible"/>
+    <rdfs:subPropertyOf rdf:resource="http://www.semanticweb.org/ontologies/2013/5/PurchaseRequestModel.owl#purchaseRequestResponsible"/>
+    <rdfs:subPropertyOf rdf:resource="http://www.w3.org/2002/07/owl#topObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://www.semanticweb.org/ontologies/2013/5/PurchaseRequestModel.owl#purchaseRequestClient"/>
+    <owl:propertyDisjointWith rdf:resource="http://www.w3.org/2002/07/owl#bottomObjectProperty"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://www.w3.org/2002/07/owl#bottomObjectProperty"/>
+    <owl:equivalentProperty rdf:resource="http://www.w3.org/2002/07/owl#bottomObjectProperty"/>
+    <owl:propertyDisjointWith rdf:resource="http://www.w3.org/2002/07/owl#topObjectProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/2002/07/owl#Thing">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+    <owl:equivalentClass rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+    <owl:disjointWith rdf:resource="http://www.w3.org/2002/07/owl#Nothing"/>
+    <owl:complementOf rdf:resource="http://www.w3.org/2002/07/owl#Nothing"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/2002/07/owl#topDataProperty">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <owl:equivalentProperty rdf:resource="http://www.w3.org/2002/07/owl#topDataProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://www.w3.org/2002/07/owl#topDataProperty"/>
+    <owl:propertyDisjointWith rdf:resource="http://www.w3.org/2002/07/owl#bottomDataProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/2002/07/owl#topObjectProperty">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#TransitiveProperty"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#SymmetricProperty"/>
+    <owl:equivalentProperty rdf:resource="http://www.w3.org/2002/07/owl#topObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://www.w3.org/2002/07/owl#topObjectProperty"/>
+    <owl:propertyDisjointWith rdf:resource="http://www.w3.org/2002/07/owl#bottomObjectProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/2002/07/owl#Nothing">
+    <owl:disjointWith rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+    <owl:disjointWith rdf:resource="http://www.semanticweb.org/ontologies/2013/5/PurchaseRequestModel.owl#Person"/>
+    <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/ontologies/2013/5/PurchaseRequestModel.owl#PurchaseRequest"/>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+    <owl:disjointWith rdf:resource="http://www.w3.org/2002/07/owl#Nothing"/>
+    <owl:disjointWith rdf:resource="http://www.semanticweb.org/ontologies/2013/5/PurchaseRequestModel.owl#PurchaseRequest"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/ontologies/2013/5/PurchaseRequestModel.owl#Person"/>
+    <owl:complementOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+    <owl:equivalentClass rdf:resource="http://www.w3.org/2002/07/owl#Nothing"/>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Nothing"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.semanticweb.org/ontologies/2013/5/PurchaseRequestModel.owl#employee">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+    <owl:sameAs rdf:resource="http://www.semanticweb.org/ontologies/2013/5/PurchaseRequestModel.owl#employee"/>
+    <owl:differentFrom rdf:resource="http://www.semanticweb.org/ontologies/2013/5/PurchaseRequestModel.owl#damian"/>
+    <rdfs:label>Employee</rdfs:label>
+    <rdf:type rdf:resource="http://www.semanticweb.org/ontologies/2013/5/PurchaseRequestModel.owl#Person"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.semanticweb.org/ontologies/2013/5/PurchaseRequestModel.owl#Person">
+    <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/ontologies/2013/5/PurchaseRequestModel.owl#Person"/>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+    <owl:equivalentClass rdf:resource="http://www.semanticweb.org/ontologies/2013/5/PurchaseRequestModel.owl#Person"/>
+    <owl:disjointWith rdf:resource="http://www.w3.org/2002/07/owl#Nothing"/>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Person</rdfs:label>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.semanticweb.org/ontologies/2013/5/PurchaseRequestModel.owl#purchaseRequestResponsible">
+    <owl:equivalentProperty rdf:resource="http://www.semanticweb.org/ontologies/2013/5/PurchaseRequestModel.owl#purchaseRequestResponsible"/>
+    <rdfs:subPropertyOf rdf:resource="http://www.semanticweb.org/ontologies/2013/5/PurchaseRequestModel.owl#purchaseRequestResponsible"/>
+    <owl:propertyDisjointWith rdf:resource="http://www.semanticweb.org/ontologies/2013/5/PurchaseRequestModel.owl#purchaseRequestClient"/>
+    <owl:propertyDisjointWith rdf:resource="http://www.w3.org/2002/07/owl#bottomObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://www.w3.org/2002/07/owl#topObjectProperty"/>
+    <rdfs:domain rdf:resource="http://www.semanticweb.org/ontologies/2013/5/PurchaseRequestModel.owl#PurchaseRequest"/>
+    <rdfs:range rdf:resource="http://www.semanticweb.org/ontologies/2013/5/PurchaseRequestModel.owl#Person"/>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Purchase Request Responsible</rdfs:label>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.semanticweb.org/ontologies/2013/5/PurchaseRequestModel.owl#purchaseRequestClient">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <owl:propertyDisjointWith rdf:resource="http://www.w3.org/2002/07/owl#bottomObjectProperty"/>
+    <rdfs:range rdf:resource="http://www.semanticweb.org/ontologies/2013/5/PurchaseRequestModel.owl#Person"/>
+    <rdfs:subPropertyOf rdf:resource="http://www.w3.org/2002/07/owl#topObjectProperty"/>
+    <rdfs:domain rdf:resource="http://www.semanticweb.org/ontologies/2013/5/PurchaseRequestModel.owl#PurchaseRequest"/>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Purchase Request Client</rdfs:label>
+    <rdfs:subPropertyOf rdf:resource="http://www.semanticweb.org/ontologies/2013/5/PurchaseRequestModel.owl#purchaseRequestClient"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+    <owl:equivalentProperty rdf:resource="http://www.semanticweb.org/ontologies/2013/5/PurchaseRequestModel.owl#purchaseRequestClient"/>
+    <owl:propertyDisjointWith rdf:resource="http://www.semanticweb.org/ontologies/2013/5/PurchaseRequestModel.owl#purchaseRequestResponsible"/>
+  </rdf:Description>
+</rdf:RDF>

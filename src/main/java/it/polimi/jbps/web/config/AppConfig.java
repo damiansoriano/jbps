@@ -12,6 +12,8 @@ import it.polimi.jbps.model.OntologyModelManipulator;
 import java.io.IOException;
 import java.util.Map;
 
+import lombok.extern.log4j.Log4j;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
@@ -22,6 +24,7 @@ import com.hp.hpl.jena.ontology.OntModel;
 
 @Configuration
 @Lazy
+@Log4j
 public class AppConfig {
 	
 	private final Map<String, String> bpmnOntologyPaths;
@@ -33,6 +36,12 @@ public class AppConfig {
 	public AppConfig(Map<String, String> bpmnOntologyPaths, String modelOntologyPath,
 			Map<String, String> formAssociationPaths, Map<String, String> lanesDescriptions,
 			String baseURI) {
+		
+		log.info(String.format("bpmnOntologyPaths: %s", bpmnOntologyPaths));
+		log.info(String.format("modelOntologyPath: %s", modelOntologyPath));
+		log.info(String.format("formAssociationPaths: %s", formAssociationPaths));
+		log.info(String.format("lanesDescriptions: %s", lanesDescriptions));
+		
 		this.bpmnOntologyPaths = bpmnOntologyPaths;
 		this.modelOntologyPath = modelOntologyPath;
 		this.formAssociationPaths = formAssociationPaths;

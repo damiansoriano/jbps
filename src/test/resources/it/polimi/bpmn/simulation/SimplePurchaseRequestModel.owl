@@ -107,6 +107,14 @@
         <rdf:type rdf:resource="&PurchaseRequestModel;Person"/>
         <rdfs:label>Employee</rdfs:label>
     </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/2013/5/PurchaseRequestModel.owl#otherPerson -->
+
+    <owl:NamedIndividual rdf:about="&PurchaseRequestModel;otherPerson">
+        <rdf:type rdf:resource="&PurchaseRequestModel;Person"/>
+    </owl:NamedIndividual>
 </rdf:RDF>
 
 

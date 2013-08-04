@@ -56,7 +56,7 @@ public class OntologyModelManipulator implements ModelManipulator {
 		OntModel freshModel = ModelFactory.createOntologyModel(PelletReasonerFactory.THE_SPEC);
 		freshModel.add(ontologyModel);
 		
-		Map<String, Individual> variables = newHashMap();
+		Map<String, Individual> variables = newHashMap(context.getVariables());
 		
 		for (Action action : actions) {
 			if (action.getActionType().equals(ActionType.INSERT)) {

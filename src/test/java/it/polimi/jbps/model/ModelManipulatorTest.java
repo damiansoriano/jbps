@@ -19,6 +19,7 @@ import it.polimi.jbps.form.Form;
 import it.polimi.jbps.form.FormsConfiguration;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Test;
@@ -33,8 +34,10 @@ public abstract class ModelManipulatorTest {
 	private final static String bpmnOntologyPath = "./src/test/resources/it/polimi/bpmn/simulation/SimplePurchaseRequestBPMN.owl";
 	private final static String modelOntologyPath = "./src/test/resources/it/polimi/bpmn/simulation/SimplePurchaseRequestModel.owl";
 	private final static String inputDataExample = "./src/test/resources/it/polimi/bpmn/simulation/inputDataExample.json";
+	private final static String inputDataExampleWithVariables = "./src/test/resources/it/polimi/bpmn/simulation/inputDataExampleWithVariables.json";
 	
 	private final static String createPurchaseOrderURI = "http://www.semanticweb.org/ontologies/2013/5/PurchaseRequest.owl#createPurchaseOrder";
+	private final static String changePurchaseOrderURI = "http://www.semanticweb.org/ontologies/2013/5/PurchaseRequest.owl#changePurchaseOrder";
 	
 	private final static String purchaseRequestClassURI = "http://www.semanticweb.org/ontologies/2013/5/PurchaseRequestModel.owl#PurchaseRequest";
 	
@@ -115,7 +118,7 @@ public abstract class ModelManipulatorTest {
 		for (PropertyAssignment propertyAssignment : propertyAssignments) {
 			if (propertyAssignment.getPropertyURI().equals(purchaseRequestClientURI)) {
 				List<Individual> possibleAssignments = manipulator.getPossibleAssignments(propertyAssignment);
-				assertEquals(2, possibleAssignments.size());
+				assertEquals(3, possibleAssignments.size());
 				
 				Individual damianIndividual = null;
 				Individual employeeIndividual = null;
@@ -135,7 +138,7 @@ public abstract class ModelManipulatorTest {
 				
 			} else if (propertyAssignment.getPropertyURI().equals(purchaseRequestResponsibleURI)) {
 				List<Individual> possibleAssignments = manipulator.getPossibleAssignments(propertyAssignment);
-				assertEquals(2, possibleAssignments.size());
+				assertEquals(3, possibleAssignments.size());
 				
 				Individual damianIndividual = null;
 				Individual employeeIndividual = null;
@@ -266,7 +269,7 @@ public abstract class ModelManipulatorTest {
 		ModelFacade modelFacade = new OntologyModelFacade(modelOntology);
 		
 		List<JBPSIndividual> allIndividuals = modelFacade.getAllIndividuals();
-		assertEquals(2, allIndividuals.size());
+		assertEquals(3, allIndividuals.size());
 		
 		SimulationState createPurchaseOrder = simulator.getStateFromURI(createPurchaseOrderURI);
 		
@@ -299,8 +302,79 @@ public abstract class ModelManipulatorTest {
 		} catch (InvalidPropertyAssignment ex) { }
 		
 		allIndividuals = modelFacade.getAllIndividuals();
-		assertEquals(2, allIndividuals.size());
+		assertEquals(3, allIndividuals.size());
 	}
 	
+	@Test
+	public void inputDataExampleWithVariables() throws IOException, InvalidPropertyAssignment {
+		String variableName = "purchaseOrder";
+		
+		OntModel bpmnOntology = getOntologyFromFile(bpmnOntologyPath);
+		OntModel modelOntology = getOntologyFromFile(modelOntologyPath);
+		Context context = new Context();
+		
+		Form form = new Form(FormsConfiguration.createFromFile(inputDataExampleWithVariables, modelOntology));
+		
+		ModelManipulator manipulator = getModelManipulator(modelOntology, form);
+		Simulator simulator = getSimulator(bpmnOntology);
+		
+		SimulationState createPurchaseOrder = simulator.getStateFromURI(createPurchaseOrderURI);
+		SimulationState changePurchaseOrder = simulator.getStateFromURI(changePurchaseOrderURI);
+		
+		List<Action> actions = manipulator.getActions(createPurchaseOrder);
+		Action action = actions.get(0);
+		List<PropertyAssignment> propertyAssignments = action.getPropertyAssignments();
+		
+		PropertyAssignment purchaseRequestClient = null;
+		PropertyAssignment purchaseRequestResponsible = null;
+		
+		for (PropertyAssignment propertyAssignment : propertyAssignments) {
+			if (propertyAssignment.getPropertyURI().equals(purchaseRequestClientURI)) {
+				purchaseRequestClient = propertyAssignment;
+			} else if (propertyAssignment.getPropertyURI().equals(purchaseRequestResponsibleURI)) {
+				purchaseRequestResponsible = propertyAssignment;
+			}
+		}
+		
+		assertNotNull(purchaseRequestClient);
+		assertNotNull(purchaseRequestResponsible);
+		
+		purchaseRequestClient.setPropertyValue(damianURI);
+		
+		manipulator.execute(Arrays.asList(action), context);
+		
+		assertTrue(context.getVariables().containsKey(variableName));
+		Individual individual = context.getVariables().get(variableName);
+		assertNotNull(individual);
+		RDFNode requestClient = individual.getPropertyValue(purchaseRequestClient.getJbpsProperty().getOntProperty());
+		assertNotNull(requestClient);
+		RDFNode requestResponsible = individual.getPropertyValue(purchaseRequestResponsible.getJbpsProperty().getOntProperty());
+		assertNull(requestResponsible);
+		
+		
+		List<Action> changePurchaseOrderActions = manipulator.getActions(changePurchaseOrder);
+		Action changePurchaseOrderAction = changePurchaseOrderActions.get(0);
+		List<PropertyAssignment> changePurchaseOrderPropertyAssignments = changePurchaseOrderAction.getPropertyAssignments();
+		
+		PropertyAssignment changePurchaseOrderPurchaseRequestResponsible = null;
+		
+		for (PropertyAssignment propertyAssignment : changePurchaseOrderPropertyAssignments) {
+			if (propertyAssignment.getPropertyURI().equals(purchaseRequestResponsibleURI)) {
+				changePurchaseOrderPurchaseRequestResponsible = propertyAssignment;
+			}
+		}
+		assertNotNull(changePurchaseOrderPurchaseRequestResponsible);
+		changePurchaseOrderPurchaseRequestResponsible.setPropertyValue(employeeURI);
+		
+		manipulator.execute(Arrays.asList(changePurchaseOrderAction), context);
+		
+		assertTrue(context.getVariables().containsKey(variableName));
+		Individual puchaseOrder2 = context.getVariables().get(variableName);
+		assertNotNull(puchaseOrder2);
+		RDFNode requestClient2 = puchaseOrder2.getPropertyValue(purchaseRequestClient.getJbpsProperty().getOntProperty());
+		assertNotNull(requestClient2);
+		RDFNode requestResponsible2 = puchaseOrder2.getPropertyValue(purchaseRequestResponsible.getJbpsProperty().getOntProperty());
+		assertNotNull(requestResponsible2);
+	}
 	
 }

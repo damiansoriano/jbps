@@ -35,7 +35,7 @@ public abstract class ModelFacadeTest {
 		ModelFacade model = getModeFacade(modelOntology);
 		List<JBPSIndividual> allIndividuals = model.getAllIndividuals();
 		
-		assertEquals(2, allIndividuals.size());
+		assertEquals(3, allIndividuals.size());
 		
 		JBPSIndividual employeeIndividual = null;
 		JBPSIndividual userIndividual = null;

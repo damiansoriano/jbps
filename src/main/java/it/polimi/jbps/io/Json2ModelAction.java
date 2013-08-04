@@ -20,6 +20,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.base.Optional;
 import com.hp.hpl.jena.ontology.OntClass;
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.ontology.OntProperty;
@@ -35,7 +36,10 @@ public class Json2ModelAction {
 	protected final String ACTIONS = "actions";
 	
 	protected final String INSERT = "insert";
+	protected final String UPDATE = "update";
+	protected final String DELETE = "delete";
 	protected final String CLASS_URI = "classURI";
+	protected final String VARIABLE_NAME = "variableName";
 	protected final String INDIVIDUAL_URI = "individualURI";
 	protected final String PROPERTY_VALUES = "propertyValues";
 	protected final String PROPERTY_TYPE = "propertyType";
@@ -56,32 +60,56 @@ public class Json2ModelAction {
 		while(formsIterator.hasNext()) {
 			JsonNode formJson = formsIterator.next().get(FORM);
 			String state = formJson.get(STATE).textValue();
-			List<Action> parseJson = parseJson(formJson.get(ACTIONS), ontologyModel);
-			formsConfiguration.put(state, parseJson);
+			Optional<List<Action>> parseJson = parseJson(formJson.get(ACTIONS), ontologyModel);
+			if (parseJson.isPresent()) {
+				formsConfiguration.put(state, parseJson.get());
+			}
 		}
 		
 		return formsConfiguration;
 	}
 	
-	public List<Action> parseJson(JsonNode actionsNode, OntModel ontologyModel) throws JsonParseException, JsonMappingException, IOException {
+	public Optional<List<Action>> parseJson(JsonNode actionsNode, OntModel ontologyModel) throws JsonParseException, JsonMappingException, IOException {
 		List<Action> actions = newLinkedList();
 		
-		JsonNode inserts = actionsNode.get(INSERT);
-		if (isNull(inserts)) { return actions; }
+		if (actionsNode.has(INSERT)) {
+			JsonNode inserts = actionsNode.get(INSERT);
+			actions.addAll(parseJsonInner(inserts, ActionType.INSERT, ontologyModel));
+		}
+		if (actionsNode.has(UPDATE)) {
+			JsonNode updates = actionsNode.get(UPDATE);
+			actions.addAll(parseJsonInner(updates, ActionType.UPDATE, ontologyModel));
+		}
+		if (actionsNode.has(DELETE)) {
+			JsonNode deletes = actionsNode.get(DELETE);
+			actions.addAll(parseJsonInner(deletes, ActionType.DELETE, ontologyModel));
+		}
 		
-		Iterator<JsonNode> insertIterator = inserts.elements();
-		while (insertIterator.hasNext()) {
-			JsonNode insert = insertIterator.next();
+		if (isNull(actions)) { return Optional.absent(); }
+		return Optional.of(actions);
+	}
+	
+	private List<Action> parseJsonInner(JsonNode operationDefinition, ActionType actionType, OntModel ontologyModel)
+			throws JsonParseException, JsonMappingException, IOException {
+		List<Action> actions = newLinkedList();
+		
+		Iterator<JsonNode> operationDefinitionIterator = operationDefinition.elements();
+		while (operationDefinitionIterator.hasNext()) {
+			JsonNode insert = operationDefinitionIterator.next();
 			if (isNull(insert)) { continue; }
 			
 			Action action = new Action();
-			action.setActionType(ActionType.INSERT);
+			action.setActionType(actionType);
 			
 			String classURI = insert.get(CLASS_URI).textValue();
 			
 			OntClass ontClass = ontologyModel.getOntClass(classURI);
 			
 			action.setJbpsClass(new JBPSClass(ontClass));
+			
+			if (insert.has(VARIABLE_NAME)) {
+				action.setVariableName(insert.get(VARIABLE_NAME).textValue());
+			}
 			
 			if(isNotNull(insert.get(INDIVIDUAL_URI))) {
 				action.setIndividualURI(insert.get(INDIVIDUAL_URI).textValue());

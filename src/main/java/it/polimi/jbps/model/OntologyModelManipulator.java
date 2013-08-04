@@ -1,17 +1,22 @@
 package it.polimi.jbps.model;
 
 import static com.google.common.collect.Lists.newLinkedList;
+import static com.google.common.collect.Maps.newHashMap;
+import static it.polimi.jbps.utils.ObjectUtils.isNotNull;
 import static it.polimi.jbps.utils.ObjectUtils.isNullOrEmpty;
 import static it.polimi.jbps.utils.ObjectUtils.not;
 import static it.polimi.jbps.utils.OntologyUtils.getIndividuals;
 import it.polimi.jbps.actions.Action;
+import it.polimi.jbps.actions.ActionType;
 import it.polimi.jbps.actions.PropertyAssignment;
+import it.polimi.jbps.entities.Context;
 import it.polimi.jbps.entities.SimulationState;
 import it.polimi.jbps.exception.InvalidPropertyAssignment;
 import it.polimi.jbps.form.Form;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.mindswap.pellet.jena.PelletReasonerFactory;
@@ -47,16 +52,64 @@ public class OntologyModelManipulator implements ModelManipulator {
 	}
 
 	@Override
-	public void execute(List<Action> actions) throws InvalidPropertyAssignment {
+	public Context execute(List<Action> actions, Context context) throws InvalidPropertyAssignment {
 		OntModel freshModel = ModelFactory.createOntologyModel(PelletReasonerFactory.THE_SPEC);
 		freshModel.add(ontologyModel);
 		
-		for (Action action : actions) { execute(action, freshModel); }
+		Map<String, Individual> variables = newHashMap();
 		
+		for (Action action : actions) {
+			if (action.getActionType().equals(ActionType.INSERT)) {
+				Individual individual = executeInsert(action, freshModel);
+				if (isNotNull(action.getVariableName()) && not(action.getVariableName().isEmpty())) {
+					variables.put(action.getVariableName(), individual);
+				}
+			} else if (action.getActionType().equals(ActionType.UPDATE)) {
+				if (isNotNull(action.getVariableName())
+						&& not(action.getVariableName().isEmpty())
+						&& variables.containsKey(action.getVariableName())) {
+					executeUpdate(action, freshModel, variables.get(action.getVariableName()));
+				} else {
+					String errorMessage = "Variable %s not found in context";
+					throw new InvalidPropertyAssignment(String.format(errorMessage, action.getVariableName()));
+				}
+			}
+		}
+		
+		context.getVariables().putAll(variables);
 		ontologyModel.add(freshModel);
+		
+		return context;
 	}
 	
-	protected void execute(Action action, OntModel freshModel) throws InvalidPropertyAssignment {
+	private void executeUpdate(Action action, OntModel freshModel, Individual individual) throws InvalidPropertyAssignment {
+		for(PropertyAssignment propertyAssignment : action.getPropertyAssignments()) {
+			makePropertyAssignment(individual, propertyAssignment);
+		}
+		
+		freshModel.prepare();
+		ValidityReport validityReport = freshModel.validate();
+		if (not(validityReport.isValid())) {
+			String errorMessage = "";
+			Iterator<Report> reports = validityReport.getReports();
+			while(reports.hasNext()) {
+				Report report = reports.next();
+				errorMessage += report.toString() + "\n";
+			}
+			throw new InvalidPropertyAssignment(errorMessage);
+		}
+		if (not(validityReport.isClean())) {
+			String errorMessage = "";
+			Iterator<Report> reports = validityReport.getReports();
+			while(reports.hasNext()) {
+				Report report = reports.next();
+				errorMessage += report.toString() + "\n";
+			}
+			throw new InvalidPropertyAssignment(errorMessage);
+		}
+	}
+
+	protected Individual executeInsert(Action action, OntModel freshModel) throws InvalidPropertyAssignment {
 		OntClass ontClass = freshModel.getOntClass(action.getClassURI());
 		
 		Individual individual;
@@ -97,6 +150,8 @@ public class OntologyModelManipulator implements ModelManipulator {
 			}
 			throw new InvalidPropertyAssignment(errorMessage);
 		}
+		
+		return individual;
 	}
 	
 	protected void makePropertyAssignment(Individual individual, PropertyAssignment propertyAssignment) {

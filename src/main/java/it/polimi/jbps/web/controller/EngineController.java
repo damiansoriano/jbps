@@ -5,6 +5,7 @@ import static com.google.common.collect.Maps.newHashMap;
 import static it.polimi.jbps.utils.ObjectUtils.not;
 import it.polimi.jbps.actions.Action;
 import it.polimi.jbps.engine.Engine;
+import it.polimi.jbps.entities.Context;
 import it.polimi.jbps.entities.SimulationState;
 import it.polimi.jbps.entities.SimulationTransition;
 import it.polimi.jbps.exception.BPMNInvalidTransition;
@@ -33,11 +34,13 @@ public class EngineController {
 	private final Map<String, Engine> engines;
 	private final Map<String, String> lanesDescriptions;
 	private Map<String, SimulationState> enginesCurrentStates;
+	private final Context context;
 	
 	public EngineController(Map<String, Engine> engines, Map<String, String> lanesDescriptions) {
 		this.engines = engines;
 		this.lanesDescriptions = lanesDescriptions;
 		enginesCurrentStates = newHashMap();
+		context = new Context();
 	}
 	
 	@RequestMapping(value = "/")
@@ -148,7 +151,7 @@ public class EngineController {
 		String transition = transitions[0];
 		
 		try {
-			currentState = engine.makeTransition(currentState, assignments, transition);
+			currentState = engine.makeTransition(currentState, assignments, transition, context);
 		} catch (InvalidPropertyAssignment e) {
 			log.error(e.getMessage());
 			model.addAttribute("errorMessage", e.getMessage());

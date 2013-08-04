@@ -3,6 +3,7 @@ package it.polimi.jbps.engine;
 import it.polimi.jbps.actions.Action;
 import it.polimi.jbps.actions.PropertyAssignment;
 import it.polimi.jbps.bpmn.simulation.Simulator;
+import it.polimi.jbps.entities.Context;
 import it.polimi.jbps.entities.JBPSIndividual;
 import it.polimi.jbps.entities.SimulationState;
 import it.polimi.jbps.entities.SimulationTransition;
@@ -60,7 +61,7 @@ public class SimpleEngine implements Engine {
 	}
 
 	@Override
-	public SimulationState makeTransition(SimulationState state, Map<String, String> assignments, String transitionURI)
+	public SimulationState makeTransition(SimulationState state, Map<String, String> assignments, String transitionURI, Context context)
 			throws InvalidPropertyAssignment, BPMNInvalidTransition {
 		
 		List<Action> actions = manipulator.getActions(state);
@@ -73,7 +74,7 @@ public class SimpleEngine implements Engine {
 			}
 		}
 		
-		manipulator.execute(actions);
+		context = manipulator.execute(actions, context);
 		
 		SimulationTransition transition = simulator.getTransitionFromURI(transitionURI);
 		SimulationState newState = simulator.move(state, transition);

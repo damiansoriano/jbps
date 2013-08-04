@@ -11,6 +11,7 @@ import it.polimi.jbps.actions.Action;
 import it.polimi.jbps.actions.ActionType;
 import it.polimi.jbps.actions.PropertyAssignment;
 import it.polimi.jbps.bpmn.simulation.Simulator;
+import it.polimi.jbps.entities.Context;
 import it.polimi.jbps.entities.JBPSIndividual;
 import it.polimi.jbps.entities.SimulationState;
 import it.polimi.jbps.exception.InvalidPropertyAssignment;
@@ -94,6 +95,7 @@ public abstract class ModelManipulatorTest {
 	public void getPossibleAssignments() throws IOException, InvalidPropertyAssignment {
 		OntModel bpmnOntology = getOntologyFromFile(bpmnOntologyPath);
 		OntModel modelOntology = getOntologyFromFile(modelOntologyPath);
+		Context context = new Context();
 		
 		Individual prePurchaseRequest01 = modelOntology.getIndividual(purchaseRequest01URI);
 		assertNull(prePurchaseRequest01);
@@ -155,7 +157,7 @@ public abstract class ModelManipulatorTest {
 		
 		List<Action> toExecuteActions = newLinkedList();
 		toExecuteActions.add(action);
-		manipulator.execute(toExecuteActions);
+		manipulator.execute(toExecuteActions, context);
 		
 		Individual purchaseRequest01 = modelOntology.getIndividual(purchaseRequest01URI);
 		Property purchaseRequestClientProperty = modelOntology.getProperty(purchaseRequestClientURI);
@@ -177,6 +179,7 @@ public abstract class ModelManipulatorTest {
 	public void executeAction() throws IOException, InvalidPropertyAssignment {
 		OntModel bpmnOntology = getOntologyFromFile(bpmnOntologyPath);
 		OntModel modelOntology = getOntologyFromFile(modelOntologyPath);
+		Context context = new Context();
 		
 		Form form = new Form(FormsConfiguration.createFromFile(inputDataExample, modelOntology));
 		
@@ -208,13 +211,14 @@ public abstract class ModelManipulatorTest {
 		
 		List<Action> actionsToExecute = newLinkedList();
 		actionsToExecute.add(action);
-		manipulator.execute(actionsToExecute);
+		manipulator.execute(actionsToExecute, context);
 	}
 	
 	@Test(expected=InvalidPropertyAssignment.class)
 	public void executeActionThatViolatesRestrictionThrowException() throws IOException, InvalidPropertyAssignment {
 		OntModel bpmnOntology = getOntologyFromFile(bpmnOntologyPath);
 		OntModel modelOntology = getOntologyFromFile(modelOntologyPath);
+		Context context = new Context();
 		
 		Form form = new Form(FormsConfiguration.createFromFile(inputDataExample, modelOntology));
 		
@@ -246,13 +250,14 @@ public abstract class ModelManipulatorTest {
 		
 		List<Action> actionsToExecute = newLinkedList();
 		actionsToExecute.add(action);
-		manipulator.execute(actionsToExecute);
+		manipulator.execute(actionsToExecute, context);
 	}
 	
 	@Test
 	public void executeActionThatViolatesRestrictionRollBack() throws IOException {
 		OntModel bpmnOntology = getOntologyFromFile(bpmnOntologyPath);
 		OntModel modelOntology = getOntologyFromFile(modelOntologyPath);
+		Context context = new Context();
 		
 		Form form = new Form(FormsConfiguration.createFromFile(inputDataExample, modelOntology));
 		
@@ -289,7 +294,7 @@ public abstract class ModelManipulatorTest {
 		List<Action> actionsToExecute = newLinkedList();
 		actionsToExecute.add(action);
 		try {
-			manipulator.execute(actionsToExecute);
+			manipulator.execute(actionsToExecute, context);
 			assertTrue(false);
 		} catch (InvalidPropertyAssignment ex) { }
 		

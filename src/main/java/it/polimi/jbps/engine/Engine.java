@@ -1,6 +1,7 @@
 package it.polimi.jbps.engine;
 
 import it.polimi.jbps.actions.Action;
+import it.polimi.jbps.entities.Context;
 import it.polimi.jbps.entities.SimulationState;
 import it.polimi.jbps.entities.SimulationTransition;
 import it.polimi.jbps.exception.BPMNInvalidTransition;
@@ -17,7 +18,7 @@ public interface Engine {
 	
 	Map<SimulationTransition, SimulationState> getPossibleTransitions(SimulationState state);
 	
-	SimulationState makeTransition(SimulationState state, Map<String, String> assignments, String transitionURI)
+	SimulationState makeTransition(SimulationState state, Map<String, String> assignments, String transitionURI, Context context)
 			throws InvalidPropertyAssignment, BPMNInvalidTransition;
 	
 	boolean isEndState(SimulationState state);

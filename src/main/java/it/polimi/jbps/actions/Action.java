@@ -20,6 +20,9 @@ public class Action {
 	private String individualURI;
 	
 	@Getter @Setter
+	private String variableName;
+	
+	@Getter @Setter
 	private List<PropertyAssignment> propertyAssignments;
 	
 	public Action() {
@@ -39,6 +42,7 @@ public class Action {
 		action.jbpsClass = this.jbpsClass;
 		action.individualURI = this.individualURI;
 		action.propertyAssignments = this.propertyAssignments;
+		action.variableName = this.variableName;
 		
 		return action;
 	}

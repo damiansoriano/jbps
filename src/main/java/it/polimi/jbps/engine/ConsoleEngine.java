@@ -6,6 +6,7 @@ import it.polimi.jbps.actions.Action;
 import it.polimi.jbps.actions.ActionType;
 import it.polimi.jbps.actions.PropertyAssignment;
 import it.polimi.jbps.bpmn.simulation.Simulator;
+import it.polimi.jbps.entities.Context;
 import it.polimi.jbps.entities.SimulationState;
 import it.polimi.jbps.entities.SimulationTransition;
 import it.polimi.jbps.exception.BPMNInvalidTransition;
@@ -24,12 +25,14 @@ public class ConsoleEngine {
 	
 	private final Simulator simulator;
 	private final ModelManipulator manipulator;
+	private final Context context;
 	
 	private SimulationState currentState;
 	
 	public ConsoleEngine(Simulator simulator, ModelManipulator manipulator) {
 		this.simulator = simulator;
 		this.manipulator = manipulator;
+		context = new Context();
 	}
 	
 	public void run() throws IOException, BPMNInvalidTransition {
@@ -76,7 +79,7 @@ public class ConsoleEngine {
 				List<Action> actionsToApply = newLinkedList();
 				actionsToApply.add(actionToApply);
 				try {
-					manipulator.execute(actionsToApply);
+					manipulator.execute(actionsToApply, context);
 				} catch (InvalidPropertyAssignment e) {
 					System.out.println("Error occure while setting properties");
 					e.printStackTrace();

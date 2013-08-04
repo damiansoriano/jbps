@@ -1,16 +1,19 @@
 package it.polimi.jbps.model;
 
-import static com.google.common.collect.Maps.newHashMap;
 import static com.google.common.collect.Lists.newLinkedList;
+import static com.google.common.collect.Maps.newHashMap;
+import static it.polimi.jbps.utils.ObjectUtils.isNull;
 import it.polimi.jbps.entities.JBPSClass;
 import it.polimi.jbps.entities.JBPSIndividual;
 
 import java.util.List;
 import java.util.Map;
 
+import com.google.common.base.Optional;
 import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntClass;
 import com.hp.hpl.jena.ontology.OntModel;
+import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
 public class OntologyModelFacade implements ModelFacade {
@@ -46,9 +49,12 @@ public class OntologyModelFacade implements ModelFacade {
 	protected List<JBPSClass> getClasses(JBPSIndividual individual, boolean direct) {
 		List<JBPSClass> allClasses = newLinkedList();
 		
-		ExtendedIterator<OntClass> listOntClasses = individual.getIndividual().listOntClasses(direct);
-		while (listOntClasses.hasNext()) {
-			allClasses.add(new JBPSClass(listOntClasses.next()));
+		ExtendedIterator<Resource> listRDFTypes = individual.getIndividual().listRDFTypes(direct);
+		while (listRDFTypes.hasNext()) {
+			Resource rdfType = listRDFTypes.next();
+			if (rdfType instanceof OntClass) {
+				allClasses.add(new JBPSClass((OntClass) rdfType));
+			}
 		}
 		
 		return allClasses;
@@ -70,5 +76,21 @@ public class OntologyModelFacade implements ModelFacade {
 			map.put(individual, getClasses(individual, direct));
 		}
 		return map;
+	}
+
+	@Override
+	public Optional<JBPSClass> getClassFromURI(String classURI) {
+		OntClass ontClass = ontologyModel.getOntClass(classURI);
+		if (isNull(ontClass)) {
+			return Optional.absent();
+		}
+		return Optional.of(new JBPSClass(ontClass));
+	}
+
+	@Override
+	public List<JBPSIndividual> getIndividualsOfClass(JBPSClass jbpsClass,
+			boolean direct) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

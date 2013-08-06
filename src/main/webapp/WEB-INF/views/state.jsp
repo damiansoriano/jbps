@@ -40,9 +40,19 @@
                             <select class="propertyAssignmentSelect" name="${propertyAssignment.getPropertyURI()}">
 	                            <option value=""></option>
 	                            <c:forEach items="${propertyAssignment.possibleAssignments}" var="possibleAssignment">
-	                                <option value="<c:out value="${possibleAssignment.getURI()}"/>">
-	                                    <c:out value="${possibleAssignment.toString()}"/>
-	                                </option>
+	                                
+	                                <c:choose>
+	                                   <c:when test="${possibleAssignment.getURI().equals(propertyAssignment.getPropertyValue())}">
+	                                       <option selected value="<c:out value="${possibleAssignment.getURI()}"/>">
+                                               <c:out value="${possibleAssignment.toString()}"/>
+                                           </option>
+	                                   </c:when>
+	                                   <c:otherwise>
+	                                       <option value="<c:out value="${possibleAssignment.getURI()}"/>">
+	                                           <c:out value="${possibleAssignment.toString()}"/>
+	                                       </option>
+	                                   </c:otherwise>
+	                                </c:choose>
 	                            </c:forEach>
                             </select>
                            </td>

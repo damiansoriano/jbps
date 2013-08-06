@@ -3,7 +3,10 @@ package it.polimi.jbps.engine;
 import static com.google.common.collect.Maps.newHashMap;
 import static it.polimi.jbps.utils.OntologyUtils.getOntologyFromFile;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import it.polimi.jbps.actions.Action;
+import it.polimi.jbps.actions.PropertyAssignment;
 import it.polimi.jbps.bpmn.simulation.OntologySimulator;
 import it.polimi.jbps.bpmn.simulation.Simulator;
 import it.polimi.jbps.entities.Context;
@@ -60,25 +63,32 @@ public class SimpleEngineTest {
 		Form form = new Form(FormsConfiguration.createFromFile(inputDataExampleWithVariables, ontologyModel));
 		ModelManipulator manipulator = new OntologyModelManipulator(ontologyModel, form, baseURI);
 		
-		Engine engine = new SimpleEngine(simulator, manipulator);
-		
 		ModelFacade modelFacade = new OntologyModelFacade(ontologyModel);
+		
+		Engine engine = new SimpleEngine(simulator, manipulator, modelFacade);
 		
 		return new Pair<Engine, ModelFacade>(engine, modelFacade);
 	}
 
 	@Test
-	public void test() throws InvalidPropertyAssignment, BPMNInvalidTransition, IOException {
+	public void correctlyUpdateVariablesInModel() throws InvalidPropertyAssignment, BPMNInvalidTransition, IOException {
 		Context context = new Context();
 		Pair<Engine, ModelFacade> controllers = getControllers();
 		Engine engine = controllers.first;
 		ModelFacade modelFacade = controllers.second;
 		
+		
 		SimulationState state = engine.startSimulation();
+		
+		Action action = engine.getActionsWithPossibleAssignments(state, context).get(0);
+		for (PropertyAssignment propAss : action.getPropertyAssignments()) {
+			assertNull(propAss.getPropertyValue());
+		}
 		
 		Map<String, String> map = newHashMap();
 		map.put(purchaseRequestClientURI, damianURI);
 		map.put(purchaseRequestResponsibleURI, otherPersonURI);
+		
 		
 		state = engine.makeTransition(state, map, sfRequestAuthorizationURI, context);
 		
@@ -96,12 +106,21 @@ public class SimpleEngineTest {
 		assertTrue(properties.containsKey(purchaseRequestResponsible.getOntProperty()));
 		assertEquals(otherPersonURI, properties.get(purchaseRequestResponsible.getOntProperty()).asResource().getURI());
 		
+		
 		map = newHashMap();
 		state = engine.makeTransition(state, map, sfRejectPurchaseOrderURI, context);
 		
+		action = engine.getActionsWithPossibleAssignments(state, context).get(0);
+		for (PropertyAssignment propAss : action.getPropertyAssignments()) {
+			if (propAss.getJbpsProperty().getOntProperty().getURI().endsWith(purchaseRequestClientURI)) {
+				assertEquals(damianURI, propAss.getPropertyValue());
+			} else if (propAss.getJbpsProperty().getOntProperty().getURI().endsWith(purchaseRequestResponsibleURI)) {
+				assertEquals(otherPersonURI, propAss.getPropertyValue());
+			}
+		}
+		
 		map = newHashMap();
 		map.put(purchaseRequestResponsibleURI, employeeURI);
-		
 		state = engine.makeTransition(state, map, sfRequestAuthorization2URI, context);
 		
 		JBPSIndividual jspsPurchaseOrderIndividual2 = modelFacade.getIndividual(context.getVariables().get(contextVariableName));

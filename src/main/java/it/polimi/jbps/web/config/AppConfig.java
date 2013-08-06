@@ -7,6 +7,8 @@ import it.polimi.jbps.engine.Engine;
 import it.polimi.jbps.engine.SimpleEngine;
 import it.polimi.jbps.form.Form;
 import it.polimi.jbps.form.FormsConfiguration;
+import it.polimi.jbps.model.ModelFacade;
+import it.polimi.jbps.model.OntologyModelFacade;
 import it.polimi.jbps.model.OntologyModelManipulator;
 
 import java.io.IOException;
@@ -77,6 +79,11 @@ public class AppConfig {
     }
     
     @Bean
+    public ModelFacade modelFacade() {
+    	return new OntologyModelFacade(modelOntology());
+    }
+    
+    @Bean
     public Map<String, Engine> engines() throws IOException {
     	Map<String, Engine> engines = newHashMap();
     	Map<String, OntModel> bpmnOntologyByLane = bpmnOntologyByLane();
@@ -90,7 +97,8 @@ public class AppConfig {
     		
     		SimpleEngine simpleEngine = new SimpleEngine(
     				new OntologySimulator(bpmnOntologyByLane.get(lane)),
-    				new OntologyModelManipulator(modelOntology, form, baseURI));
+    				new OntologyModelManipulator(modelOntology, form, baseURI),
+    				modelFacade());
     		
     		engines.put(lane, simpleEngine);
     	}

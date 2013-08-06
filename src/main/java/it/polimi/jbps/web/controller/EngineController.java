@@ -100,7 +100,7 @@ public class EngineController {
 		
 		model.addAttribute("currentState", currentState);
 		
-		List<Action> actions = engine.getActionsWithPossibleAssignments(currentState);
+		List<Action> actions = engine.getActionsWithPossibleAssignments(currentState, context);
 		
 		model.addAttribute("actions", actions);
 		

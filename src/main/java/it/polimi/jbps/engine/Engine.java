@@ -14,7 +14,7 @@ public interface Engine {
 
 	SimulationState startSimulation();
 	
-	List<Action> getActionsWithPossibleAssignments(SimulationState state);
+	List<Action> getActionsWithPossibleAssignments(SimulationState state, Context context);
 	
 	Map<SimulationTransition, SimulationState> getPossibleTransitions(SimulationState state);
 	

@@ -70,7 +70,7 @@ public class SimpleEngineTest {
 	@Test
 	public void test() throws InvalidPropertyAssignment, BPMNInvalidTransition, IOException {
 		Context context = new Context();
-		Pair<Engine,ModelFacade> controllers = getControllers();
+		Pair<Engine, ModelFacade> controllers = getControllers();
 		Engine engine = controllers.first;
 		ModelFacade modelFacade = controllers.second;
 		
@@ -82,7 +82,8 @@ public class SimpleEngineTest {
 		
 		state = engine.makeTransition(state, map, sfRequestAuthorizationURI, context);
 		
-		Individual purchaseOrderIndividual = context.getVariables().get(contextVariableName);
+		JBPSIndividual jspsPurchaseOrderIndividual = modelFacade.getIndividual(context.getVariables().get(contextVariableName));
+		Individual purchaseOrderIndividual = jspsPurchaseOrderIndividual.getIndividual();
 		
 		JBPSIndividual purchaseOrder = new JBPSIndividual(purchaseOrderIndividual);
 		Map<Property, RDFNode> properties = modelFacade.getProperties(purchaseOrder);
@@ -103,7 +104,8 @@ public class SimpleEngineTest {
 		
 		state = engine.makeTransition(state, map, sfRequestAuthorization2URI, context);
 		
-		Individual purchaseOrderIndividual2 = context.getVariables().get(contextVariableName);
+		JBPSIndividual jspsPurchaseOrderIndividual2 = modelFacade.getIndividual(context.getVariables().get(contextVariableName));
+		Individual purchaseOrderIndividual2 = jspsPurchaseOrderIndividual2.getIndividual();
 		
 		JBPSIndividual purchaseOrder2 = new JBPSIndividual(purchaseOrderIndividual2);
 		Map<Property, RDFNode> properties2 = modelFacade.getProperties(purchaseOrder2);

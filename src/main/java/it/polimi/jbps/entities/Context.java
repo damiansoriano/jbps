@@ -6,12 +6,10 @@ import java.util.Map;
 
 import lombok.Getter;
 
-import com.hp.hpl.jena.ontology.Individual;
-
 public class Context {
 	
 	@Getter
-	private Map<String, Individual> variables; 
+	private Map<String, String> variables; 
 	
 	public Context() {
 		variables = newHashMap();

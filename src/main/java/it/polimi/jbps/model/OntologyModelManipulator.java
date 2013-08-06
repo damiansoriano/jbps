@@ -56,13 +56,13 @@ public class OntologyModelManipulator implements ModelManipulator {
 		OntModel freshModel = ModelFactory.createOntologyModel(PelletReasonerFactory.THE_SPEC);
 		freshModel.add(ontologyModel);
 		
-		Map<String, Individual> variables = newHashMap(context.getVariables());
+		Map<String, String> variables = newHashMap(context.getVariables());
 		
 		for (Action action : actions) {
 			if (action.getActionType().equals(ActionType.INSERT)) {
 				Individual individual = executeInsert(action, freshModel);
 				if (isNotNull(action.getVariableName()) && not(action.getVariableName().isEmpty())) {
-					variables.put(action.getVariableName(), individual);
+					variables.put(action.getVariableName(), individual.getURI());
 				}
 			} else if (action.getActionType().equals(ActionType.UPDATE)) {
 				if (isNotNull(action.getVariableName())
@@ -82,7 +82,9 @@ public class OntologyModelManipulator implements ModelManipulator {
 		return context;
 	}
 	
-	private void executeUpdate(Action action, OntModel freshModel, Individual individual) throws InvalidPropertyAssignment {
+	private void executeUpdate(Action action, OntModel freshModel, String individualURI) throws InvalidPropertyAssignment {
+		Individual individual = freshModel.getIndividual(individualURI);
+		
 		for(PropertyAssignment propertyAssignment : action.getPropertyAssignments()) {
 			makePropertyAssignment(individual, propertyAssignment);
 		}

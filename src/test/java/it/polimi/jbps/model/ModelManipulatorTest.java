@@ -344,7 +344,7 @@ public abstract class ModelManipulatorTest {
 		manipulator.execute(Arrays.asList(action), context);
 		
 		assertTrue(context.getVariables().containsKey(variableName));
-		Individual individual = context.getVariables().get(variableName);
+		Individual individual = modelOntology.getIndividual(context.getVariables().get(variableName));
 		assertNotNull(individual);
 		RDFNode requestClient = individual.getPropertyValue(purchaseRequestClient.getJbpsProperty().getOntProperty());
 		assertNotNull(requestClient);
@@ -369,7 +369,7 @@ public abstract class ModelManipulatorTest {
 		manipulator.execute(Arrays.asList(changePurchaseOrderAction), context);
 		
 		assertTrue(context.getVariables().containsKey(variableName));
-		Individual puchaseOrder2 = context.getVariables().get(variableName);
+		Individual puchaseOrder2 = modelOntology.getIndividual(context.getVariables().get(variableName));
 		assertNotNull(puchaseOrder2);
 		RDFNode requestClient2 = puchaseOrder2.getPropertyValue(purchaseRequestClient.getJbpsProperty().getOntProperty());
 		assertNotNull(requestClient2);

@@ -368,6 +368,8 @@ public abstract class ModelManipulatorTest {
 		
 		manipulator.execute(Arrays.asList(changePurchaseOrderAction), context);
 		
+		modelOntology.write(System.out);
+		
 		assertTrue(context.getVariables().containsKey(variableName));
 		Individual puchaseOrder2 = modelOntology.getIndividual(context.getVariables().get(variableName));
 		assertNotNull(puchaseOrder2);

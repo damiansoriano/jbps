@@ -85,9 +85,7 @@ public class OntologyModelManipulator implements ModelManipulator {
 	private void executeUpdate(Action action, OntModel freshModel, String individualURI) throws InvalidPropertyAssignment {
 		Individual individual = freshModel.getIndividual(individualURI);
 		
-		for(PropertyAssignment propertyAssignment : action.getPropertyAssignments()) {
-			makePropertyAssignment(individual, propertyAssignment);
-		}
+		makePropertyAssignment(individual, action.getPropertyAssignments());
 		
 		freshModel.prepare();
 		ValidityReport validityReport = freshModel.validate();
@@ -129,9 +127,8 @@ public class OntologyModelManipulator implements ModelManipulator {
 		Literal label = ontologyModel.createLiteral(labelStr);
 		individual.addLabel(label);
 		
-		for(PropertyAssignment propertyAssignment : action.getPropertyAssignments()) {
-			makePropertyAssignment(individual, propertyAssignment);
-		}
+		makePropertyAssignment(individual, action.getPropertyAssignments());
+		
 		freshModel.prepare();
 		ValidityReport validityReport = freshModel.validate();
 		if (not(validityReport.isValid())) {
@@ -156,20 +153,35 @@ public class OntologyModelManipulator implements ModelManipulator {
 		return individual;
 	}
 	
-	protected void makePropertyAssignment(Individual individual, PropertyAssignment propertyAssignment) {
-		Property property = ontologyModel.getProperty(propertyAssignment.getPropertyURI());
+	protected void makePropertyAssignment(Individual individual, List<PropertyAssignment> propertyAssignments) {
+		Map<Property, RDFNode> assignments = newHashMap();
 		
-		RDFNode value;
-		String propertyValue = propertyAssignment.getPropertyValue();
-		
-		if (isNullOrEmpty(propertyValue)) {
-			return;
+		for (PropertyAssignment propertyAssignment : propertyAssignments) {
+			Property property = ontologyModel.getProperty(propertyAssignment.getPropertyURI());
+			
+			RDFNode value;
+			String propertyValue = propertyAssignment.getPropertyValue();
+			
+			if (isNullOrEmpty(propertyValue)) {
+				continue;
+			}
+			
+			if (propertyAssignment.isObjectProperty()) { value =  ontologyModel.getIndividual(propertyValue); }
+			else { value = ontologyModel.createLiteral(propertyValue); }
+			
+			assignments.put(property, value);
 		}
 		
-		if (propertyAssignment.isObjectProperty()) { value =  ontologyModel.getIndividual(propertyValue); }
-		else { value = ontologyModel.createLiteral(propertyValue); }
+		for (Property property : assignments.keySet()) {
+			RDFNode oldPropertyValue = individual.getPropertyValue(property);
+			if (isNotNull(oldPropertyValue)) {
+				ontologyModel.remove(individual, property, oldPropertyValue);
+			}
+		}
 		
-		individual.setPropertyValue(property, value);
+		for (Property property : assignments.keySet()) {
+			individual.setPropertyValue(property, assignments.get(property));
+		}
 	}
 
 	@Override

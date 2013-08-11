@@ -85,12 +85,64 @@ public class SimpleEngineTest {
 			assertNull(propAss.getPropertyValue());
 		}
 		
+		
 		Map<String, String> map = newHashMap();
 		map.put(purchaseRequestClientURI, damianURI);
 		map.put(purchaseRequestResponsibleURI, otherPersonURI);
-		
-		
 		state = engine.makeTransition(state, map, sfRequestAuthorizationURI, context);
+		
+		checkPropertiesValuesInModel(engine, modelFacade, damianURI, otherPersonURI, context);
+		
+		map = newHashMap();
+		state = engine.makeTransition(state, map, sfRejectPurchaseOrderURI, context);
+		
+		checkPropertiesValuesInModel(engine, modelFacade, damianURI, otherPersonURI, context);
+		checkPropertiesValuesOnPossibleAssignments(engine, state, damianURI, otherPersonURI, context);
+		
+		map = newHashMap();
+		map.put(purchaseRequestResponsibleURI, employeeURI);
+		state = engine.makeTransition(state, map, sfRequestAuthorization2URI, context);
+		
+		checkPropertiesValuesInModel(engine, modelFacade, damianURI, employeeURI, context);
+		
+		map = newHashMap();
+		state = engine.makeTransition(state, map, sfRejectPurchaseOrderURI, context);
+		
+		checkPropertiesValuesInModel(engine, modelFacade, damianURI, employeeURI, context);
+		checkPropertiesValuesOnPossibleAssignments(engine, state, damianURI, employeeURI, context);
+		
+		map = newHashMap();
+		map.put(purchaseRequestResponsibleURI, otherPersonURI);
+		state = engine.makeTransition(state, map, sfRequestAuthorization2URI, context);
+		
+		checkPropertiesValuesInModel(engine, modelFacade, damianURI, otherPersonURI, context);
+		
+		
+		
+		map = newHashMap();
+		state = engine.makeTransition(state, map, sfRejectPurchaseOrderURI, context);
+		
+		checkPropertiesValuesInModel(engine, modelFacade, damianURI, otherPersonURI, context);
+		checkPropertiesValuesOnPossibleAssignments(engine, state, damianURI, otherPersonURI, context);
+		
+		map = newHashMap();
+		map.put(purchaseRequestClientURI, otherPersonURI);
+		map.put(purchaseRequestResponsibleURI, damianURI);
+		state = engine.makeTransition(state, map, sfRequestAuthorization2URI, context);
+		
+		checkPropertiesValuesInModel(engine, modelFacade, otherPersonURI, damianURI, context);
+		
+		
+		
+		
+		map = newHashMap();
+		state = engine.makeTransition(state, map, sfAuthorizePurchaseOrderURI, context);
+		assertTrue(engine.isEndState(state));
+	}
+	
+	public void checkPropertiesValuesInModel(Engine engine, ModelFacade modelFacade,
+			String expectedPurchaseRequestClient, String expectedPurchaseRequestResponsible,
+			Context context) {
 		
 		JBPSIndividual jspsPurchaseOrderIndividual = modelFacade.getIndividual(context.getVariables().get(contextVariableName));
 		Individual purchaseOrderIndividual = jspsPurchaseOrderIndividual.getIndividual();
@@ -100,47 +152,24 @@ public class SimpleEngineTest {
 		
 		JBPSProperty purchaseRequestClient = modelFacade.getProperty(purchaseRequestClientURI);
 		assertTrue(properties.containsKey(purchaseRequestClient.getOntProperty()));
-		assertEquals(damianURI, properties.get(purchaseRequestClient.getOntProperty()).asResource().getURI());
+		assertEquals(expectedPurchaseRequestClient, properties.get(purchaseRequestClient.getOntProperty()).asResource().getURI());
 		
 		JBPSProperty purchaseRequestResponsible = modelFacade.getProperty(purchaseRequestResponsibleURI);
 		assertTrue(properties.containsKey(purchaseRequestResponsible.getOntProperty()));
-		assertEquals(otherPersonURI, properties.get(purchaseRequestResponsible.getOntProperty()).asResource().getURI());
+		assertEquals(expectedPurchaseRequestResponsible, properties.get(purchaseRequestResponsible.getOntProperty()).asResource().getURI());
+	}
+	
+	public void checkPropertiesValuesOnPossibleAssignments(Engine engine, SimulationState state,
+			String expectedPurchaseRequestClient, String expectedPurchaseRequestResponsible,
+			Context context) {
 		
-		
-		map = newHashMap();
-		state = engine.makeTransition(state, map, sfRejectPurchaseOrderURI, context);
-		
-		action = engine.getActionsWithPossibleAssignments(state, context).get(0);
+		Action action = engine.getActionsWithPossibleAssignments(state, context).get(0);
 		for (PropertyAssignment propAss : action.getPropertyAssignments()) {
 			if (propAss.getJbpsProperty().getOntProperty().getURI().endsWith(purchaseRequestClientURI)) {
-				assertEquals(damianURI, propAss.getPropertyValue());
+				assertEquals(expectedPurchaseRequestClient, propAss.getPropertyValue());
 			} else if (propAss.getJbpsProperty().getOntProperty().getURI().endsWith(purchaseRequestResponsibleURI)) {
-				assertEquals(otherPersonURI, propAss.getPropertyValue());
+				assertEquals(expectedPurchaseRequestResponsible, propAss.getPropertyValue());
 			}
 		}
-		
-		map = newHashMap();
-		map.put(purchaseRequestResponsibleURI, employeeURI);
-		state = engine.makeTransition(state, map, sfRequestAuthorization2URI, context);
-		
-		JBPSIndividual jspsPurchaseOrderIndividual2 = modelFacade.getIndividual(context.getVariables().get(contextVariableName));
-		Individual purchaseOrderIndividual2 = jspsPurchaseOrderIndividual2.getIndividual();
-		
-		JBPSIndividual purchaseOrder2 = new JBPSIndividual(purchaseOrderIndividual2);
-		Map<Property, RDFNode> properties2 = modelFacade.getProperties(purchaseOrder2);
-		
-		JBPSProperty purchaseRequestClient2 = modelFacade.getProperty(purchaseRequestClientURI);
-		assertTrue(properties2.containsKey(purchaseRequestClient2.getOntProperty()));
-		assertEquals(damianURI, properties2.get(purchaseRequestClient2.getOntProperty()).asResource().getURI());
-		
-		JBPSProperty purchaseRequestResponsible2 = modelFacade.getProperty(purchaseRequestResponsibleURI);
-		assertTrue(properties2.containsKey(purchaseRequestResponsible2.getOntProperty()));
-		assertEquals(employeeURI, properties2.get(purchaseRequestResponsible2.getOntProperty()).asResource().getURI());
-		
-		map = newHashMap();
-		state = engine.makeTransition(state, map, sfAuthorizePurchaseOrderURI, context);
-		assertTrue(engine.isEndState(state));
 	}
-
-
 }

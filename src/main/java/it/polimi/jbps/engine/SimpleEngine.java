@@ -91,6 +91,8 @@ public class SimpleEngine implements Engine {
 				if (assignments.containsKey(propertyAssignment.getPropertyURI())) {
 					String assignmentValue = assignments.get(propertyAssignment.getPropertyURI());
 					propertyAssignment.setPropertyValue(assignmentValue);
+				} else {
+					propertyAssignment.setPropertyValue(null);
 				}
 			}
 		}

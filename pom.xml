@@ -124,6 +124,12 @@
 		    <artifactId>tdb</artifactId>
 		    <version>0.8.10</version>
 		</dependency>
+		
+		<dependency>
+		    <groupId>springframework</groupId>
+		    <artifactId>spring-mock</artifactId>
+		    <version>1.2.6</version>
+		</dependency>
 	</dependencies>
 	
     

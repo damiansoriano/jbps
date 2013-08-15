@@ -4,6 +4,7 @@ import static com.google.common.collect.Lists.newLinkedList;
 import static com.google.common.collect.Maps.newHashMap;
 import static it.polimi.jbps.utils.ObjectUtils.not;
 import it.polimi.jbps.actions.Action;
+import it.polimi.jbps.actions.PropertyAssignment;
 import it.polimi.jbps.engine.Engine;
 import it.polimi.jbps.entities.Context;
 import it.polimi.jbps.entities.SimulationState;
@@ -101,6 +102,13 @@ public class EngineController {
 		model.addAttribute("currentState", currentState);
 		
 		List<Action> actions = engine.getActionsWithPossibleAssignments(currentState, context);
+		
+		for (Action action : actions) {
+			for (PropertyAssignment propAss : action.getPropertyAssignments()) {
+				String msg = "%s : %s";
+				log.info(String.format(msg, propAss.getJbpsProperty().toString(), propAss.getPropertyValue()));
+			}
+		}
 		
 		model.addAttribute("actions", actions);
 		

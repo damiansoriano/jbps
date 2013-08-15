@@ -48,7 +48,12 @@ public class OntologyModelManipulator implements ModelManipulator {
 	
 	@Override
 	public List<Action> getActions(SimulationState state) {
-		return form.getActions(state.getStateURI());
+		List<Action> clonedActions = newLinkedList();
+		
+		for (Action action : form.getActions(state.getStateURI())) {
+			clonedActions.add((Action) action.clone());
+		}
+		return clonedActions;
 	}
 
 	@Override
@@ -163,12 +168,12 @@ public class OntologyModelManipulator implements ModelManipulator {
 			String propertyValue = propertyAssignment.getPropertyValue();
 			
 			if (isNullOrEmpty(propertyValue)) {
-				continue;
+				value = null;
+			} else if (propertyAssignment.isObjectProperty()) {
+				value =  ontologyModel.getIndividual(propertyValue);
+			} else {
+				value = ontologyModel.createLiteral(propertyValue);
 			}
-			
-			if (propertyAssignment.isObjectProperty()) { value =  ontologyModel.getIndividual(propertyValue); }
-			else { value = ontologyModel.createLiteral(propertyValue); }
-			
 			assignments.put(property, value);
 		}
 		

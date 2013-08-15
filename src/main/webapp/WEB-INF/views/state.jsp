@@ -20,7 +20,7 @@
                
                <c:if test="${errorMessage != null}">
                <div class="errorMessage">
-                   An Error has ocurr while executing the actions,
+                   An Error has ocurred while executing the actions,
                    try a different assignment of the properties.<br/>
                    Error Message:
                    <c:out value="${errorMessage}"/>

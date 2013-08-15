@@ -1,6 +1,8 @@
 package it.polimi.jbps.engine;
 
 import static com.google.common.collect.Maps.newHashMap;
+import static it.polimi.jbps.utils.ObjectUtils.isNotNull;
+import static it.polimi.jbps.utils.ObjectUtils.not;
 import static it.polimi.jbps.utils.OntologyUtils.getOntologyFromFile;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -103,15 +105,16 @@ public class SimpleEngineTest {
 		map.put(purchaseRequestResponsibleURI, employeeURI);
 		state = engine.makeTransition(state, map, sfRequestAuthorization2URI, context);
 		
-		checkPropertiesValuesInModel(engine, modelFacade, damianURI, employeeURI, context);
+		checkPropertiesValuesInModel(engine, modelFacade, null, employeeURI, context);
 		
 		map = newHashMap();
 		state = engine.makeTransition(state, map, sfRejectPurchaseOrderURI, context);
 		
-		checkPropertiesValuesInModel(engine, modelFacade, damianURI, employeeURI, context);
-		checkPropertiesValuesOnPossibleAssignments(engine, state, damianURI, employeeURI, context);
+		checkPropertiesValuesInModel(engine, modelFacade, null, employeeURI, context);
+		checkPropertiesValuesOnPossibleAssignments(engine, state, null, employeeURI, context);
 		
 		map = newHashMap();
+		map.put(purchaseRequestClientURI, damianURI);
 		map.put(purchaseRequestResponsibleURI, otherPersonURI);
 		state = engine.makeTransition(state, map, sfRequestAuthorization2URI, context);
 		
@@ -151,12 +154,20 @@ public class SimpleEngineTest {
 		Map<Property, RDFNode> properties = modelFacade.getProperties(purchaseOrder);
 		
 		JBPSProperty purchaseRequestClient = modelFacade.getProperty(purchaseRequestClientURI);
-		assertTrue(properties.containsKey(purchaseRequestClient.getOntProperty()));
-		assertEquals(expectedPurchaseRequestClient, properties.get(purchaseRequestClient.getOntProperty()).asResource().getURI());
+		if (isNotNull(expectedPurchaseRequestClient)) {
+			assertTrue(properties.containsKey(purchaseRequestClient.getOntProperty()));
+			assertEquals(expectedPurchaseRequestClient, properties.get(purchaseRequestClient.getOntProperty()).asResource().getURI());
+		} else {
+			assertTrue(not(properties.containsKey(purchaseRequestClient.getOntProperty())));
+		}
 		
 		JBPSProperty purchaseRequestResponsible = modelFacade.getProperty(purchaseRequestResponsibleURI);
-		assertTrue(properties.containsKey(purchaseRequestResponsible.getOntProperty()));
-		assertEquals(expectedPurchaseRequestResponsible, properties.get(purchaseRequestResponsible.getOntProperty()).asResource().getURI());
+		if (isNotNull(purchaseRequestResponsible)) {
+			assertTrue(properties.containsKey(purchaseRequestResponsible.getOntProperty()));
+			assertEquals(expectedPurchaseRequestResponsible, properties.get(purchaseRequestResponsible.getOntProperty()).asResource().getURI());
+		} else {
+			assertTrue(not(properties.containsKey(purchaseRequestResponsible.getOntProperty())));
+		}
 	}
 	
 	public void checkPropertiesValuesOnPossibleAssignments(Engine engine, SimulationState state,

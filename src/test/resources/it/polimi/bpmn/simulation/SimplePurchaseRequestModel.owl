@@ -114,6 +114,7 @@
 
     <owl:NamedIndividual rdf:about="&PurchaseRequestModel;otherPerson">
         <rdf:type rdf:resource="&PurchaseRequestModel;Person"/>
+        <rdfs:label rdf:datatype="&xsd;string">Other Person</rdfs:label>
     </owl:NamedIndividual>
 </rdf:RDF>
 

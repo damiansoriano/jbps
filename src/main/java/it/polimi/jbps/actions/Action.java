@@ -41,7 +41,10 @@ public class Action {
 		action.actionType = this.actionType;
 		action.jbpsClass = this.jbpsClass;
 		action.individualURI = this.individualURI;
-		action.propertyAssignments = this.propertyAssignments;
+		action.propertyAssignments = newLinkedList();
+		for (PropertyAssignment pa : this.propertyAssignments) {
+			action.propertyAssignments.add((PropertyAssignment) pa.clone());
+		}
 		action.variableName = this.variableName;
 		
 		return action;

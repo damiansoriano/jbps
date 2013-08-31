@@ -41,6 +41,9 @@ public class EngineControllerTest {
 	private final String modelOntologyPath = "./src/test/resources/it/polimi/bpmn/simulation/SimplePurchaseRequestModel.owl";
 	private final String inputDataExampleWithVariables = "./src/test/resources/it/polimi/bpmn/simulation/inputDataExampleWithVariables.json";
 	
+	private final String modelOntologyWithLiteralDatatypesPath = "./src/test/resources/it/polimi/bpmn/simulation/SimplePurchaseRequestModelWithLiteralDatatypes.owl";
+	private final String inputDataExampleWithVariablesAndLiteralDatatypes = "./src/test/resources/it/polimi/bpmn/simulation/inputDataExampleWithVariablesAndLiteralDatatypes.json";
+	
 	private final String sfRequestAuthorizationURI = "http://www.semanticweb.org/ontologies/2013/5/PurchaseRequest.owl#sfRequestAuthorization";
 	private final String sfRejectPurchaseOrderURI = "http://www.semanticweb.org/ontologies/2013/5/PurchaseRequest.owl#sfRejectPurchaseOrder";
 	private final String sfRequestAuthorization2URI = "http://www.semanticweb.org/ontologies/2013/5/PurchaseRequest.owl#sfRequestAuthorization2";
@@ -55,7 +58,9 @@ public class EngineControllerTest {
 	private final String notExprectedPropertyAssignment = "%s does not match expected properties.";
 	private final String notExprectedTransition = "%s does not match expected transition.";
 	
-	protected Pair<Engine, ModelFacade> getControllers() throws IOException {
+	private Pair<Engine, ModelFacade> getControllers(String bpmnOntologyPath, String modelOntologyPath,
+			String inputDataExampleWithVariables) throws IOException {
+		
 		OntModel bpmnOntology = getOntologyFromFile(bpmnOntologyPath);
 		Simulator simulator = new OntologySimulator(bpmnOntology);
 		
@@ -70,8 +75,8 @@ public class EngineControllerTest {
 		return new Pair<Engine, ModelFacade>(engine, modelFacade);
 	}
 	
-	public EngineController getEngineController() throws IOException {
-		Pair<Engine, ModelFacade> controllers = getControllers();
+	private EngineController getEngineController() throws IOException {
+		Pair<Engine, ModelFacade> controllers = getControllers(bpmnOntologyPath, modelOntologyPath, inputDataExampleWithVariables);
 		
 		Map<String, Engine> engines = newHashMap();
 		engines.put("lane", controllers.first);
@@ -79,6 +84,105 @@ public class EngineControllerTest {
 		lanesDescriptions.put("lane", "Lane Description");
 		
 		return new EngineController(engines, lanesDescriptions);
+	}
+	
+	private EngineController getEngineControllerWithDatatypes() throws IOException {
+		Pair<Engine, ModelFacade> controllers = getControllers(
+				bpmnOntologyPath, modelOntologyWithLiteralDatatypesPath,
+				inputDataExampleWithVariablesAndLiteralDatatypes);
+		
+		Map<String, Engine> engines = newHashMap();
+		engines.put("lane", controllers.first);
+		Map<String, String> lanesDescriptions = newHashMap();
+		lanesDescriptions.put("lane", "Lane Description");
+		
+		return new EngineController(engines, lanesDescriptions);
+	}
+	
+	@SuppressWarnings("unchecked")
+	private void checkInitialState(String viewName, ModelMap model) {
+		assertEquals("state", viewName);
+		SimulationState currentState = (SimulationState) model.get("currentState");
+		assertEquals("Create Purchase Order", currentState.toString());
+		List<Action> actions = (List<Action>) model.get("actions");
+		assertEquals(1, actions.size());
+		
+		Action action = actions.get(0);
+		assertEquals(ActionType.INSERT, action.getActionType());
+		assertEquals("", action.getIndividualURI());
+		assertEquals("purchaseOrder", action.getVariableName());
+		assertEquals(2, action.getPropertyAssignments().size());
+		for (PropertyAssignment proprAss : action.getPropertyAssignments()) {
+			if (proprAss.getJbpsProperty().toString().equals("Purchase Request Client")) {
+				assertEquals(3, proprAss.getPossibleAssignments().size());
+				assertNull(proprAss.getPropertyValue());
+			} else if (proprAss.getJbpsProperty().toString().equals("Purchase Request Responsible")) {
+				assertEquals(3, proprAss.getPossibleAssignments().size());
+				assertNull(proprAss.getPropertyValue());
+			} else {
+				assertTrue(String.format(notExprectedPropertyAssignment, proprAss.getJbpsProperty()), false);
+			}
+		}
+		
+		Map<SimulationTransition, SimulationState> nextStates =
+				(Map<SimulationTransition, SimulationState>) model.get("transitions");
+		assertEquals(1, nextStates.size());
+		for (SimulationTransition key : nextStates.keySet()) {
+			if (key.getTransition().toString().equals("Request Authorization")) {
+				SimulationState simulationState = nextStates.get(key);
+				assertEquals("Authorize Purchase Order", simulationState.getState().toString());
+			} else {
+				assertTrue(String.format(notExprectedTransition, key.getTransition()), false);
+			}
+		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	private void checkInitialStateWithLiteralDatatypes(String viewName, ModelMap model) {
+		assertEquals("state", viewName);
+		SimulationState currentState = (SimulationState) model.get("currentState");
+		assertEquals("Create Purchase Order", currentState.toString());
+		List<Action> actions = (List<Action>) model.get("actions");
+		assertEquals(1, actions.size());
+		
+		Action action = actions.get(0);
+		assertEquals(ActionType.INSERT, action.getActionType());
+		assertEquals("", action.getIndividualURI());
+		assertEquals("purchaseOrder", action.getVariableName());
+		assertEquals(4, action.getPropertyAssignments().size());
+		for (PropertyAssignment proprAss : action.getPropertyAssignments()) {
+			if (proprAss.getJbpsProperty().toString().equals("Purchase Request Client")) {
+				assertEquals(3, proprAss.getPossibleAssignments().size());
+				assertNull(proprAss.getPropertyValue());
+				assertTrue(proprAss.isObjectProperty());
+			} else if (proprAss.getJbpsProperty().toString().equals("Purchase Request Responsible")) {
+				assertEquals(3, proprAss.getPossibleAssignments().size());
+				assertNull(proprAss.getPropertyValue());
+				assertTrue(proprAss.isObjectProperty());
+			} else if (proprAss.getJbpsProperty().toString().equals("Comment")) {
+				assertEquals(0, proprAss.getPossibleAssignments().size());
+				assertNull(proprAss.getPropertyValue());
+				assertTrue(proprAss.isDataProperty());
+			} else if (proprAss.getJbpsProperty().toString().equals("Created Datetime")) {
+				assertEquals(0, proprAss.getPossibleAssignments().size());
+				assertNull(proprAss.getPropertyValue());
+				assertTrue(proprAss.isDataProperty());
+			} else {
+				assertTrue(String.format(notExprectedPropertyAssignment, proprAss.getJbpsProperty()), false);
+			}
+		}
+		
+		Map<SimulationTransition, SimulationState> nextStates =
+				(Map<SimulationTransition, SimulationState>) model.get("transitions");
+		assertEquals(1, nextStates.size());
+		for (SimulationTransition key : nextStates.keySet()) {
+			if (key.getTransition().toString().equals("Request Authorization")) {
+				SimulationState simulationState = nextStates.get(key);
+				assertEquals("Authorize Purchase Order", simulationState.getState().toString());
+			} else {
+				assertTrue(String.format(notExprectedTransition, key.getTransition()), false);
+			}
+		}
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -416,33 +520,109 @@ public class EngineControllerTest {
 		assertNull(currentState);
 	}
 	
-	@SuppressWarnings("unchecked")
-	public void checkInitialState(String viewName, ModelMap model) {
-		assertEquals("state", viewName);
+	
+	@Test
+	public void datatypes() throws IOException, BPMNInvalidTransition {
+		EngineController engineController = getEngineControllerWithDatatypes();
+		
+		/*
+		 * Start Simulation
+		 */
+		MockHttpServletRequest request = new MockHttpServletRequest();
+		ModelMap model = new ModelMap();
+		String viewName = engineController.startSimulation("lane", request, model);
+		
+		assertEquals("redirect:/lane/currentState", viewName);
+		
+		/*
+		 * Simulation State
+		 */
+		request = new MockHttpServletRequest();
+		model = new ModelMap();
+		viewName = engineController.simulationState("lane", null, request, model);
+		
+		checkInitialStateWithLiteralDatatypes(viewName, model);
+		
+		/*
+		 * Make Trasition, Request Authorization
+		 */
+		request = new MockHttpServletRequest();
+		request.addParameter("transition", sfRequestAuthorizationURI);
+		request.addParameter(purchaseRequestClientURI, damianURI);
+		request.addParameter(purchaseRequestResponsibleURI, employeeURI);
+		model = new ModelMap();
+		viewName = engineController.makeTransition("lane", request, model);
+		
+		assertEquals("redirect:/lane/currentState", viewName);
+		
+		/*
+		 * Simulation State
+		 */
+		request = new MockHttpServletRequest();
+		model = new ModelMap();
+		viewName = engineController.simulationState("lane", null, request, model);
+		
 		SimulationState currentState = (SimulationState) model.get("currentState");
-		assertEquals("Create Purchase Order", currentState.toString());
+		assertEquals("Authorize Purchase Order", currentState.toString());
 		List<Action> actions = (List<Action>) model.get("actions");
+		assertEquals(0, actions.size());
+		
+		Map<SimulationTransition, SimulationState> nextStates =
+				(Map<SimulationTransition, SimulationState>) model.get("transitions");
+		assertEquals(2, nextStates.size());
+		for (SimulationTransition key : nextStates.keySet()) {
+			if (key.getTransition().toString().equals("Reject Purchase Order")) {
+				SimulationState simulationState = nextStates.get(key);
+				assertEquals("Change Purchase Order", simulationState.getState().toString());
+			} else if (key.getTransition().toString().equals("Authorize Purchase Order")) {
+				SimulationState simulationState = nextStates.get(key);
+				assertEquals("End Purchase Order", simulationState.getState().toString());
+			} else {
+				assertTrue(String.format(notExprectedTransition, key.getTransition()), false);
+			}
+		}
+		
+		/*
+		 * Make Trasition, Reject Purchase Order
+		 */
+		request = new MockHttpServletRequest();
+		request.addParameter("transition", sfRejectPurchaseOrderURI);
+		model = new ModelMap();
+		viewName = engineController.makeTransition("lane", request, model);
+		
+		assertEquals("redirect:/lane/currentState", viewName);
+		
+		/*
+		 * Simulation State
+		 */
+		request = new MockHttpServletRequest();
+		model = new ModelMap();
+		viewName = engineController.simulationState("lane", null, request, model);
+				
+		assertEquals("state", viewName);
+		currentState = (SimulationState) model.get("currentState");
+		assertEquals("Change Purchase Order", currentState.toString());
+		actions = (List<Action>) model.get("actions");
 		assertEquals(1, actions.size());
 		
 		Action action = actions.get(0);
-		assertEquals(ActionType.INSERT, action.getActionType());
+		assertEquals(ActionType.UPDATE, action.getActionType());
 		assertEquals("", action.getIndividualURI());
 		assertEquals("purchaseOrder", action.getVariableName());
 		assertEquals(2, action.getPropertyAssignments().size());
 		for (PropertyAssignment proprAss : action.getPropertyAssignments()) {
 			if (proprAss.getJbpsProperty().toString().equals("Purchase Request Client")) {
 				assertEquals(3, proprAss.getPossibleAssignments().size());
-				assertNull(proprAss.getPropertyValue());
+				assertEquals(damianURI, proprAss.getPropertyValue());
 			} else if (proprAss.getJbpsProperty().toString().equals("Purchase Request Responsible")) {
 				assertEquals(3, proprAss.getPossibleAssignments().size());
-				assertNull(proprAss.getPropertyValue());
+				assertEquals(employeeURI, proprAss.getPropertyValue());
 			} else {
 				assertTrue(String.format(notExprectedPropertyAssignment, proprAss.getJbpsProperty()), false);
 			}
 		}
 		
-		Map<SimulationTransition, SimulationState> nextStates =
-				(Map<SimulationTransition, SimulationState>) model.get("transitions");
+		nextStates = (Map<SimulationTransition, SimulationState>) model.get("transitions");
 		assertEquals(1, nextStates.size());
 		for (SimulationTransition key : nextStates.keySet()) {
 			if (key.getTransition().toString().equals("Request Authorization")) {
@@ -452,6 +632,24 @@ public class EngineControllerTest {
 				assertTrue(String.format(notExprectedTransition, key.getTransition()), false);
 			}
 		}
+		
+		/*
+		 * Start Simulation
+		 */
+		request = new MockHttpServletRequest();
+		model = new ModelMap();
+		viewName = engineController.startSimulation("lane", request, model);
+		
+		assertEquals("redirect:/lane/currentState", viewName);
+		
+		/*
+		 * Simulation State
+		 */
+		request = new MockHttpServletRequest();
+		model = new ModelMap();
+		viewName = engineController.simulationState("lane", null, request, model);
+		
+		checkInitialState(viewName, model);
 	}
 
 }

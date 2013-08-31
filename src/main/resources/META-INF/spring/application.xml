@@ -23,7 +23,7 @@
     
     <bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter" />
     <bean class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping" />
-    
+    <!--
     <bean class="it.polimi.jbps.web.config.AppConfig">
         <constructor-arg index="0">
 	        <map>
@@ -36,6 +36,29 @@
             <map>
                <entry key="saleOrder" value="./src/test/resources/it/polimi/bpmn/simulation/stateFormAssociation.json" />
                <entry key="saleOrderWithUpdate" value="./src/test/resources/it/polimi/bpmn/simulation/stateFormAssociationWithVariables.json" />
+            </map>
+        </constructor-arg>
+        <constructor-arg index="3">
+            <map>
+               <entry key="saleOrder" value="Sale Order" />
+               <entry key="saleOrderWithUpdate" value="Sale Order With Update" />
+            </map>
+        </constructor-arg>
+        <constructor-arg index="4" value="http://www.semanticweb.org/ontologies/2013/5/PurchaseRequestModel.owl" />
+    </bean>
+    -->
+    <bean class="it.polimi.jbps.web.config.AppConfig">
+        <constructor-arg index="0">
+            <map>
+               <entry key="saleOrder" value="./src/test/resources/it/polimi/bpmn/simulation/SimplePurchaseRequestBPMN.owl" />
+               <entry key="saleOrderWithUpdate" value="./src/test/resources/it/polimi/bpmn/simulation/SimplePurchaseRequestBPMN.owl" />
+            </map>
+        </constructor-arg>
+        <constructor-arg index="1" value="./src/test/resources/it/polimi/bpmn/simulation/SimplePurchaseRequestModelWithLiteralDatatypes.owl" />
+        <constructor-arg index="2">
+            <map>
+               <entry key="saleOrder" value="./src/test/resources/it/polimi/bpmn/simulation/stateFormAssociation.json" />
+               <entry key="saleOrderWithUpdate" value="./src/test/resources/it/polimi/bpmn/simulation/inputDataExampleWithVariablesAndLiteralDatatypes.json" />
             </map>
         </constructor-arg>
         <constructor-arg index="3">

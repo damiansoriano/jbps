@@ -1,6 +1,7 @@
 package it.polimi.jbps.io;
 
 import static it.polimi.jbps.PropertyType.OBJECT_PROPERTY;
+import static it.polimi.jbps.PropertyType.DATA_PROPERTY;
 import static it.polimi.jbps.utils.OntologyUtils.getOntologyFromFile;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -24,8 +25,16 @@ public class Json2ModelActionTest {
 	
 	private final static String modelOntologyPath = "./src/test/resources/it/polimi/bpmn/simulation/SimplePurchaseRequestModel.owl";
 	
+	private final String modelOntologyWithLiteralDatatypesPath = "./src/test/resources/it/polimi/bpmn/simulation/SimplePurchaseRequestModelWithLiteralDatatypes.owl";
+	private final String inputDataExampleWithVariablesAndLiteralDatatypes = "./src/test/resources/it/polimi/bpmn/simulation/inputDataExampleWithVariablesAndLiteralDatatypes.json";
+	
 	private final static String createPurchaseOrderURI = "http://www.semanticweb.org/ontologies/2013/5/PurchaseRequest.owl#createPurchaseOrder";
 	private final static String changePurchaseOrderURI = "http://www.semanticweb.org/ontologies/2013/5/PurchaseRequest.owl#changePurchaseOrder";
+	
+	private final static String purchaseRequestClientURI = "http://www.semanticweb.org/ontologies/2013/5/PurchaseRequestModel.owl#purchaseRequestClient";
+	private final static String purchaseRequestResponsibleURI = "http://www.semanticweb.org/ontologies/2013/5/PurchaseRequestModel.owl#purchaseRequestResponsible";
+	private final static String commentURI = "http://www.semanticweb.org/ontologies/2013/5/PurchaseRequestModel.owl#comment";
+	private final static String createdDatetimeURI = "http://www.semanticweb.org/ontologies/2013/5/PurchaseRequestModel.owl#createdDatetime";
 	
 	@Test
 	public void correctlyGenerateInputDataExample() throws IOException {
@@ -146,5 +155,61 @@ public class Json2ModelActionTest {
 		assertEquals("http://www.semanticweb.org/ontologies/2013/5/PurchaseRequestModel.owl#PurchaseRequest", action.getClassURI());
 		assertEquals(ActionType.UPDATE, action.getActionType());
 		assertEquals("purchaseOrder", action.getVariableName());
+	}
+	
+	@Test
+	public void correctlyGenerateInputDataExampleWithLiteralDatatypes() throws IOException {
+		File inputFile = new File(inputDataExampleWithVariablesAndLiteralDatatypes);
+		String inputJson = Files.toString(inputFile, Charsets.UTF_8);
+		
+		OntModel modelOntology = getOntologyFromFile(modelOntologyWithLiteralDatatypesPath);
+		
+		Json2ModelAction json2ModelAction = new Json2ModelAction();
+		Map<String, List<Action>> formsConfiguration = json2ModelAction.parseFormsConfiguration(inputJson, modelOntology);
+		
+		assertTrue(formsConfiguration.containsKey(createPurchaseOrderURI));
+		
+		List<Action> actions = formsConfiguration.get(createPurchaseOrderURI);
+		
+		assertEquals(1, actions.size());
+		
+		Action action01 = actions.get(0);
+		
+		assertEquals("http://www.semanticweb.org/ontologies/2013/5/PurchaseRequestModel.owl#PurchaseRequest", action01.getClassURI());
+		assertTrue(action01.getIndividualURI().isEmpty());
+		assertEquals(ActionType.INSERT, action01.getActionType());
+		
+		List<PropertyAssignment> propertyAssignments = action01.getPropertyAssignments();
+		assertEquals(4, propertyAssignments.size());
+		
+		boolean purchaseRequestClientFound = false;
+		boolean purchaseRequestResponsibleFound = false;
+		boolean commnentFound = false;
+		boolean createdDatetimeFound = false;
+		
+		for (PropertyAssignment propertyAssignment : propertyAssignments) {
+			if (propertyAssignment.getPropertyURI().equals(purchaseRequestClientURI)) {
+				purchaseRequestClientFound = true;
+				assertEquals(OBJECT_PROPERTY, propertyAssignment.getPropertyType());
+			} else if (propertyAssignment.getPropertyURI().equals(purchaseRequestResponsibleURI)) {
+				purchaseRequestResponsibleFound = true;
+				assertEquals(OBJECT_PROPERTY, propertyAssignment.getPropertyType());
+			} else if (propertyAssignment.getPropertyURI().equals(commentURI)) {
+				commnentFound = true;
+				assertEquals(DATA_PROPERTY, propertyAssignment.getPropertyType());
+			} else if (propertyAssignment.getPropertyURI().equals(createdDatetimeURI)) {
+				createdDatetimeFound = true;
+				assertEquals(DATA_PROPERTY, propertyAssignment.getPropertyType());
+			} else {
+				assertTrue(false);
+			}
+			
+			assertNull(propertyAssignment.getPropertyValue());
+		}
+		
+		assertTrue(purchaseRequestClientFound);
+		assertTrue(purchaseRequestResponsibleFound);
+		assertTrue(commnentFound);
+		assertTrue(createdDatetimeFound);
 	}
 }

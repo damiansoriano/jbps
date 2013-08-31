@@ -23,11 +23,15 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Test;
+import org.mindswap.pellet.jena.PelletReasonerFactory;
 
 import com.hp.hpl.jena.ontology.Individual;
+import com.hp.hpl.jena.ontology.OntClass;
 import com.hp.hpl.jena.ontology.OntModel;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.RDFNode;
+import com.hp.hpl.jena.rdf.model.Resource;
 
 public abstract class ModelManipulatorTest {
 	
@@ -35,6 +39,10 @@ public abstract class ModelManipulatorTest {
 	private final static String modelOntologyPath = "./src/test/resources/it/polimi/bpmn/simulation/SimplePurchaseRequestModel.owl";
 	private final static String inputDataExample = "./src/test/resources/it/polimi/bpmn/simulation/inputDataExample.json";
 	private final static String inputDataExampleWithVariables = "./src/test/resources/it/polimi/bpmn/simulation/inputDataExampleWithVariables.json";
+	private final static String testingErrorPath = "./src/test/resources/it/polimi/bpmn/simulation/testingError.owl";
+
+	private final static String modelOntologyWithLiteralDatatypesPath = "./src/test/resources/it/polimi/bpmn/simulation/SimplePurchaseRequestModelWithLiteralDatatypes.owl";
+	private final static String inputDataExampleWithVariablesAndLiteralDatatypes = "./src/test/resources/it/polimi/bpmn/simulation/inputDataExampleWithVariablesAndLiteralDatatypes.json";
 	
 	private final static String createPurchaseOrderURI = "http://www.semanticweb.org/ontologies/2013/5/PurchaseRequest.owl#createPurchaseOrder";
 	private final static String changePurchaseOrderURI = "http://www.semanticweb.org/ontologies/2013/5/PurchaseRequest.owl#changePurchaseOrder";
@@ -43,6 +51,8 @@ public abstract class ModelManipulatorTest {
 	
 	private final static String purchaseRequestClientURI = "http://www.semanticweb.org/ontologies/2013/5/PurchaseRequestModel.owl#purchaseRequestClient";
 	private final static String purchaseRequestResponsibleURI = "http://www.semanticweb.org/ontologies/2013/5/PurchaseRequestModel.owl#purchaseRequestResponsible";
+	private final static String commentURI = "http://www.semanticweb.org/ontologies/2013/5/PurchaseRequestModel.owl#comment";
+	private final static String createdDatetimeURI = "http://www.semanticweb.org/ontologies/2013/5/PurchaseRequestModel.owl#createdDatetime";
 	
 	private final static String purchaseRequest01URI = "http://www.semanticweb.org/ontologies/2013/5/PurchaseRequestModel.owl#purchaseRequest01";
 		
@@ -377,4 +387,128 @@ public abstract class ModelManipulatorTest {
 		assertNotNull(requestResponsible2);
 	}
 	
+	@Test
+	public void getPossibleAssignmentsWithLiteralDatatypes() throws IOException, InvalidPropertyAssignment {
+		String variableName = "purchaseOrder";
+		OntModel bpmnOntology = getOntologyFromFile(bpmnOntologyPath);
+		OntModel modelOntology = getOntologyFromFile(modelOntologyWithLiteralDatatypesPath);
+		Context context = new Context();
+		
+		Individual prePurchaseRequest01 = modelOntology.getIndividual(purchaseRequest01URI);
+		assertNull(prePurchaseRequest01);
+		
+		Form form = new Form(FormsConfiguration.createFromFile(inputDataExampleWithVariablesAndLiteralDatatypes, modelOntology));
+		
+		ModelManipulator manipulator = getModelManipulator(modelOntology, form);
+		Simulator simulator = getSimulator(bpmnOntology);
+		
+		SimulationState createPurchaseOrder = simulator.getStateFromURI(createPurchaseOrderURI);
+		
+		List<Action> actions = manipulator.getActions(createPurchaseOrder);
+		Action action = actions.get(0);
+		List<PropertyAssignment> propertyAssignments = action.getPropertyAssignments();
+		
+		assertEquals(3, propertyAssignments.size());
+		
+		for (PropertyAssignment propertyAssignment : propertyAssignments) {
+			if (propertyAssignment.getPropertyURI().equals(purchaseRequestClientURI)) {
+				List<Individual> possibleAssignments = manipulator.getPossibleAssignments(propertyAssignment);
+				assertEquals(3, possibleAssignments.size());
+				
+				Individual damianIndividual = null;
+				Individual employeeIndividual = null;
+				
+				for (Individual individual : possibleAssignments) {
+					if (damianURI.equals(individual.getURI())) {
+						damianIndividual = individual;
+					} else if (employeeURI.equals(individual.getURI())) {
+						employeeIndividual = individual;
+					}
+				}
+				
+				assertNotNull(damianIndividual);
+				assertNotNull(employeeIndividual);
+				
+				propertyAssignment.setPropertyValue(damianIndividual.getURI());
+				
+			} else if (propertyAssignment.getPropertyURI().equals(purchaseRequestResponsibleURI)) {
+				List<Individual> possibleAssignments = manipulator.getPossibleAssignments(propertyAssignment);
+				assertEquals(3, possibleAssignments.size());
+				
+				Individual damianIndividual = null;
+				Individual employeeIndividual = null;
+				
+				for (Individual individual : possibleAssignments) {
+					if (damianURI.equals(individual.getURI())) {
+						damianIndividual = individual;
+					} else if (employeeURI.equals(individual.getURI())) {
+						employeeIndividual = individual;
+					}
+				}
+				
+				assertNotNull(damianIndividual);
+				assertNotNull(employeeIndividual);
+				
+				propertyAssignment.setPropertyValue(employeeIndividual.getURI());
+			} else if (propertyAssignment.getPropertyURI().equals(commentURI)) {
+				List<Individual> possibleAssignments = manipulator.getPossibleAssignments(propertyAssignment);
+				assertEquals(0, possibleAssignments.size());
+				
+//				propertyAssignment.setPropertyValue("Comment of user");
+			} else if (propertyAssignment.getPropertyURI().equals(createdDatetimeURI)) {
+				List<Individual> possibleAssignments = manipulator.getPossibleAssignments(propertyAssignment);
+				assertEquals(0, possibleAssignments.size());
+				
+//				propertyAssignment.setPropertyValue("2013-08-18 19:16:00");
+			} else {
+				assertTrue(false);
+			}
+		}
+		
+		List<Action> toExecuteActions = newLinkedList();
+		toExecuteActions.add(action);
+		manipulator.execute(toExecuteActions, context);
+		
+		Individual purchaseOrder = modelOntology.getIndividual(context.getVariables().get(variableName));
+		assertNotNull(purchaseOrder);
+		
+		Property purchaseRequestClientProperty = modelOntology.getProperty(purchaseRequestClientURI);
+		RDFNode damianRDFNode = purchaseOrder.getPropertyValue(purchaseRequestClientProperty);
+		
+		assertNotNull(damianRDFNode);
+		assertTrue(damianRDFNode.isResource());
+		assertEquals(damianRDFNode.asResource().getURI(), damianURI);
+		
+		Property purchaseRequestResponsibleProperty = modelOntology.getProperty(purchaseRequestResponsibleURI);
+		RDFNode employeeRDFNode = purchaseOrder.getPropertyValue(purchaseRequestResponsibleProperty);
+		
+		assertNotNull(employeeRDFNode);
+		assertTrue(employeeRDFNode.isResource());
+		assertEquals(employeeRDFNode.asResource().getURI(), employeeURI);
+		
+		Property commentProperty = modelOntology.getProperty(commentURI);
+		RDFNode commentRDFNode = purchaseOrder.getPropertyValue(commentProperty);
+		
+		assertNotNull(commentRDFNode);
+		assertTrue(commentRDFNode.isResource());
+	}
+	
+	@Test
+	public void testing() throws IOException, InvalidPropertyAssignment {
+		String variableName = "purchaseOrder";
+		OntModel bpmnOntology = getOntologyFromFile(bpmnOntologyPath);
+		OntModel modelOntology = getOntologyFromFile(testingErrorPath);
+		
+		Property property = modelOntology.getProperty(commentURI);
+		OntClass ontClass = modelOntology.getOntClass(purchaseRequestClassURI);
+		Individual purchaseRequest = ontClass.createIndividual();
+		assertNotNull(purchaseRequest);
+		
+		OntModel freshModel = ModelFactory.createOntologyModel(PelletReasonerFactory.THE_SPEC);
+		
+		
+		RDFNode oldPropertyValue = purchaseRequest.getPropertyValue(property);
+		
+		System.out.println(oldPropertyValue);
+	}
 }

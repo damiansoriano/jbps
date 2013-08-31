@@ -23,6 +23,7 @@ import it.polimi.jbps.model.ModelFacade;
 import it.polimi.jbps.model.ModelManipulator;
 import it.polimi.jbps.model.OntologyModelFacade;
 import it.polimi.jbps.model.OntologyModelManipulator;
+import it.polimi.jbps.utils.PurchaseRequestConstants;
 
 import java.io.IOException;
 import java.util.Map;
@@ -42,11 +43,6 @@ public class SimpleEngineTest {
 
 	private final String modelOntologyPath = "./src/test/resources/it/polimi/bpmn/simulation/SimplePurchaseRequestModel.owl";
 	private final String inputDataExampleWithVariables = "./src/test/resources/it/polimi/bpmn/simulation/inputDataExampleWithVariables.json";
-	
-	private final String sfRequestAuthorizationURI = "http://www.semanticweb.org/ontologies/2013/5/PurchaseRequest.owl#sfRequestAuthorization";
-	private final String sfRejectPurchaseOrderURI = "http://www.semanticweb.org/ontologies/2013/5/PurchaseRequest.owl#sfRejectPurchaseOrder";
-	private final String sfRequestAuthorization2URI = "http://www.semanticweb.org/ontologies/2013/5/PurchaseRequest.owl#sfRequestAuthorization2";
-	private final String sfAuthorizePurchaseOrderURI = "http://www.semanticweb.org/ontologies/2013/5/PurchaseRequest.owl#sfAuthorizePurchaseOrder";
 	
 	private final String damianURI = "http://www.semanticweb.org/ontologies/2013/5/PurchaseRequestModel.owl#damian";
 	private final String employeeURI = "http://www.semanticweb.org/ontologies/2013/5/PurchaseRequestModel.owl#employee";
@@ -91,24 +87,24 @@ public class SimpleEngineTest {
 		Map<String, String> map = newHashMap();
 		map.put(purchaseRequestClientURI, damianURI);
 		map.put(purchaseRequestResponsibleURI, otherPersonURI);
-		state = engine.makeTransition(state, map, sfRequestAuthorizationURI, context);
+		state = engine.makeTransition(state, map, PurchaseRequestConstants.SF_REQUEST_AUTHORIZATION_URI, context);
 		
 		checkPropertiesValuesInModel(engine, modelFacade, damianURI, otherPersonURI, context);
 		
 		map = newHashMap();
-		state = engine.makeTransition(state, map, sfRejectPurchaseOrderURI, context);
+		state = engine.makeTransition(state, map, PurchaseRequestConstants.SF_REJECT_PURCHASE_ORDER_URI, context);
 		
 		checkPropertiesValuesInModel(engine, modelFacade, damianURI, otherPersonURI, context);
 		checkPropertiesValuesOnPossibleAssignments(engine, state, damianURI, otherPersonURI, context);
 		
 		map = newHashMap();
 		map.put(purchaseRequestResponsibleURI, employeeURI);
-		state = engine.makeTransition(state, map, sfRequestAuthorization2URI, context);
+		state = engine.makeTransition(state, map, PurchaseRequestConstants.SF_REQUEST_AUTHORIZATION2_URI, context);
 		
 		checkPropertiesValuesInModel(engine, modelFacade, null, employeeURI, context);
 		
 		map = newHashMap();
-		state = engine.makeTransition(state, map, sfRejectPurchaseOrderURI, context);
+		state = engine.makeTransition(state, map, PurchaseRequestConstants.SF_REJECT_PURCHASE_ORDER_URI, context);
 		
 		checkPropertiesValuesInModel(engine, modelFacade, null, employeeURI, context);
 		checkPropertiesValuesOnPossibleAssignments(engine, state, null, employeeURI, context);
@@ -116,14 +112,14 @@ public class SimpleEngineTest {
 		map = newHashMap();
 		map.put(purchaseRequestClientURI, damianURI);
 		map.put(purchaseRequestResponsibleURI, otherPersonURI);
-		state = engine.makeTransition(state, map, sfRequestAuthorization2URI, context);
+		state = engine.makeTransition(state, map, PurchaseRequestConstants.SF_REQUEST_AUTHORIZATION2_URI, context);
 		
 		checkPropertiesValuesInModel(engine, modelFacade, damianURI, otherPersonURI, context);
 		
 		
 		
 		map = newHashMap();
-		state = engine.makeTransition(state, map, sfRejectPurchaseOrderURI, context);
+		state = engine.makeTransition(state, map, PurchaseRequestConstants.SF_REJECT_PURCHASE_ORDER_URI, context);
 		
 		checkPropertiesValuesInModel(engine, modelFacade, damianURI, otherPersonURI, context);
 		checkPropertiesValuesOnPossibleAssignments(engine, state, damianURI, otherPersonURI, context);
@@ -131,7 +127,7 @@ public class SimpleEngineTest {
 		map = newHashMap();
 		map.put(purchaseRequestClientURI, otherPersonURI);
 		map.put(purchaseRequestResponsibleURI, damianURI);
-		state = engine.makeTransition(state, map, sfRequestAuthorization2URI, context);
+		state = engine.makeTransition(state, map, PurchaseRequestConstants.SF_REQUEST_AUTHORIZATION2_URI, context);
 		
 		checkPropertiesValuesInModel(engine, modelFacade, otherPersonURI, damianURI, context);
 		
@@ -139,7 +135,7 @@ public class SimpleEngineTest {
 		
 		
 		map = newHashMap();
-		state = engine.makeTransition(state, map, sfAuthorizePurchaseOrderURI, context);
+		state = engine.makeTransition(state, map, PurchaseRequestConstants.SF_AUTHORIZE_PURCHASE_ORDER_URI, context);
 		assertTrue(engine.isEndState(state));
 	}
 	

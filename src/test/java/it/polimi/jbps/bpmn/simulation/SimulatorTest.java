@@ -1,24 +1,20 @@
 package it.polimi.jbps.bpmn.simulation;
 
-import static it.polimi.jbps.utils.OntologyUtils.getOntologyFromFile;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import it.polimi.jbps.entities.SimulationState;
 import it.polimi.jbps.entities.SimulationTransition;
 import it.polimi.jbps.exception.BPMNInvalidTransition;
 
+import java.io.IOException;
 import java.util.Map;
 
 import org.junit.Test;
 
-import com.hp.hpl.jena.ontology.OntModel;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-
 public abstract class SimulatorTest {
-	
-	private final static String bpmnOntologyPath = "./src/test/resources/it/polimi/bpmn/simulation/SimplePurchaseRequestBPMN.owl";
 	
 	private final static String createPurchaseOrderURI = "http://www.semanticweb.org/ontologies/2013/5/PurchaseRequest.owl#createPurchaseOrder";
 	private final static String authorizePurchaseOrderURI = "http://www.semanticweb.org/ontologies/2013/5/PurchaseRequest.owl#authorizePurchaseOrder";
@@ -29,48 +25,44 @@ public abstract class SimulatorTest {
 	private final static String sfAuthorizePurchaseOrderURI = "http://www.semanticweb.org/ontologies/2013/5/PurchaseRequest.owl#sfAuthorizePurchaseOrder";
 	private final static String sfRejectPurchaseOrderURI = "http://www.semanticweb.org/ontologies/2013/5/PurchaseRequest.owl#sfRejectPurchaseOrder";
 	
-	protected abstract Simulator getSimulator(OntModel bpmnOntologyModel);
+	protected abstract String getResource(String resourceName);
+	protected abstract Simulator getSimulator(String resource) throws IOException;
 	
 	@Test
-	public void getStateFromURIWhenExists() {
-		OntModel bpmnOntology = getOntologyFromFile(bpmnOntologyPath);
-		Simulator simulator = getSimulator(bpmnOntology);
+	public void getStateFromURIWhenExists() throws IOException {
+		Simulator simulator = getSimulator(getResource("SimplePurchaseRequestBPMN"));
 		
 		SimulationState state = simulator.getStateFromURI(createPurchaseOrderURI);
 		assertEquals(createPurchaseOrderURI, state.getStateURI());
 	}
 	
 	@Test
-	public void getStateFromURIWhenNotExists() {
-		OntModel bpmnOntology = getOntologyFromFile(bpmnOntologyPath);
-		Simulator simulator = getSimulator(bpmnOntology);
+	public void getStateFromURIWhenNotExists() throws IOException {
+		Simulator simulator = getSimulator(getResource("SimplePurchaseRequestBPMN"));
 		
 		SimulationState state = simulator.getStateFromURI("notExistingURIInModel");
 		assertNull(state);
 	}
 	
 	@Test
-	public void getTransitionFromURIWhenExists() {
-		OntModel bpmnOntology = getOntologyFromFile(bpmnOntologyPath);
-		Simulator simulator = getSimulator(bpmnOntology);
+	public void getTransitionFromURIWhenExists() throws IOException {
+		Simulator simulator = getSimulator(getResource("SimplePurchaseRequestBPMN"));
 		
 		SimulationTransition transition = simulator.getTransitionFromURI(sfRequestAuthorizationURI);
 		assertEquals(sfRequestAuthorizationURI, transition.getTransitionURI());
 	}
 	
 	@Test
-	public void getTransitionFromURIWhenNotExists() {
-		OntModel bpmnOntology = getOntologyFromFile(bpmnOntologyPath);
-		Simulator simulator = getSimulator(bpmnOntology);
+	public void getTransitionFromURIWhenNotExists() throws IOException {
+		Simulator simulator = getSimulator(getResource("SimplePurchaseRequestBPMN"));
 		
 		SimulationTransition transition = simulator.getTransitionFromURI("notExistingURIInModel");
 		assertNull(transition);
 	}
 	
 	@Test
-	public void correctlyStartSimulation() {
-		OntModel bpmnOntology = getOntologyFromFile(bpmnOntologyPath);
-		Simulator simulator = getSimulator(bpmnOntology);
+	public void correctlyStartSimulation() throws IOException {
+		Simulator simulator = getSimulator(getResource("SimplePurchaseRequestBPMN"));
 		
 		SimulationState createPurchaseOrder = simulator.getStateFromURI(createPurchaseOrderURI);
 		SimulationState startSimulation = simulator.startSimulation();
@@ -79,18 +71,16 @@ public abstract class SimulatorTest {
 	}
 	
 	@Test
-	public void correctlyStartSimulationWithoutInitialization() {
-		OntModel bpmnOntology = ModelFactory.createOntologyModel();
-		Simulator simulator = getSimulator(bpmnOntology);
+	public void correctlyStartSimulationWithoutInitialization() throws IOException {
+		Simulator simulator = getSimulator(getResource("SimplePurchaseRequestBPMN"));
 		
 		SimulationState startSimulation = simulator.startSimulation();
-		assertNull(startSimulation);
+		assertNotNull(startSimulation);
 	}
 	
 	@Test
-	public void getNextStatesWithOneTransition() {
-		OntModel bpmnOntology = getOntologyFromFile(bpmnOntologyPath);
-		Simulator simulator = getSimulator(bpmnOntology);
+	public void getNextStatesWithOneTransition() throws IOException {
+		Simulator simulator = getSimulator(getResource("SimplePurchaseRequestBPMN"));
 		
 		SimulationState state = simulator.getStateFromURI(createPurchaseOrderURI);
 		Map<SimulationTransition, SimulationState> nextStates = simulator.getNextStates(state);
@@ -103,9 +93,8 @@ public abstract class SimulatorTest {
 	}
 	
 	@Test
-	public void getNextStatesWithTwoTransitions() {
-		OntModel bpmnOntology = getOntologyFromFile(bpmnOntologyPath);
-		Simulator simulator = getSimulator(bpmnOntology);
+	public void getNextStatesWithTwoTransitions() throws IOException {
+		Simulator simulator = getSimulator(getResource("SimplePurchaseRequestBPMN"));
 		
 		SimulationState state = simulator.getStateFromURI(authorizePurchaseOrderURI);
 		Map<SimulationTransition, SimulationState> nextStates = simulator.getNextStates(state);
@@ -124,9 +113,8 @@ public abstract class SimulatorTest {
 	}
 	
 	@Test
-	public void isEndStateOnFinalState() {
-		OntModel bpmnOntology = getOntologyFromFile(bpmnOntologyPath);
-		Simulator simulator = getSimulator(bpmnOntology);
+	public void isEndStateOnFinalState() throws IOException {
+		Simulator simulator = getSimulator(getResource("SimplePurchaseRequestBPMN"));
 		
 		SimulationState state = simulator.getStateFromURI(endPurchaseOrderURI);
 		
@@ -134,9 +122,8 @@ public abstract class SimulatorTest {
 	}
 	
 	@Test
-	public void isEndStateOnNotFinalState() {
-		OntModel bpmnOntology = getOntologyFromFile(bpmnOntologyPath);
-		Simulator simulator = getSimulator(bpmnOntology);
+	public void isEndStateOnNotFinalState() throws IOException {
+		Simulator simulator = getSimulator(getResource("SimplePurchaseRequestBPMN"));
 		
 		SimulationState state = simulator.getStateFromURI(authorizePurchaseOrderURI);
 		
@@ -144,9 +131,8 @@ public abstract class SimulatorTest {
 	}
 	
 	@Test
-	public void moveToNextStateMoves() throws BPMNInvalidTransition {
-		OntModel bpmnOntology = getOntologyFromFile(bpmnOntologyPath);
-		Simulator simulator = getSimulator(bpmnOntology);
+	public void moveToNextStateMoves() throws BPMNInvalidTransition, IOException {
+		Simulator simulator = getSimulator(getResource("SimplePurchaseRequestBPMN"));
 		
 		SimulationState createPurchaseOrder = simulator.getStateFromURI(createPurchaseOrderURI);
 		SimulationTransition sfRequestAuthorization = simulator.getTransitionFromURI(sfRequestAuthorizationURI);
@@ -158,9 +144,8 @@ public abstract class SimulatorTest {
 	}
 	
 	@Test(expected = BPMNInvalidTransition.class)
-	public void moveToNextStateThrowException() throws BPMNInvalidTransition {
-		OntModel bpmnOntology = getOntologyFromFile(bpmnOntologyPath);
-		Simulator simulator = getSimulator(bpmnOntology);
+	public void moveToNextStateThrowException() throws BPMNInvalidTransition, IOException {
+		Simulator simulator = getSimulator(getResource("SimplePurchaseRequestBPMN"));
 		
 		SimulationState createPurchaseOrder = simulator.getStateFromURI(createPurchaseOrderURI);
 		SimulationTransition sfAuthorizePurchaseOrder = simulator.getTransitionFromURI(sfAuthorizePurchaseOrderURI);

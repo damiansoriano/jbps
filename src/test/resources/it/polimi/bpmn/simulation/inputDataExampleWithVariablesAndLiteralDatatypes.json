@@ -16,6 +16,10 @@
                                 {
                                     "propertyType": "objectProperty",
                                     "propertyURI": "http://www.semanticweb.org/ontologies/2013/5/PurchaseRequestModel.owl#purchaseRequestResponsible"
+                                },
+                                {
+                                    "propertyType": "dataProperty",
+                                    "propertyURI": "http://www.semanticweb.org/ontologies/2013/5/PurchaseRequestModel.owl#comment"
                                 }
                             ]
                         }

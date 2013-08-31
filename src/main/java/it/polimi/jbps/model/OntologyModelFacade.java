@@ -55,14 +55,17 @@ public class OntologyModelFacade implements ModelFacade {
 	
 	protected List<JBPSClass> getClasses(JBPSIndividual individual, boolean direct) {
 		List<JBPSClass> allClasses = newLinkedList();
-		
-		ExtendedIterator<Resource> listRDFTypes = individual.getIndividual().listRDFTypes(direct);
-		while (listRDFTypes.hasNext()) {
-			Resource rdfType = listRDFTypes.next();
-			if (rdfType instanceof OntClass) {
-				allClasses.add(new JBPSClass((OntClass) rdfType));
-			}
+		ExtendedIterator<OntClass> listOntClasses = individual.getIndividual().listOntClasses(direct);
+		while (listOntClasses.hasNext()) {
+			allClasses.add(new JBPSClass(listOntClasses.next()));
 		}
+//		ExtendedIterator<Resource> listRDFTypes = individual.getIndividual().listRDFTypes(direct);
+//		while (listRDFTypes.hasNext()) {
+//			Resource rdfType = listRDFTypes.next();
+//			if (rdfType instanceof OntClass) {
+//				allClasses.add(new JBPSClass((OntClass) rdfType));
+//			}
+//		}
 		
 		return allClasses;
 	}

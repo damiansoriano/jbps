@@ -90,7 +90,7 @@ public class OntologyModelManipulator implements ModelManipulator {
 	private void executeUpdate(Action action, OntModel freshModel, String individualURI) throws InvalidPropertyAssignment {
 		Individual individual = freshModel.getIndividual(individualURI);
 		
-		makePropertyAssignment(individual, action.getPropertyAssignments());
+		makePropertyAssignment(individual, action.getPropertyAssignments(), freshModel);
 		
 		freshModel.prepare();
 		ValidityReport validityReport = freshModel.validate();
@@ -129,10 +129,10 @@ public class OntologyModelManipulator implements ModelManipulator {
 		}
 		individual = ontClass.createIndividual(uriName);
 		
-		Literal label = ontologyModel.createLiteral(labelStr);
+		Literal label = freshModel.createLiteral(labelStr);
 		individual.addLabel(label);
 		
-		makePropertyAssignment(individual, action.getPropertyAssignments());
+		makePropertyAssignment(individual, action.getPropertyAssignments(), freshModel);
 		
 		freshModel.prepare();
 		ValidityReport validityReport = freshModel.validate();
@@ -158,7 +158,7 @@ public class OntologyModelManipulator implements ModelManipulator {
 		return individual;
 	}
 	
-	protected void makePropertyAssignment(Individual individual, List<PropertyAssignment> propertyAssignments) {
+	protected void makePropertyAssignment(Individual individual, List<PropertyAssignment> propertyAssignments, OntModel ontologyModel) {
 		Map<Property, RDFNode> assignments = newHashMap();
 		
 		for (PropertyAssignment propertyAssignment : propertyAssignments) {
@@ -170,14 +170,18 @@ public class OntologyModelManipulator implements ModelManipulator {
 			if (isNullOrEmpty(propertyValue)) {
 				value = null;
 			} else if (propertyAssignment.isObjectProperty()) {
-				value =  ontologyModel.getIndividual(propertyValue);
+				value = ontologyModel.getIndividual(propertyValue);
 			} else {
 				value = ontologyModel.createLiteral(propertyValue);
 			}
 			assignments.put(property, value);
 		}
 		
+		ontologyModel.write(System.out);
+		
 		for (Property property : assignments.keySet()) {
+			System.out.println(property.getURI());
+			System.out.println(individual.getURI());
 			RDFNode oldPropertyValue = individual.getPropertyValue(property);
 			if (isNotNull(oldPropertyValue)) {
 				ontologyModel.remove(individual, property, oldPropertyValue);
